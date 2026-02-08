@@ -36,129 +36,58 @@ export default function Home() {
 
   return (
     <div style={{ 
-      background: '#0f172a', // Cor sólida de segurança
-      backgroundImage: 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)',
-      backgroundAttachment: 'fixed', // ISSO TRAVA O FUNDO NO LUGAR
-      backgroundSize: 'cover',
+      backgroundColor: '#0f172a', // Cor sólida ultra moderna
       minHeight: '100vh', 
+      height: '100%',
       fontFamily: "'Inter', sans-serif",
       color: '#fff',
       margin: 0,
-      paddingBottom: '50px'
+      display: 'flex',
+      flexDirection: 'column'
     }}>
       <Head>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
         <title>Fila VIP | Barber Pro</title>
       </Head>
 
-      <div style={{ maxWidth: '500px', margin: '0 auto', padding: '40px 20px' }}>
+      <div style={{ maxWidth: '500px', width: '100%', margin: '0 auto', padding: '40px 20px', flex: 1 }}>
         <header style={{ textAlign: 'center', marginBottom: '40px' }}>
           <div style={{ fontSize: '50px', marginBottom: '10px' }}>⚡</div>
-          <h1 style={{ fontSize: '36px', fontWeight: '800', letterSpacing: '-1px', margin: '0' }}>Fila VIP</h1>
-          <p style={{ color: '#94a3b8', fontSize: '16px', marginTop: '8px' }}>Gerenciamento inteligente de espera</p>
+          <h1 style={{ fontSize: '32px', fontWeight: '800', margin: '0' }}>Fila VIP</h1>
+          <p style={{ color: '#94a3b8', fontSize: '15px' }}>Gestão de espera inteligente</p>
         </header>
 
-        <div style={{ 
-          display: 'flex', 
-          gap: '12px', 
-          marginBottom: '30px',
-          background: 'rgba(255, 255, 255, 0.05)',
-          padding: '10px',
-          borderRadius: '20px',
-          border: '1px solid rgba(255, 255, 255, 0.1)'
-        }}>
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '30px' }}>
           <input 
             value={nome} 
             onChange={e => setNome(e.target.value)} 
-            placeholder="Nome do próximo..." 
-            style={{ 
-              flex: 1, 
-              padding: '12px', 
-              borderRadius: '12px', 
-              border: 'none', 
-              fontSize: '16px', 
-              outline: 'none',
-              background: 'transparent',
-              color: '#fff'
-            }}
+            placeholder="Nome do cliente..." 
+            style={{ flex: 1, padding: '15px', borderRadius: '12px', border: '1px solid #334155', background: '#1e293b', color: '#fff', outline: 'none' }}
           />
-          <button onClick={add} style={{ 
-            padding: '12px 24px', 
-            backgroundColor: '#3b82f6', 
-            color: 'white', 
-            border: 'none', 
-            borderRadius: '12px', 
-            cursor: 'pointer', 
-            fontWeight: 'bold',
-            boxShadow: '0 0 15px rgba(59, 130, 246, 0.3)'
-          }}>
+          <button onClick={add} style={{ padding: '15px 20px', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 'bold' }}>
             Add
           </button>
         </div>
 
-        <div style={{ 
-          background: 'rgba(30, 41, 59, 0.6)', 
-          borderRadius: '24px', 
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(10px)',
-          overflow: 'hidden' 
-        }}>
+        <div style={{ background: '#1e293b', borderRadius: '20px', border: '1px solid #334155', overflow: 'hidden' }}>
           {fila.length === 0 ? (
-            <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>
-              <p>Aguardando novos clientes...</p>
-            </div>
+            <div style={{ padding: '40px', textAlign: 'center', color: '#64748b' }}>Fila vazia</div>
           ) : (
             fila.map((c, i) => (
-              <div key={c.id} style={{ 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center', 
-                padding: '20px', 
-                borderBottom: i === fila.length - 1 ? 'none' : '1px solid rgba(255, 255, 255, 0.05)' 
-              }}>
-                <div>
-                  <span style={{ color: '#3b82f6', fontWeight: '800', fontSize: '18px', marginRight: '12px' }}>#{i + 1}</span>
-                  <span style={{ fontWeight: '600', fontSize: '17px' }}>{c.nome_cliente}</span>
-                </div>
-                <button 
-                  onClick={() => remover(c.id)} 
-                  style={{ 
-                    backgroundColor: 'rgba(239, 68, 68, 0.2)', 
-                    color: '#ef4444', 
-                    border: '1px solid rgba(239, 68, 68, 0.3)', 
-                    borderRadius: '10px', 
-                    padding: '8px 14px', 
-                    cursor: 'pointer', 
-                    fontSize: '13px', 
-                    fontWeight: '700' 
-                  }}
-                >
-                  Concluir
-                </button>
+              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '20px', borderBottom: i === fila.length - 1 ? 'none' : '1px solid #334155' }}>
+                <span><b style={{color: '#3b82f6'}}>{i + 1}º</b> {c.nome_cliente}</span>
+                <button onClick={() => remover(c.id)} style={{ background: 'none', border: '1px solid #ef4444', color: '#ef4444', borderRadius: '8px', padding: '5px 10px', fontSize: '12px' }}>Atendido</button>
               </div>
             ))
           )}
         </div>
-
-        <footer style={{ marginTop: '50px', textAlign: 'center' }}>
-          <a 
-            href="https://wa.me/5500000000000" 
-            target="_blank"
-            style={{ 
-              textDecoration: 'none', 
-              color: '#fff', 
-              fontWeight: '600', 
-              fontSize: '14px', 
-              background: 'rgba(59, 130, 246, 0.2)', 
-              padding: '12px 24px', 
-              borderRadius: '50px',
-              border: '1px solid rgba(59, 130, 246, 0.4)'
-            }}
-          >
-            🚀 Ativar para minha empresa
-          </a>
-        </footer>
       </div>
+
+      <footer style={{ padding: '40px 20px', textAlign: 'center' }}>
+        <a href="https://wa.me/5500000000000" target="_blank" style={{ textDecoration: 'none', color: '#3b82f6', fontWeight: 'bold' }}>
+          🚀 Criar sistema para minha empresa
+        </a>
+      </footer>
     </div>
   )
 }
