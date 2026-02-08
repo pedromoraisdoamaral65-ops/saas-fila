@@ -16,7 +16,7 @@ export default function AdminPage() {
 
   const finalizar = async () => {
     setLoading(true)
-    const { error } = await supabase.from('usuarios').insert([form])
+    const { error } = await supabase.from('agendamentos').insert([form])
     if (error) alert('Erro ao salvar: ' + error.message)
     
     setTimeout(() => {
