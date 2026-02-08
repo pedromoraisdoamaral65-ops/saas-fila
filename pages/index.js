@@ -23,42 +23,52 @@ export default function Home() {
     setNome(''); carregarFila()
   }
 
-  // FUNÇÃO NOVA PARA REMOVER O CLIENTE
   async function remover(id) {
-    await supabase.from('fila').delete().eq('id', id)
-    carregarFila()
+    // PROTEÇÃO: Pede a senha antes de deletar
+    const senha = prompt("Digite a senha do Admin para remover:")
+    
+    if (senha === '10698080') { // <--- Altere sua senha aqui!
+      await supabase.from('fila').delete().eq('id', id)
+      carregarFila()
+    } else {
+      alert("Senha incorreta!")
+    }
   }
 
   return (
-    <div style={{ padding: '30px', fontFamily: 'sans-serif', textAlign: 'center', backgroundColor: '#f4f4f9', minHeight: '100vh' }}>
-      <h1 style={{ color: '#333' }}>Fila de Espera 💈</h1>
+    <div style={{ padding: '30px', fontFamily: 'sans-serif', textAlign: 'center', backgroundColor: '#f8f9fc', minHeight: '100vh' }}>
+      <h1 style={{ color: '#333', fontSize: '28px' }}>Fila de Espera 💈</h1>
       
-      <div style={{ marginBottom: '20px' }}>
+      <div style={{ marginBottom: '25px', display: 'flex', justifyContent: 'center' }}>
         <input 
           value={nome} 
           onChange={e => setNome(e.target.value)} 
           placeholder="Nome do cliente" 
-          style={{ padding: '12px', borderRadius: '8px', border: '1px solid #ddd', width: '60%', fontSize: '16px' }}
+          style={{ padding: '15px', borderRadius: '10px 0 0 10px', border: '1px solid #ddd', width: '200px', fontSize: '16px', outline: 'none' }}
         />
-        <button onClick={add} style={{ padding: '12px 20px', marginLeft: '10px', backgroundColor: '#0070f3', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold' }}>
-          Add
+        <button onClick={add} style={{ padding: '15px 20px', backgroundColor: '#0070f3', color: 'white', border: 'none', borderRadius: '0 10px 10px 0', cursor: 'pointer', fontWeight: 'bold' }}>
+          Adicionar
         </button>
       </div>
 
-      <div style={{ maxWidth: '400px', margin: '0 auto', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '10px' }}>
-        {fila.length === 0 && <p style={{ color: '#888' }}>Fila vazia...</p>}
+      <div style={{ maxWidth: '450px', margin: '0 auto', backgroundColor: 'white', borderRadius: '15px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
+        {fila.length === 0 && <p style={{ padding: '20px', color: '#999' }}>Ninguém na fila ainda...</p>}
         {fila.map((c, i) => (
-          <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', borderBottom: i === fila.length - 1 ? 'none' : '1px solid #eee' }}>
-            <span style={{ fontSize: '18px' }}><strong>{i + 1}º</strong> - {c.nome_cliente}</span>
+          <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', borderBottom: i === fila.length - 1 ? 'none' : '1px solid #f0f0f0' }}>
+            <span style={{ fontSize: '18px', color: '#444' }}><strong>{i + 1}º</strong> - {c.nome_cliente}</span>
             <button 
               onClick={() => remover(c.id)} 
-              style={{ backgroundColor: '#ff4d4d', color: 'white', border: 'none', borderRadius: '6px', padding: '8px 12px', cursor: 'pointer', fontSize: '12px' }}
+              style={{ backgroundColor: '#ffeded', color: '#ff4d4d', border: 'none', borderRadius: '8px', padding: '10px 15px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}
             >
               Atendido
             </button>
           </div>
         ))}
       </div>
+      
+      <p style={{ marginTop: '40px', fontSize: '12px', color: '#aaa' }}>
+        SaaS de Fila v1.0 - Protegido por Admin
+      </p>
     </div>
   )
 }
