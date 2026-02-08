@@ -1,117 +1,127 @@
 import { useState, useEffect } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import Head from 'next/head'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL, 
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-)
-
 export default function Home() {
-  const [fila, setFila] = useState([])
-  const [nome, setNome] = useState('')
-  const [servico, setServico] = useState('Cabelo')
-  
-  // Estados do Fluxo de Cadastro
   const [showModal, setShowModal] = useState(false)
   const [step, setStep] = useState(1)
-  const [loadingFinal, setLoadingFinal] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  async function carregarFila() {
-    const { data } = await supabase.from('fila').select('*').order('id')
-    setFila(data || [])
-  }
-
-  useEffect(() => { carregarFila() }, [])
-
-  const abrirCadastro = () => { setStep(1); setShowModal(true); }
-
-  const finalizarCadastro = () => {
-    setLoadingFinal(true)
+  // Fluxo de redirecionamento para o WhatsApp
+  const irParaWhats = () => {
+    setLoading(true)
     setTimeout(() => {
-      const msg = encodeURIComponent("Olá! Acabei de me cadastrar no BarberFlow e gostaria de ativar minha unidade.")
+      const msg = encodeURIComponent("Olá! Vim pelo site e quero ativar meu teste grátis no BarberFlow® agora.")
       window.location.href = `https://wa.me/5599999999999?text=${msg}`
-    }, 3000)
+    }, 2500)
   }
 
   return (
-    <div style={{ backgroundColor: '#000000', minHeight: '100vh', fontFamily: "'Inter', sans-serif", color: '#ffffff', margin: 0, padding: 0 }}>
+    <div style={{ backgroundColor: '#000', minHeight: '100vh', fontFamily: "'Inter', sans-serif", color: '#fff', margin: 0, padding: 0 }}>
       <Head>
-        <title>BarberFlow ® | Gestão Elite</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet" />
+        <title>BarberFlow® | Gestão Sem Frescura</title>
         <style>{`body { margin: 0; background: #000; overflow-x: hidden; }`}</style>
       </Head>
 
-      {/* NAVBAR */}
-      <nav style={{ padding: '20px 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #111' }}>
-        <div style={{ fontWeight: '900', fontSize: '22px', color: '#ff7a00' }}>BarberFlow®</div>
-        <button onClick={abrirCadastro} style={{ backgroundColor: '#ff7a00', color: '#000', border: 'none', padding: '12px 24px', borderRadius: '8px', fontWeight: '800', cursor: 'pointer' }}>TESTAR GRÁTIS</button>
+      {/* NAVBAR MINIMALISTA */}
+      <nav style={{ padding: '30px 8%', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ fontWeight: '900', fontSize: '24px', letterSpacing: '-1px' }}>BARBERFLOW<span style={{color:'#ff7a00'}}>®</span></div>
+        <button onClick={() => setShowModal(true)} style={{ background: 'none', border: '1px solid #333', color: '#fff', padding: '10px 20px', borderRadius: '5px', fontWeight: '700', cursor: 'pointer' }}>LOGIN</button>
       </nav>
 
-      {/* HERO */}
-      <section style={{ padding: '80px 5%', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '42px', fontWeight: '900', marginBottom: '20px' }}>
-          Agendamento online com <br/><span style={{ color: '#ff7a00' }}>gestão completa</span>
+      {/* HERO IMPACTANTE (ESTILO THINKS) */}
+      <section style={{ padding: '100px 8% 60px', textAlign: 'left' }}>
+        <h1 style={{ fontSize: 'clamp(48px, 8vw, 90px)', fontWeight: '900', lineHeight: '0.9', letterSpacing: '-4px', marginBottom: '30px' }}>
+          GESTÃO <br/>DE ELITE. <br/><span style={{ color: '#ff7a00' }}>SEM ESPERA.</span>
         </h1>
-        <p style={{ color: '#aaa', marginBottom: '40px' }}>Tenha controle da agenda e financeiro com um sistema simples.</p>
-        
-        <button onClick={abrirCadastro} style={{ backgroundColor: '#ff7a00', color: '#000', padding: '20px 40px', borderRadius: '12px', border: 'none', fontWeight: '900', fontSize: '16px', cursor: 'pointer' }}>
+        <p style={{ fontSize: '20px', color: '#888', maxWidth: '500px', marginBottom: '40px', fontWeight: '500' }}>
+          O sistema de agendamento e fila digital que coloca sua barbearia no topo. Simples, preto e laranja.
+        </p>
+        <button 
+          onClick={() => setShowModal(true)} 
+          style={{ backgroundColor: '#ff7a00', color: '#000', padding: '25px 50px', borderRadius: '4px', border: 'none', fontWeight: '900', fontSize: '20px', cursor: 'pointer', textTransform: 'uppercase' }}
+        >
           TESTAR GRÁTIS
         </button>
       </section>
 
-      {/* MODAL DE CADASTRO (FLUXO DAS IMAGENS) */}
+      {/* SEÇÃO DE PROVA SOCIAL RÁPIDA */}
+      <section style={{ padding: '40px 8%', borderTop: '1px solid #111', display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
+        <div><span style={{color: '#ff7a00', fontWeight: '900'}}>+500</span> Barbearias</div>
+        <div><span style={{color: '#ff7a00', fontWeight: '900'}}>100%</span> Online</div>
+        <div><span style={{color: '#ff7a00', fontWeight: '900'}}>Suporte</span> Humano</div>
+      </section>
+
+      {/* MODAL DE CADASTRO ESTILO THINKS (DIRETO AO PONTO) */}
       {showModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div style={{ backgroundColor: '#fff', color: '#000', width: '100%', maxWidth: '450px', borderRadius: '24px', padding: '40px', position: 'relative', textAlign: 'center' }}>
-            {!loadingFinal ? (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: '#000', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: '100%', maxWidth: '500px', padding: '40px' }}>
+            {!loading ? (
               <>
-                {step === 1 && (
-                  <div>
-                    <h2 style={{fontSize: '28px', fontWeight: '800'}}>Olá, vamos começar?</h2>
-                    <p style={{color: '#666', marginBottom: '30px'}}>Nos fale sobre você</p>
-                    <input placeholder="Qual é o seu nome?" style={inputStyle} />
-                    <input placeholder="Qual é o seu WhatsApp?" style={inputStyle} />
-                    <button onClick={() => setStep(2)} style={btnNext}>Próximo</button>
-                  </div>
-                )}
+                <div style={{ marginBottom: '40px' }}>
+                  <div style={{ color: '#ff7a00', fontWeight: '900', marginBottom: '10px' }}>PASSO {step} DE 2</div>
+                  <h2 style={{ fontSize: '40px', fontWeight: '900', margin: 0, lineHeight: '1' }}>
+                    {step === 1 ? "QUEM É VOCÊ?" : "E SEU NEGÓCIO?"}
+                  </h2>
+                </div>
 
-                {step === 2 && (
+                {step === 1 ? (
                   <div>
-                    <h2 style={{fontSize: '28px', fontWeight: '800'}}>Perfeito!</h2>
-                    <p style={{color: '#666', marginBottom: '30px'}}>Agora, nos conte sobre seu negócio</p>
-                    <input placeholder="Nome do seu negócio" style={inputStyle} />
-                    <select style={inputStyle}>
-                      <option>Salão de Beleza</option>
-                      <option>Barbearia</option>
-                    </select>
-                    <button onClick={() => setStep(3)} style={btnNext}>Próximo</button>
-                    <p onClick={() => setStep(1)} style={{cursor: 'pointer', marginTop: '15px', color: '#666'}}>Voltar</p>
+                    <input placeholder="SEU NOME" style={inputThinks} />
+                    <input placeholder="SEU WHATSAPP" style={inputThinks} />
+                    <button onClick={() => setStep(2)} style={btnThinks}>PRÓXIMO</button>
+                  </div>
+                ) : (
+                  <div>
+                    <input placeholder="NOME DA BARBEARIA" style={inputThinks} />
+                    <button onClick={irParaWhats} style={btnThinks}>FINALIZAR E ATIVAR</button>
                   </div>
                 )}
-
-                {step === 3 && (
-                  <div>
-                    <h2 style={{fontSize: '28px', fontWeight: '800'}}>Ótimo!</h2>
-                    <p style={{color: '#666', marginBottom: '30px'}}>Informe seus dados de acesso</p>
-                    <input placeholder="Seu e-mail" style={inputStyle} />
-                    <input type="password" placeholder="Escolha uma senha" style={inputStyle} />
-                    <button onClick={finalizarCadastro} style={btnNext}>Cadastrar</button>
-                  </div>
-                )}
+                <p onClick={() => setShowModal(false)} style={{ color: '#444', cursor: 'pointer', marginTop: '20px', textAlign: 'center', fontWeight: '700' }}>CANCELAR</p>
               </>
             ) : (
-              <div style={{padding: '40px 0'}}>
-                <div style={{fontSize: '60px', marginBottom: '20px'}}>🐱</div>
-                <h3 style={{fontWeight: '800'}}>Por favor aguarde.</h3>
-                <p>Estamos preparando a sua agenda.<br/>Será rápido como um gato!</p>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: '80px', marginBottom: '20px' }}>⏳</div>
+                <h2 style={{ fontWeight: '900', fontSize: '30px' }}>RÁPIDO COMO UM GATO...</h2>
+                <p style={{ color: '#888' }}>Estamos te levando para o suporte oficial para ativar seu painel.</p>
               </div>
             )}
           </div>
         </div>
       )}
+
+      {/* FOOTER */}
+      <footer style={{ padding: '100px 8% 40px', color: '#222' }}>
+        <div style={{ fontWeight: '900', fontSize: '14px' }}>BARBERFLOW ® 2026</div>
+      </footer>
     </div>
   )
 }
 
-const inputStyle = { width: '100%', padding: '15px', borderRadius: '12px', border: '1px solid #ddd', marginBottom: '12px', fontSize: '16px', outline: 'none' }
-const btnNext = { width: '100%', backgroundColor: '#7b2cbf', color: '#fff', padding: '18px', borderRadius: '12px', border: 'none', fontWeight: '700', fontSize: '16px', cursor: 'pointer', marginTop: '10px' }
+// Estilos Thinks
+const inputThinks = {
+  width: '100%',
+  backgroundColor: '#000',
+  border: 'none',
+  borderBottom: '2px solid #222',
+  padding: '20px 0',
+  color: '#fff',
+  fontSize: '24px',
+  fontWeight: '700',
+  outline: 'none',
+  marginBottom: '20px',
+  borderRadius: '0'
+}
+
+const btnThinks = {
+  width: '100%',
+  backgroundColor: '#ff7a00',
+  color: '#000',
+  padding: '25px',
+  border: 'none',
+  fontWeight: '900',
+  fontSize: '18px',
+  cursor: 'pointer',
+  marginTop: '20px',
+  borderRadius: '4px'
+}
