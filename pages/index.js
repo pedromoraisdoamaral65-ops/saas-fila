@@ -101,4 +101,22 @@ export default function Home() {
       <section style={{ padding: '20px 0 80px 8%' }}>
         <h2 style={{ fontSize: '24px', fontWeight: '900', marginBottom: '20px' }}>Conheça o Sistema ®</h2>
         <div className="netflix-row">
-          {netflixCards.map((card
+          {netflixCards.map((card, index) => (
+            <div key={index} className="netflix-card" style={{ backgroundImage: `url(${card.url})` }}>
+              <div className="card-text">{card.titulo}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <footer style={{ padding: '80px 8%', textAlign: 'center', borderTop: '1px solid #f1f5f9' }}>
+        <a href="https://wa.me/5500000000000" style={{ backgroundColor: '#25d366', color: '#fff', textDecoration: 'none', padding: '22px 50px', borderRadius: '100px', fontWeight: '900', fontSize: '18px', display: 'inline-block', marginBottom: '40px', boxShadow: '0 15px 30px rgba(37,211,102,0.3)' }}>
+          FALAR COM CONSULTOR
+        </a>
+        <br/>
+        <button onClick={() => setVerTermos(true)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '13px', fontWeight: '700', cursor: 'pointer', textDecoration: 'underline' }}>TERMOS DE USO</button>
+        <p style={{ color: '#94a3b8', fontSize: '11px', marginTop: '20px' }}>BarberFlow ® 2026 | Desenvolvido por O Criador</p>
+      </footer>
+    </div>
+  )
+}
