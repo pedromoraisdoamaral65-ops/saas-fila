@@ -10,7 +10,7 @@ const supabase = createClient(
 export default function Home() {
   const [fila, setFila] = useState([])
   const [nome, setNome] = useState('')
-  const [verTermos, setVerTermos] = useState(false)
+  const [servico, setServico] = useState('Cabelo')
 
   async function carregarFila() {
     const { data } = await supabase.from('fila').select('*').order('id')
@@ -21,101 +21,86 @@ export default function Home() {
 
   async function add() {
     if (!nome) return
-    await supabase.from('fila').insert([{ nome_cliente: nome }])
+    await supabase.from('fila').insert([{ nome_cliente: nome, servico: servico }])
     setNome(''); carregarFila()
   }
 
-  async function remover(id) {
-    const senha = prompt("Acesso BarberFlow. Digite a senha:")
-    if (senha === '1234') { 
-      await supabase.from('fila').delete().eq('id', id)
-      carregarFila()
-    }
-  }
-
-  // Links de alta disponibilidade (Imagens que NÃO quebram)
-  const netflixCards = [
-    { url: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=600", titulo: "Tesoura: 'Vou deixar-te na régua!'" },
-    { url: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=600", titulo: "Cadeira: 'Senta que o show vai começar!'" },
-    { url: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=600", titulo: "Máquina: 'Zunindo para a perfeição!'" },
-    { url: "https://images.unsplash.com/photo-1593702275677-f916c8c70ca4?w=600", titulo: "Navalha: 'Precisão é o meu nome!'" }
-  ]
-
-  if (verTermos) {
-    return (
-      <div style={{ padding: '60px 8%', fontFamily: 'Montserrat, sans-serif', backgroundColor: '#fff', minHeight: '100vh' }}>
-        <h1 style={{ fontWeight: '900', color: '#00a88f', fontSize: '32px' }}>Termos de Uso e Condições ®</h1>
-        <div style={{ color: '#64748b', lineHeight: '1.8', textAlign: 'left', maxWidth: '800px' }}>
-          <p><strong>1. Aceitação dos Termos:</strong> Ao utilizar o BarberFlow, o estabelecimento e o cliente concordam com a organização digital por ordem de chegada.</p>
-          <p><strong>2. Privacidade de Dados:</strong> O sistema solicita apenas o primeiro nome do cliente. Estes dados são temporários e serão eliminados assim que o serviço for marcado como "Concluído" pelo barbeiro.</p>
-          <p><strong>3. Responsabilidade do Estabelecimento:</strong> A gestão da fila, o tempo de espera e a exclusão de nomes são de inteira responsabilidade do utilizador administrativo.</p>
-          <p><strong>4. Uso da Marca:</strong> BarberFlow ® é uma tecnologia protegida. A reprodução do design ou código sem autorização é proibida.</p>
-          <p><strong>5. Limitação de Serviço:</strong> O BarberFlow é uma ferramenta de auxílio à gestão e não garante ganhos financeiros diretos ou funcionamento ininterrupto em caso de falhas de internet local.</p>
-        </div>
-        <button onClick={() => setVerTermos(false)} style={{ backgroundColor: '#0f172a', color: '#fff', border: 'none', padding: '15px 40px', borderRadius: '12px', fontWeight: '900', marginTop: '40px', cursor: 'pointer' }}>VOLTAR AO SISTEMA</button>
-      </div>
-    )
-  }
-
   return (
-    <div style={{ backgroundColor: '#ffffff', minHeight: '100vh', fontFamily: "'Montserrat', sans-serif", color: '#0f172a', margin: 0 }}>
+    <div style={{ backgroundColor: '#ffffff', minHeight: '100vh', fontFamily: "'Inter', sans-serif", color: '#1a1a1a', margin: 0 }}>
       <Head>
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet" />
-        <title>BarberFlow ® | Gestão Profissional</title>
-        <style>{`
-          .netflix-row { display: flex; overflow-x: auto; gap: 20px; padding: 20px 0; scrollbar-width: none; }
-          .netflix-row::-webkit-scrollbar { display: none; }
-          .netflix-card { 
-            min-width: 280px; height: 380px; border-radius: 25px; 
-            background-size: cover; background-position: center; 
-            display: flex; align-items: flex-end; padding: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); transition: 0.3s;
-          }
-          .netflix-card:hover { transform: translateY(-10px); }
-          .card-text { background: rgba(0,0,0,0.7); color: #fff; padding: 15px; border-radius: 15px; width: 100%; font-weight: 700; font-size: 14px; }
-        `}</style>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+        <title>BarberFlow ® | Reservar Agora</title>
       </Head>
 
-      <nav style={{ padding: '20px 8%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #f1f5f9' }}>
-        <span style={{ fontWeight: '900', fontSize: '22px', color: '#00a88f' }}>BarberFlow ®</span>
-        <button style={{ backgroundColor: '#00a88f', color: '#fff', border: 'none', padding: '10px 25px', borderRadius: '10px', fontWeight: '900' }}>TESTE GRÁTIS</button>
+      {/* HEADER ESTILO FRESHA */}
+      <nav style={{ padding: '15px 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee', position: 'sticky', top: 0, backgroundColor: '#fff', zIndex: 100 }}>
+        <div style={{ fontWeight: '800', fontSize: '20px', letterSpacing: '-1px' }}>BarberFlow<span style={{color: '#00a88f'}}>®</span></div>
+        <button style={{ backgroundColor: '#1a1a1a', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '50px', fontWeight: '600', fontSize: '14px' }}>Baixar App</button>
       </nav>
 
-      <section style={{ padding: '60px 8%', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '48px', fontWeight: '900', letterSpacing: '-2px', marginBottom: '40px' }}>Fila Digital Interativa</h1>
-        <div style={{ maxWidth: '450px', margin: '0 auto', background: '#fff', border: '1px solid #f1f5f9', borderRadius: '35px', padding: '35px', boxShadow: '0 20px 50px rgba(0,0,0,0.05)' }}>
-          <input value={nome} onChange={e => setNome(e.target.value)} placeholder="Nome do Cliente" style={{ width: '100%', padding: '18px', borderRadius: '15px', border: '2px solid #f1f5f9', marginBottom: '15px', fontWeight: '700', boxSizing: 'border-box' }} />
-          <button onClick={add} style={{ width: '100%', backgroundColor: '#0f172a', color: '#fff', padding: '18px', borderRadius: '15px', fontWeight: '900', border: 'none', cursor: 'pointer' }}>ADICIONAR À FILA</button>
-          
-          <div style={{ marginTop: '30px' }}>
-            {fila.map((c, i) => (
-              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '18px', backgroundColor: '#f8fafc', borderRadius: '18px', marginBottom: '12px', border: '1px solid #f1f5f9' }}>
-                <span style={{ fontWeight: '800' }}>{i + 1}º {c.nome_cliente}</span>
-                <button onClick={() => remover(c.id)} style={{ color: '#00a88f', background: 'none', border: 'none', fontWeight: '900', cursor: 'pointer' }}>CONCLUIR</button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section style={{ padding: '20px 0 80px 8%' }}>
-        <h2 style={{ fontSize: '24px', fontWeight: '900', marginBottom: '20px' }}>Conheça o Sistema ®</h2>
-        <div className="netflix-row">
-          {netflixCards.map((card, index) => (
-            <div key={index} className="netflix-card" style={{ backgroundImage: `url(${card.url})` }}>
-              <div className="card-text">{card.titulo}</div>
-            </div>
+      {/* HERO / BUSCA */}
+      <section style={{ padding: '40px 5%', backgroundColor: '#f9f9f9', textAlign: 'left' }}>
+        <h1 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '10px' }}>Agende seu visual</h1>
+        <p style={{ color: '#666', marginBottom: '25px' }}>Os melhores barbeiros, na palma da sua mão.</p>
+        
+        <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '10px' }}>
+          {['💇‍♂️ Cabelo', '🧔 Barba', '✨ Sobrancelha', '🔥 Combo'].map(cat => (
+            <button key={cat} onClick={() => setServico(cat)} style={{ 
+              padding: '10px 20px', borderRadius: '50px', border: '1px solid #ddd', 
+              backgroundColor: servico === cat ? '#1a1a1a' : '#fff',
+              color: servico === cat ? '#fff' : '#1a1a1a',
+              whiteSpace: 'nowrap', fontWeight: '600', cursor: 'pointer'
+            }}>{cat}</button>
           ))}
         </div>
       </section>
 
-      <footer style={{ padding: '80px 8%', textAlign: 'center', borderTop: '1px solid #f1f5f9' }}>
-        <a href="https://wa.me/5500000000000" style={{ backgroundColor: '#25d366', color: '#fff', textDecoration: 'none', padding: '22px 50px', borderRadius: '100px', fontWeight: '900', fontSize: '18px', display: 'inline-block', marginBottom: '40px', boxShadow: '0 15px 30px rgba(37,211,102,0.3)' }}>
-          FALAR COM CONSULTOR
-        </a>
-        <br/>
-        <button onClick={() => setVerTermos(true)} style={{ background: 'none', border: 'none', color: '#94a3b8', fontSize: '13px', fontWeight: '700', cursor: 'pointer', textDecoration: 'underline' }}>TERMOS DE USO</button>
-        <p style={{ color: '#94a3b8', fontSize: '11px', marginTop: '20px' }}>BarberFlow ® 2026 | Desenvolvido por O Criador</p>
+      {/* FORMULÁRIO DE ENTRADA NA FILA */}
+      <section style={{ padding: '30px 5%' }}>
+        <div style={{ border: '1px solid #eee', borderRadius: '16px', padding: '20px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
+          <h3 style={{ marginTop: 0 }}>Entrar na fila agora</h3>
+          <input 
+            value={nome} 
+            onChange={e => setNome(e.target.value)} 
+            placeholder="Seu nome completo" 
+            style={{ width: '100%', padding: '15px', borderRadius: '8px', border: '1px solid #ddd', marginBottom: '15px', fontSize: '16px', boxSizing: 'border-box' }} 
+          />
+          <button onClick={add} style={{ width: '100%', backgroundColor: '#00a88f', color: '#fff', padding: '15px', borderRadius: '8px', border: 'none', fontWeight: '700', fontSize: '16px', cursor: 'pointer' }}>
+            Confirmar {servico}
+          </button>
+        </div>
+      </section>
+
+      {/* LISTA DE ESPERA ESTILO FEED */}
+      <section style={{ padding: '0 5% 100px 5%' }}>
+        <h3 style={{ marginBottom: '20px' }}>Próximos da lista</h3>
+        {fila.length === 0 ? (
+          <p style={{ color: '#999' }}>Ninguém aguardando no momento.</p>
+        ) : (
+          fila.map((c, i) => (
+            <div key={c.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 0', borderBottom: '1px solid #f0f0f0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <div style={{ width: '45px', height: '45px', borderRadius: '50%', backgroundColor: '#eee', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontWeight: '800' }}>
+                  {c.nome_cliente[0]}
+                </div>
+                <div>
+                  <div style={{ fontWeight: '700' }}>{c.nome_cliente}</div>
+                  <div style={{ fontSize: '13px', color: '#00a88f' }}>{c.servico || 'Corte'}</div>
+                </div>
+              </div>
+              <div style={{ fontWeight: '600', color: '#666' }}>#{i + 1}</div>
+            </div>
+          ))
+        )}
+      </section>
+
+      {/* TERMOS DE USO / FOOTER */}
+      <footer style={{ padding: '40px 5%', borderTop: '1px solid #eee', textAlign: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '20px' }}>
+          <a href="#" style={{ color: '#999', fontSize: '12px', textDecoration: 'none' }}>Termos de Uso</a>
+          <a href="#" style={{ color: '#999', fontSize: '12px', textDecoration: 'none' }}>Privacidade</a>
+        </div>
+        <p style={{ fontSize: '12px', color: '#ccc' }}>BarberFlow ® — Sistema de Gestão Inteligente</p>
       </footer>
     </div>
   )
