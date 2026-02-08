@@ -36,80 +36,111 @@ export default function Home() {
     <div style={{ backgroundColor: '#ffffff', minHeight: '100vh', fontFamily: "'Poppins', sans-serif", color: '#1e293b', margin: 0 }}>
       <Head>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet" />
-        <title>BarberFlow | Gestão Inteligente</title>
-        <style>{`body { margin: 0; padding: 0; }`}</style>
+        <title>BarberFlow | Gestão Profissional</title>
+        <style>{`
+          body { margin: 0; padding: 0; }
+          @media (max-width: 900px) {
+            .hero-container { flex-direction: column !important; text-align: center !important; }
+            .hero-text { text-align: center !important; margin-bottom: 40px !important; }
+            .hero-title { fontSize: 32px !important; }
+          }
+        `}</style>
       </Head>
 
       {/* NAVBAR */}
-      <nav style={{ padding: '15px 5%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', borderBottom: '1px solid #f1f5f9', position: 'sticky', top: 0, zIndex: 1000 }}>
-        <img src="https://i.ibb.co/KxJr4TyP/file-000000001e94720ead1f91dfe8d64505.png" alt="BarberFlow" style={{ height: '40px' }} />
-        <button style={{ backgroundColor: '#00a88f', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '50px', fontWeight: 'bold' }}>TESTE GRÁTIS</button>
+      <nav style={{ padding: '15px 8%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', borderBottom: '1px solid #f1f5f9', position: 'sticky', top: 0, zIndex: 1000 }}>
+        <img src="https://i.ibb.co/KxJr4TyP/file-000000001e94720ead1f91dfe8d64505.png" alt="BarberFlow" style={{ height: '45px' }} />
+        <button style={{ backgroundColor: '#00a88f', color: '#fff', border: 'none', padding: '12px 25px', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer' }}>TESTE GRÁTIS</button>
       </nav>
 
-      {/* HERO SECTION - CENTRALIZADA */}
-      <section style={{ padding: '80px 20px', textAlign: 'center', background: 'linear-gradient(180deg, #f0fdfa 0%, #ffffff 100%)' }}>
-        <h1 style={{ fontSize: '42px', fontWeight: '800', maxWidth: '800px', margin: '0 auto 20px', lineHeight: '1.1' }}>
-          Organize sua barbearia. <span style={{ color: '#00a88f' }}>Fidelize clientes.</span>
-        </h1>
-        <p style={{ fontSize: '18px', color: '#64748b', maxWidth: '500px', margin: '0 auto 40px' }}>
-          A maneira mais inteligente de gerir sua fila de espera e modernizar seu atendimento.
-        </p>
+      {/* SEÇÃO HERO EM COLUNAS (ESTILO TRINKS) */}
+      <section style={{ 
+        padding: '100px 8%', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between', 
+        background: 'linear-gradient(135deg, #f0fdfa 0%, #ffffff 100%)',
+        gap: '40px'
+      }} className="hero-container">
+        
+        {/* COLUNA ESQUERDA: TEXTO */}
+        <div style={{ flex: 1, textAlign: 'left' }} className="hero-text">
+          <h1 style={{ fontSize: '48px', fontWeight: '800', lineHeight: '1.1', color: '#0f172a', marginBottom: '25px' }} className="hero-title">
+            Escolha um sistema completo para <span style={{ color: '#00a88f' }}>gestão de barbearia</span>
+          </h1>
+          <p style={{ fontSize: '20px', color: '#64748b', marginBottom: '40px', maxWidth: '500px' }}>
+            Agilidade no atendimento e controle total da sua fila para lucrar mais com gestão fácil.
+          </p>
+          <button style={{ backgroundColor: '#00a88f', color: '#fff', border: 'none', padding: '18px 40px', borderRadius: '50px', fontWeight: 'bold', fontSize: '16px', boxShadow: '0 10px 20px rgba(0,168,143,0.3)' }}>
+            TESTE GRÁTIS POR 5 DIAS
+          </button>
+        </div>
 
-        {/* COMPONENTE DA FILA (O PRODUTO) */}
-        <div style={{ maxWidth: '450px', margin: '0 auto', background: '#fff', borderRadius: '28px', padding: '30px', boxShadow: '0 20px 50px rgba(0,0,0,0.08)', border: '1px solid #f1f5f9', textAlign: 'left' }}>
-          <h2 style={{ fontSize: '18px', fontWeight: '800', marginBottom: '20px' }}>Fila de Hoje</h2>
-          <div style={{ display: 'flex', gap: '8px', marginBottom: '25px' }}>
-            <input value={nome} onChange={e => setNome(e.target.value)} placeholder="Nome do cliente" style={{ flex: 1, padding: '14px', borderRadius: '14px', border: '1px solid #e2e8f0', outline: 'none' }} />
-            <button onClick={add} style={{ backgroundColor: '#00a88f', color: '#fff', border: 'none', borderRadius: '14px', padding: '0 20px', fontWeight: 'bold' }}>Add</button>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {fila.map((c, i) => (
-              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '15px', backgroundColor: '#f8fafc', borderRadius: '16px', border: '1px solid #f1f5f9' }}>
-                <span style={{ fontWeight: '700' }}><span style={{ color: '#00a88f' }}>{i + 1}º</span> {c.nome_cliente}</span>
-                <button onClick={() => remover(c.id)} style={{ color: '#ef4444', background: 'none', border: 'none', fontWeight: 'bold', fontSize: '11px' }}>CONCLUIR</button>
-              </div>
-            ))}
+        {/* COLUNA DIREITA: COMPONENTE DA FILA */}
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+          <div style={{ 
+            width: '100%',
+            maxWidth: '420px', 
+            background: '#ffffff', 
+            borderRadius: '32px', 
+            padding: '35px', 
+            boxShadow: '0 30px 60px rgba(0,0,0,0.1)', 
+            border: '1px solid #f1f5f9' 
+          }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ color: '#00a88f' }}>●</span> Agenda Online
+            </h2>
+            <div style={{ display: 'flex', gap: '10px', marginBottom: '30px' }}>
+              <input value={nome} onChange={e => setNome(e.target.value)} placeholder="Nome do cliente" style={{ flex: 1, padding: '16px', borderRadius: '14px', border: '2px solid #f1f5f9', outline: 'none' }} />
+              <button onClick={add} style={{ backgroundColor: '#1e293b', color: '#fff', border: 'none', borderRadius: '14px', padding: '0 20px', fontWeight: 'bold' }}>Add</button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {fila.map((c, i) => (
+                <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '15px 20px', backgroundColor: '#f8fafc', borderRadius: '18px' }}>
+                  <span style={{ fontWeight: '700' }}><span style={{ color: '#00a88f' }}>{i + 1}º</span> {c.nome_cliente}</span>
+                  <button onClick={() => remover(c.id)} style={{ color: '#ef4444', background: 'none', border: 'none', fontWeight: 'bold', fontSize: '11px' }}>CONCLUIR</button>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* SEÇÃO EXPLICAÇÃO - COMO FUNCIONA */}
-      <section style={{ padding: '80px 20px', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '50px' }}>Como o BarberFlow funciona?</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '30px' }}>
+      {/* SEÇÃO EXPLICAÇÃO - CARDS EM COLUNAS */}
+      <section style={{ padding: '100px 8%', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '36px', fontWeight: '800', marginBottom: '60px' }}>Dê adeus à comanda de papel</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px' }}>
           
-          <div style={{ maxWidth: '300px', padding: '20px', textAlign: 'left' }}>
-            <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=300&q=80" style={{ width: '100%', borderRadius: '20px', marginBottom: '20px' }} />
-            <h3 style={{ fontSize: '20px', fontWeight: '700' }}>Fila Digital</h3>
-            <p style={{ color: '#64748b' }}>Clientes entram na fila escaneando um QR Code, sem precisar de papel.</p>
+          <div style={{ padding: '30px', borderRadius: '24px', backgroundColor: '#f8fafc', textAlign: 'left' }}>
+            <div style={{ fontSize: '40px', marginBottom: '20px' }}>📱</div>
+            <h3 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '15px' }}>App para barbeiros</h3>
+            <p style={{ color: '#64748b' }}>Controle total da sua agenda e fila de espera direto pelo seu smartphone.</p>
           </div>
 
-          <div style={{ maxWidth: '300px', padding: '20px', textAlign: 'left' }}>
-            <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=300&q=80" style={{ width: '100%', borderRadius: '20px', marginBottom: '20px' }} />
-            <h3 style={{ fontSize: '20px', fontWeight: '700' }}>Tempo Real</h3>
-            <p style={{ color: '#64748b' }}>O barbeiro e o cliente acompanham o status da fila em tempo real.</p>
+          <div style={{ padding: '30px', borderRadius: '24px', backgroundColor: '#f8fafc', textAlign: 'left' }}>
+            <div style={{ fontSize: '40px', marginBottom: '20px' }}>⚡</div>
+            <h3 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '15px' }}>Fila em tempo real</h3>
+            <p style={{ color: '#64748b' }}>Seus clientes acompanham o tempo estimado de espera de forma transparente.</p>
           </div>
 
-          <div style={{ maxWidth: '300px', padding: '20px', textAlign: 'left' }}>
-            <img src="https://images.unsplash.com/photo-1599351431247-f57933842922?auto=format&fit=crop&w=300&q=80" style={{ width: '100%', borderRadius: '20px', marginBottom: '20px' }} />
-            <h3 style={{ fontSize: '20px', fontWeight: '700' }}>Notificações</h3>
-            <p style={{ color: '#64748b' }}>Seu cliente sabe exatamente quando será a vez dele.</p>
+          <div style={{ padding: '30px', borderRadius: '24px', backgroundColor: '#f8fafc', textAlign: 'left' }}>
+            <div style={{ fontSize: '40px', marginBottom: '20px' }}>💰</div>
+            <h3 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '15px' }}>Pagamentos Online</h3>
+            <p style={{ color: '#64748b' }}>Reduza as faltas e aumente sua receita com integração de pagamentos.</p>
           </div>
 
         </div>
       </section>
 
-      {/* FOOTER - CTA FINAL */}
-      <footer style={{ padding: '100px 20px', backgroundColor: '#0f172a', color: '#fff', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '20px' }}>Pronto para escalar seu negócio?</h2>
-        <p style={{ color: '#94a3b8', marginBottom: '40px' }}>Clique no botão abaixo e fale com um consultor BarberFlow.</p>
-        <a href="https://wa.me/5500000000000" style={{ textDecoration: 'none', backgroundColor: '#00a88f', color: '#fff', padding: '20px 50px', borderRadius: '50px', fontWeight: 'bold', fontSize: '18px', display: 'inline-block', boxShadow: '0 10px 20px rgba(0,168,143,0.3)' }}>
-          COMEÇAR AGORA
+      {/* CTA FOOTER */}
+      <footer style={{ padding: '80px 8%', backgroundColor: '#0f172a', color: '#fff', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '32px', fontWeight: '800', marginBottom: '20px' }}>Pronto para lucrar mais?</h2>
+        <a href="https://wa.me/5500000000000" style={{ textDecoration: 'none', backgroundColor: '#00a88f', color: '#fff', padding: '20px 60px', borderRadius: '50px', fontWeight: 'bold', fontSize: '18px', display: 'inline-block' }}>
+          QUERO O BARBERFLOW AGORA
         </a>
-        <div style={{ marginTop: '80px', color: '#475569', fontSize: '13px' }}>
-          © 2024 BarberFlow. Desenvolvido para Barbeiros de Elite.
-        </div>
+        <p style={{ marginTop: '50px', color: '#475569', fontSize: '13px' }}>© 2024 BarberFlow. A revolução na sua barbearia.</p>
       </footer>
     </div>
   )
-}
+  }
+  
