@@ -52,4 +52,29 @@ export default function Home() {
       <div style={{ maxWidth: '450px', margin: '0 auto', backgroundColor: 'white', borderRadius: '15px', boxShadow: '0 10px 25px rgba(0,0,0,0.05)', overflow: 'hidden' }}>
         {fila.length === 0 && <p style={{ padding: '20px', color: '#999' }}>Ninguém na fila ainda...</p>}
         {fila.map((c, i) => (
-          <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center
+          <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px', borderBottom: i === fila.length - 1 ? 'none' : '1px solid #f0f0f0' }}>
+            <span style={{ fontSize: '18px' }}><strong>{i + 1}º</strong> - {c.nome_cliente}</span>
+            <button 
+              onClick={() => remover(c.id)} 
+              style={{ backgroundColor: '#ffeded', color: '#ff4d4d', border: 'none', borderRadius: '8px', padding: '10px 15px', cursor: 'pointer', fontWeight: 'bold' }}
+            >
+              Atendido
+            </button>
+          </div>
+        ))}
+      </div>
+      
+      {/* SEÇÃO DE VENDAS */}
+      <div style={{ marginTop: '60px', padding: '20px', borderTop: '1px solid #eee' }}>
+        <p style={{ color: '#666', marginBottom: '15px' }}>Quer um sistema assim para sua barbearia?</p>
+        <a 
+          href="https://wa.me/5561999445990" 
+          target="_blank"
+          style={{ textDecoration: 'none', backgroundColor: '#25d366', color: 'white', padding: '12px 25px', borderRadius: '50px', fontWeight: 'bold', display: 'inline-block' }}
+        >
+          Falar com o Desenvolvedor
+        </a>
+      </div>
+    </div>
+  )
+}
