@@ -25,7 +25,7 @@ export default function Home() {
   }
 
   async function remover(id) {
-    const senha = prompt("Acesso restrito. Digite a senha:")
+    const senha = prompt("Acesso restrict. Digite a senha:")
     if (senha === '1234') { 
       await supabase.from('fila').delete().eq('id', id)
       carregarFila()
@@ -36,21 +36,26 @@ export default function Home() {
 
   return (
     <div style={{ 
-      backgroundColor: '#0f172a', // Cor sólida ultra moderna
+      backgroundColor: '#0f172a', 
       minHeight: '100vh', 
-      height: '100%',
+      width: '100vw', // Força largura total da janela
       fontFamily: "'Inter', sans-serif",
       color: '#fff',
       margin: 0,
+      padding: 0,
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      position: 'absolute', // Garante que o fundo ignore margens do navegador
+      top: 0,
+      left: 0
     }}>
       <Head>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
         <title>Fila VIP | Barber Pro</title>
+        <style>{`body { margin: 0; background-color: #0f172a; }`}</style>
       </Head>
 
-      <div style={{ maxWidth: '500px', width: '100%', margin: '0 auto', padding: '40px 20px', flex: 1 }}>
+      <div style={{ maxWidth: '500px', width: '90%', margin: '0 auto', padding: '40px 0', flex: 1 }}>
         <header style={{ textAlign: 'center', marginBottom: '40px' }}>
           <div style={{ fontSize: '50px', marginBottom: '10px' }}>⚡</div>
           <h1 style={{ fontSize: '32px', fontWeight: '800', margin: '0' }}>Fila VIP</h1>
@@ -62,7 +67,7 @@ export default function Home() {
             value={nome} 
             onChange={e => setNome(e.target.value)} 
             placeholder="Nome do cliente..." 
-            style={{ flex: 1, padding: '15px', borderRadius: '12px', border: '1px solid #334155', background: '#1e293b', color: '#fff', outline: 'none' }}
+            style={{ flex: 1, padding: '15px', borderRadius: '12px', border: '1px solid #334155', background: '#1e293b', color: '#fff', outline: 'none', width: '100%' }}
           />
           <button onClick={add} style={{ padding: '15px 20px', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '12px', fontWeight: 'bold' }}>
             Add
@@ -83,11 +88,12 @@ export default function Home() {
         </div>
       </div>
 
-      <footer style={{ padding: '40px 20px', textAlign: 'center' }}>
-        <a href="https://wa.me/5500000000000" target="_blank" style={{ textDecoration: 'none', color: '#3b82f6', fontWeight: 'bold' }}>
+      <footer style={{ padding: '30px 20px', textAlign: 'center', background: '#0f172a' }}>
+        <a href="https://wa.me/5500000000000" target="_blank" style={{ textDecoration: 'none', color: '#3b82f6', fontWeight: 'bold', fontSize: '14px' }}>
           🚀 Criar sistema para minha empresa
         </a>
       </footer>
     </div>
   )
-}
+  }
+                  
