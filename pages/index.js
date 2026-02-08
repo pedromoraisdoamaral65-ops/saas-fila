@@ -34,121 +34,114 @@ export default function Home() {
   }
 
   return (
-    <div style={{ backgroundColor: '#ffffff', minHeight: '100vh', fontFamily: "'Montserrat', sans-serif", color: '#0f172a', margin: 0 }}>
+    <div style={{ backgroundColor: '#ffffff', minHeight: '100vh', fontFamily: "'Montserrat', sans-serif", color: '#0f172a', margin: 0, paddingBottom: '80px' }}>
       <Head>
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet" />
-        <title>BarberFlow ® | Gestão Elite</title>
+        <title>BarberFlow ® | Gestão Profissional</title>
       </Head>
 
-      {/* BOTÃO FLUTUANTE WHATSAPP */}
-      <a 
-        href="https://wa.me/5500000000000" 
-        target="_blank" 
-        rel="noopener noreferrer"
-        style={{
-          position: 'fixed',
-          bottom: '30px',
-          right: '30px',
-          backgroundColor: '#25d366',
-          color: '#fff',
-          width: '60px',
-          height: '60px',
-          borderRadius: '50px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '30px',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.2)',
-          zIndex: 9999,
-          textDecoration: 'none'
-        }}
-      >
-        <span style={{ marginBottom: '5px' }}>💬</span>
-      </a>
+      {/* BARRA DE CONTATO FIXA (SUBSTITUI O BOTÃO FLUTUANTE) */}
+      <div style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#00a88f',
+        padding: '15px 20px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 10000,
+        boxShadow: '0 -5px 20px rgba(0,0,0,0.1)'
+      }}>
+        <a 
+          href="https://wa.me/5500000000000" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={{
+            color: '#fff',
+            textDecoration: 'none',
+            fontWeight: '900',
+            fontSize: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px'
+          }}
+        >
+          <span>FALAR COM UM CONSULTOR NO WHATSAPP</span>
+          <span style={{ fontSize: '20px' }}>→</span>
+        </a>
+      </div>
 
-      {/* NAVBAR CLEAN */}
-      <nav style={{ padding: '20px 8%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#fff', borderBottom: '1px solid #f1f5f9' }}>
+      {/* NAVBAR */}
+      <nav style={{ padding: '20px 8%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#ffffff', borderBottom: '1px solid #f1f5f9' }}>
         <img src="https://i.ibb.co/KxJr4TyP/file-000000001e94720ead1f91dfe8d64505.png" alt="BarberFlow" style={{ height: '40px' }} />
-        <button style={{ backgroundColor: '#00a88f', color: '#fff', border: 'none', padding: '12px 25px', borderRadius: '12px', fontWeight: '900', fontSize: '13px' }}>TESTE GRÁTIS</button>
+        <button style={{ backgroundColor: '#0f172a', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px', fontWeight: '800', fontSize: '12px' }}>TESTE GRÁTIS</button>
       </nav>
 
-      {/* SEÇÃO HERO - TUDO BRANCO */}
+      {/* HERO SECTION */}
       <section style={{ padding: '60px 8%', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '56px', fontWeight: '900', lineHeight: '1.1', marginBottom: '20px', letterSpacing: '-2px' }}>
-          Domine o <span style={{ color: '#00a88f' }}>Fluxo</span> da sua Barbearia.
+        <h1 style={{ fontSize: '48px', fontWeight: '900', lineHeight: '1.1', marginBottom: '20px', letterSpacing: '-2px' }}>
+          O fluxo da sua <br/> <span style={{ color: '#00a88f' }}>barbearia sob controle.</span>
         </h1>
-        <p style={{ fontSize: '20px', color: '#64748b', marginBottom: '50px', fontWeight: '500' }}>
-          Organização premium com tecnologia de ponta.
-        </p>
-
-        {/* COMPONENTE DA FILA */}
+        
+        {/* FILA DIGITAL */}
         <div style={{ 
           width: '100%', 
-          maxWidth: '480px', 
+          maxWidth: '450px', 
           background: '#ffffff', 
-          borderRadius: '35px', 
-          padding: '40px', 
-          margin: '0 auto',
+          borderRadius: '30px', 
+          padding: '30px', 
+          margin: '40px auto',
           boxShadow: '0 20px 50px rgba(0, 0, 0, 0.05)', 
-          border: '2px solid #f1f5f9',
+          border: '1px solid #f1f5f9',
           textAlign: 'left' 
         }}>
-          <h2 style={{ fontSize: '22px', fontWeight: '900', marginBottom: '25px' }}>⚡ Fila Digital</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-            <input value={nome} onChange={e => setNome(e.target.value)} placeholder="Nome do Cliente" style={{ padding: '18px', borderRadius: '15px', border: '2px solid #f1f5f9', fontSize: '16px', fontWeight: '700', outline: 'none' }} />
-            <select onChange={e => setServico(e.target.value)} style={{ padding: '18px', borderRadius: '15px', border: '2px solid #f1f5f9', fontSize: '16px', fontWeight: '700', backgroundColor: '#f8fafc', outline: 'none' }}>
-              <option>Corte</option>
-              <option>Barba</option>
-              <option>Completo</option>
-            </select>
-            <button onClick={add} style={{ backgroundColor: '#00a88f', color: '#fff', padding: '18px', borderRadius: '15px', fontWeight: '900', border: 'none', fontSize: '16px', cursor: 'pointer' }}>ENTRAR NA FILA</button>
+          <h2 style={{ fontSize: '20px', fontWeight: '900', marginBottom: '20px' }}>⚡ Fila Digital</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <input value={nome} onChange={e => setNome(e.target.value)} placeholder="Nome do Cliente" style={{ padding: '15px', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '16px', fontWeight: '700' }} />
+            <button onClick={add} style={{ backgroundColor: '#00a88f', color: '#fff', padding: '15px', borderRadius: '12px', fontWeight: '900', border: 'none', fontSize: '16px' }}>ADICIONAR</button>
           </div>
           
-          <div style={{ marginTop: '30px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ marginTop: '20px' }}>
             {fila.map((c, i) => (
-              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px', backgroundColor: '#f8fafc', borderRadius: '18px' }}>
-                <div>
-                  <div style={{ fontWeight: '900', fontSize: '16px' }}>{i + 1}º {c.nome_cliente}</div>
-                  <div style={{ color: '#00a88f', fontWeight: '700', fontSize: '12px' }}>{c.servico}</div>
-                </div>
-                <button onClick={() => remover(c.id)} style={{ color: '#ef4444', background: 'none', border: 'none', fontWeight: '900' }}>OK</button>
+              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '15px', backgroundColor: '#f8fafc', borderRadius: '15px', marginBottom: '10px', border: '1px solid #f1f5f9' }}>
+                <span style={{ fontWeight: '800' }}>{i + 1}º {c.nome_cliente}</span>
+                <button onClick={() => remover(c.id)} style={{ color: '#ef4444', border: 'none', background: 'none', fontWeight: '900' }}>OK</button>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* SEÇÃO "UM SISTEMA COMPLETO" COM OBJETOS QUE FALAM */}
-      <section style={{ padding: '80px 8%', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '38px', fontWeight: '900', marginBottom: '60px' }}>Um sistema completo</h2>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '40px', maxWidth: '1000px', margin: '0 auto' }}>
+      {/* SEÇÃO OBJETOS QUE FALAM (IMAGENS CORRIGIDAS) */}
+      <section style={{ padding: '60px 8%', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '32px', fontWeight: '900', marginBottom: '40px' }}>Um sistema completo</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', maxWidth: '1000px', margin: '0 auto' }}>
           
-          {/* OBJETO 1: TESOURA */}
-          <div style={{ textAlign: 'center' }}>
-            <img src="https://i.ibb.co/60qXj1w8/file-0000000010c73e045f94d3ec37c35845.png" alt="Tesoura falando" style={{ width: '100%', borderRadius: '30px', marginBottom: '20px' }} />
-            <h3 style={{ fontWeight: '900', fontSize: '20px' }}>Fácil de usar</h3>
-            <p style={{ color: '#64748b' }}>Até seus equipamentos vão amar a organização.</p>
+          <div>
+            <img src="https://i.postimg.cc/mD7XF6rN/tesoura-fala.png" alt="Tesoura" style={{ width: '100%', borderRadius: '20px', marginBottom: '15px' }} />
+            <h3 style={{ fontWeight: '900' }}>Fácil de usar</h3>
+            <p style={{ color: '#64748b', fontSize: '14px' }}>Gestão intuitiva que economiza seu tempo.</p>
           </div>
 
-          {/* OBJETO 2: CADEIRA */}
-          <div style={{ textAlign: 'center' }}>
-            <img src="https://i.ibb.co/FLzQWqN4/file-000000003023e387f62e8da0409a8594.png" alt="Cadeira falando" style={{ width: '100%', borderRadius: '30px', marginBottom: '20px' }} />
-            <h3 style={{ fontWeight: '900', fontSize: '20px' }}>Conforto total</h3>
-            <p style={{ color: '#64748b' }}>Seu cliente sabe quando sentar e quando esperar.</p>
+          <div>
+            <img src="https://i.postimg.cc/85zK20M8/cadeira-fala.png" alt="Cadeira" style={{ width: '100%', borderRadius: '20px', marginBottom: '15px' }} />
+            <h3 style={{ fontWeight: '900' }}>Conforto total</h3>
+            <p style={{ color: '#64748b', fontSize: '14px' }}>Melhore a experiência de espera do seu cliente.</p>
           </div>
 
         </div>
       </section>
 
-      {/* FOOTER FINAL */}
+      {/* FOOTER */}
       <footer style={{ padding: '60px 8%', textAlign: 'center', borderTop: '1px solid #f1f5f9' }}>
-        <p style={{ fontWeight: '700', fontSize: '14px', color: '#1e293b' }}>
-          BarberFlow ® — Todos os direitos reservados.
-        </p>
-        <p style={{ color: '#94a3b8', fontSize: '12px', marginTop: '10px' }}>
-          Desenvolvido por <strong>O Criador</strong>.
-        </p>
+        <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'center', gap: '20px' }}>
+          <span style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8' }}>TERMOS DE USO</span>
+          <span style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8' }}>PRIVACIDADE</span>
+        </div>
+        <p style={{ fontWeight: '900', fontSize: '14px' }}>BarberFlow ® — Todos os direitos reservados.</p>
+        <p style={{ color: '#94a3b8', fontSize: '12px' }}>Desenvolvido por O Criador</p>
       </footer>
     </div>
   )
