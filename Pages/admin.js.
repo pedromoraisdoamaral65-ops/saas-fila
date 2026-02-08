@@ -1,0 +1,66 @@
+import { useState } from 'react'
+import { createClient } from '@supabase/supabase-js'
+
+// CONFIGURAÇÃO COM SEUS DADOS DAS FOTOS
+const supabase = createClient(
+  'https://ucghxvsaouiribuhjkqz.supabase.co',
+  'sb_publishable_f-8qTdYZ5pqQ16SJ0jB5Jw_wI1_8v4r'
+)
+
+export default function AdminPage() {
+  const [step, setStep] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [form, setForm] = useState({
+    nome: '', whatsapp: '', negocio: '', segmento: 'Barbearia', email: '', senha: ''
+  })
+
+  const finalizar = async () => {
+    setLoading(true)
+    const { error } = await supabase.from('usuarios').insert([form])
+    if (error) alert('Erro ao salvar: ' + error.message)
+    
+    setTimeout(() => {
+      window.location.href = "https://wa.me/5561999445990?text=Olá, finalizei meu cadastro!"
+    }, 3000)
+  }
+
+  if (loading) return (
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '20px', fontFamily: 'sans-serif' }}>
+      <h2 style={{ fontSize: '30px' }}>🐱</h2>
+      <h2 style={{ fontWeight: '900' }}>Ótimo!</h2>
+      <p>Estamos preparando sua agenda... <br/><b>Será rápido como um gato!</b></p>
+    </div>
+  )
+
+  return (
+    <div style={{ minHeight: '100vh', padding: '40px 20px', fontFamily: 'sans-serif', textAlign: 'center' }}>
+      {step === 1 && (
+        <div>
+          <h1 style={{ fontWeight: '900' }}>Olá, vamos começar?</h1>
+          <input placeholder="Seu nome" style={inputStyle} onChange={e => setForm({...form, nome: e.target.value})} />
+          <input placeholder="Seu WhatsApp" style={inputStyle} onChange={e => setForm({...form, whatsapp: e.target.value})} />
+          <button onClick={() => setStep(2)} style={btnStyle}>Próximo</button>
+        </div>
+      )}
+      {step === 2 && (
+        <div>
+          <h1 style={{ fontWeight: '900' }}>Sobre o negócio</h1>
+          <input placeholder="Nome da Barbearia" style={inputStyle} onChange={e => setForm({...form, negocio: e.target.value})} />
+          <button onClick={() => setStep(3)} style={btnStyle}>Próximo</button>
+        </div>
+      )}
+      {step === 3 && (
+        <div>
+          <h1 style={{ fontWeight: '900' }}>Acesso</h1>
+          <input placeholder="E-mail" style={inputStyle} onChange={e => setForm({...form, email: e.target.value})} />
+          <input type="password" placeholder="Senha" style={inputStyle} onChange={e => setForm({...form, senha: e.target.value})} />
+          <button onClick={finalizar} style={btnStyle}>Cadastrar</button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+const inputStyle = { width: '100%', padding: '15px', marginBottom: '10px', borderRadius: '10px', border: '1px solid #ddd', boxSizing: 'border-box' }
+const btnStyle = { width: '100%', padding: '15px', borderRadius: '50px', border: 'none', backgroundColor: '#007bff', color: '#fff', fontWeight: '700' }
+      
