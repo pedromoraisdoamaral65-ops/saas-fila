@@ -18,7 +18,7 @@ export default function AdminPage() {
   // Função para buscar dados do banco
   const buscarDados = async () => {
     const { data } = await supabase.from('agendamentos').select('*')
-    if (data) setLista(data)
+    if (data) setLista(data
   }
 
   const finalizar = async () => {
