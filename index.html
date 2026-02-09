@@ -16,13 +16,12 @@
             --danger: #ff3333;
         }
 
-        * { box-sizing: border-box; transition: 0.3s; }
+        * { box-sizing: border-box; transition: 0.2s; }
         body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; }
 
-        /* --- TELA DE LOGIN (ESTILO CAKTO) --- */
-        #login-page {
-            display: flex; justify-content: center; align-items: center; min-height: 100vh;
-            padding: 20px;
+        /* --- TELA DE LOGIN & CADASTRO --- */
+        #login-page, #signup-page {
+            display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;
         }
 
         .login-card {
@@ -30,21 +29,21 @@
             border-radius: 20px; width: 100%; max-width: 400px; text-align: center;
         }
 
-        .login-card h2 { font-weight: 800; margin-bottom: 30px; letter-spacing: -1px; }
         input {
             width: 100%; background: #111; border: 1px solid var(--border);
-            padding: 15px; border-radius: 8px; color: white; margin-bottom: 15px;
+            padding: 15px; border-radius: 8px; color: white; margin-bottom: 12px;
         }
         input:focus { border-color: var(--neon); outline: none; }
         
-        .btn-login {
+        .btn-primary {
             width: 100%; background: var(--neon); color: black; border: none;
             padding: 15px; border-radius: 8px; font-weight: 800; cursor: pointer;
         }
 
-        .forgot-pw { font-size: 12px; color: var(--subtext); cursor: pointer; display: block; margin-top: 15px; }
+        .secondary-link { font-size: 13px; color: var(--subtext); cursor: pointer; display: block; margin-top: 15px; text-decoration: none; }
+        .secondary-link:hover { color: var(--neon); }
 
-        /* --- DASHBOARD (INICIALMENTE OCULTO) --- */
+        /* --- DASHBOARD --- */
         #dashboard-page { display: none; padding: 20px; }
 
         .header {
@@ -54,20 +53,22 @@
 
         .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
-        .stat-card h4 { font-size: 12px; color: var(--subtext); margin: 0; }
-        .stat-card .val { font-size: 24px; font-weight: 800; margin-top: 5px; color: var(--neon); }
+        .stat-card .val { font-size: 24px; font-weight: 800; color: var(--neon); }
 
-        /* SISTEMA DE FILA */
-        .queue-section { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 30px; }
-        .queue-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #111; }
-        .btn-cancel { background: none; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px; }
-
-        /* COOKIES & MODAIS */
-        #cookie-bar {
-            position: fixed; bottom: 20px; left: 20px; right: 20px; background: var(--card);
-            border: 1px solid var(--neon); padding: 20px; border-radius: 10px; display: flex;
-            justify-content: space-between; align-items: center; z-index: 2000;
+        /* FORMULÁRIO DE FILA */
+        .queue-manager {
+            background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid var(--border); margin-bottom: 30px;
         }
+        .form-row { display: flex; gap: 10px; margin-top: 15px; }
+        .form-row input { margin-bottom: 0; }
+
+        /* LISTA DE FILA */
+        .queue-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; background: #050505; border: 1px solid #111; border-radius: 8px; margin-bottom: 8px;
+        }
+
+        .btn-cancel { background: none; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 11px; }
 
         #session-modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -77,119 +78,121 @@
 </head>
 <body>
 
-    <div id="cookie-bar">
-        <span style="font-size: 14px;">Utilizamos cookies para otimizar sua experiência de gestão FlowPro.</span>
-        <button class="btn-login" style="width: auto; padding: 8px 20px;" onclick="document.getElementById('cookie-bar').style.display='none'">ACEITAR</button>
-    </div>
-
     <div id="session-modal">
         <div style="background: var(--card); padding: 40px; border-radius: 20px; border: 1px solid var(--neon); text-align: center;">
             <h2 style="color: var(--neon);">Sessão Expirada</h2>
-            <p style="color: var(--subtext);">Protocolo de Segurança Cakto: Faça login novamente.</p>
-            <button class="btn-login" onclick="location.reload()">RELOGAR</button>
+            <button class="btn-primary" onclick="location.reload()">RELOGAR</button>
         </div>
     </div>
 
     <div id="login-page">
         <div class="login-card">
-            <div style="color: var(--neon); font-weight: 800; font-size: 24px; margin-bottom: 10px;">FLOWPRO <span style="color: white;">S.A.</span></div>
-            <p style="color: var(--subtext); font-size: 14px; margin-bottom: 30px;">Acesse sua conta corporativa</p>
-            <input type="email" id="email" placeholder="E-mail">
-            <input type="password" id="pass" placeholder="Senha">
-            <button class="btn-login" onclick="login()">ENTRAR NO SISTEMA</button>
-            <span class="forgot-pw" onclick="esqueciSenha()">Esqueci minha senha</span>
+            <div style="color: var(--neon); font-weight: 800; font-size: 24px; margin-bottom: 30px;">FLOWPRO <span style="color: white;">S.A.</span></div>
+            <input type="email" id="login-email" placeholder="Seu e-mail">
+            <input type="password" placeholder="Sua senha">
+            <button class="btn-primary" onclick="navegar('dashboard')">ACESSAR PAINEL</button>
+            <span class="secondary-link" onclick="navegar('signup')">Não tem conta? <strong>Cadastre-se aqui</strong></span>
+            <span class="secondary-link" onclick="alert('Link de recuperação enviado!')">Esqueci minha senha</span>
+        </div>
+    </div>
+
+    <div id="signup-page" style="display: none;">
+        <div class="login-card">
+            <h2 style="margin-top:0">Criar Conta</h2>
+            <input type="text" placeholder="Nome da Empresa">
+            <input type="email" placeholder="E-mail Corporativo">
+            <input type="password" placeholder="Criar Senha">
+            <button class="btn-primary" onclick="alert('Conta criada! Faça login.'); navegar('login')">FINALIZAR CADASTRO</button>
+            <span class="secondary-link" onclick="navegar('login')">Já tenho conta (Login)</span>
         </div>
     </div>
 
     <div id="dashboard-page">
         <div class="header">
-            <div style="font-weight: 800; color: var(--neon);">DASHBOARD <span id="sessao-timer" style="color: var(--subtext); font-size: 11px; margin-left: 10px;"></span></div>
-            <button class="btn-login" style="width: auto; padding: 10px 20px;" onclick="registrarVenda()">+ NOVO SERVIÇO</button>
+            <div style="font-weight: 800; color: var(--neon);">DASHBOARD <span id="timer" style="color: var(--subtext); font-size: 11px; margin-left:10px;"></span></div>
+            <button class="btn-primary" style="width:auto; padding: 8px 15px" onclick="location.reload()">SAIR</button>
         </div>
 
         <div class="grid-stats">
-            <div class="stat-card"><h4>Lucro Semanal</h4><div class="val">R$ 1.250</div></div>
-            <div class="stat-card"><h4>Lucro Mensal</h4><div class="val">R$ 5.800</div></div>
-            <div class="stat-card"><h4>Lucro Anual (Projeção)</h4><div class="val">R$ 72.400</div></div>
+            <div class="stat-card"><h4>Lucro Semanal</h4><div class="val">R$ 1.840</div></div>
+            <div class="stat-card"><h4>Lucro Mensal</h4><div class="val">R$ 7.200</div></div>
         </div>
 
-        <div class="queue-section">
-            <h3 style="margin-top:0; font-size: 16px; color: var(--neon);">⏳ Fila de Espera em Tempo Real</h3>
-            <div id="fila-lista">
-                <div class="queue-item">
-                    <span>1. Carlos Alberto (Degradê)</span>
-                    <button class="btn-cancel" onclick="cancelar(this)">CANCELAR</button>
-                </div>
-                <div class="queue-item">
-                    <span>2. Felipe D. (Barba)</span>
-                    <button class="btn-cancel" onclick="cancelar(this)">CANCELAR</button>
-                </div>
+        <div class="queue-manager">
+            <h3 style="margin:0; font-size:16px; color:var(--neon)">➕ Adicionar à Fila</h3>
+            <div class="form-row">
+                <input type="text" id="cli-nome" placeholder="Nome do Cliente">
+                <input type="text" id="cli-serv" placeholder="Serviço (ex: Corte)">
+                <button class="btn-primary" style="width:150px" onclick="addFila()">ADICIONAR</button>
             </div>
         </div>
 
-        <div class="stat-card" style="border: 1px dashed var(--neon);">
-            <h3 style="margin:0; font-size: 14px; color: var(--neon);">🎯 Remarketing Ativo</h3>
-            <p style="font-size: 12px; color: var(--subtext);">2 clientes não retornam há 20 dias. <span style="text-decoration: underline; cursor:pointer;" onclick="alert('Campanha disparada!')">Disparar agora?</span></p>
+        <div id="lista-fila">
+            <h3 style="font-size:14px; color:var(--subtext)">CLIENTES AGUARDANDO:</h3>
+            <div class="queue-item" id="demo-item">
+                <span><strong>Carlos Silva</strong> - Barba VIP</span>
+                <button class="btn-cancel" onclick="this.parentElement.remove()">CANCELAR</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Lógica de Login
-        function login() {
-            const email = document.getElementById('email').value;
-            if(email.includes("@")) {
-                document.getElementById('login-page').style.display = 'none';
+        // Navegação Simples
+        function navegar(tela) {
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('signup-page').style.display = 'none';
+            document.getElementById('dashboard-page').style.display = 'none';
+            document.getElementById(tela + '-page').style.display = 'flex';
+            
+            if(tela === 'dashboard') {
                 document.getElementById('dashboard-page').style.display = 'block';
                 iniciarTimer();
-                dispararNotificacao("Bem-vindo, FlowPro S.A. Autenticado.");
-            } else {
-                alert("Insira um e-mail válido.");
             }
         }
 
-        // Esqueci Senha Funcional
-        function esqueciSenha() {
-            const email = prompt("Digite seu e-mail para recuperação:");
-            if(email) alert("Protocolo enviado! Verifique sua caixa de entrada para redefinir a senha.");
+        // Adicionar na Fila
+        function addFila() {
+            const nome = document.getElementById('cli-nome').value;
+            const serv = document.getElementById('cli-serv').value;
+
+            if(!nome || !serv) return alert("Preencha nome e serviço!");
+
+            const div = document.createElement('div');
+            div.className = 'queue-item';
+            div.innerHTML = `
+                <span><strong>${nome}</strong> - ${serv}</span>
+                <div>
+                    <button class="btn-primary" style="width:auto; padding:5px 10px; font-size:10px; margin-right:5px" onclick="finalizar(this)">CONCLUIR</button>
+                    <button class="btn-cancel" onclick="this.parentElement.parentElement.remove()">X</button>
+                </div>
+            `;
+            document.getElementById('lista-fila').appendChild(div);
+            
+            // Limpar campos
+            document.getElementById('cli-nome').value = '';
+            document.getElementById('cli-serv').value = '';
+            
+            dispararNotificacao(`Novo cliente na fila: ${nome}`);
         }
 
-        // Timer de Sessão Expirada
+        function finalizar(btn) {
+            alert("Venda registrada e lucro atualizado!");
+            btn.parentElement.parentElement.remove();
+        }
+
         function iniciarTimer() {
-            let tempo = 300; 
-            const timerDisplay = document.getElementById('sessao-timer');
-            const interval = setInterval(() => {
-                let m = Math.floor(tempo / 60);
-                let s = tempo % 60;
-                timerDisplay.innerText = `Sessão expira em: ${m}:${s < 10 ? '0'+s : s}`;
-                if(tempo <= 0) {
-                    clearInterval(interval);
-                    document.getElementById('session-modal').style.display = 'flex';
-                }
-                tempo--;
+            let t = 300;
+            setInterval(() => {
+                let m = Math.floor(t/60); let s = t%60;
+                document.getElementById('timer').innerText = `Expira em: ${m}:${s<10?'0'+s:s}`;
+                if(t <= 0) document.getElementById('session-modal').style.display = 'flex';
+                t--;
             }, 1000);
         }
 
-        // Sistema de Fila e Venda
-        function registrarVenda() {
-            const valor = prompt("Valor do serviço:");
-            if(valor) {
-                dispararNotificacao(`Venda de R$ ${valor} aprovada! Lucro atualizado.`);
-            }
-        }
-
-        function cancelar(btn) {
-            if(confirm("Deseja remover este cliente da fila?")) {
-                btn.parentElement.remove();
-            }
-        }
-
-        // Notificações
         function dispararNotificacao(txt) {
-            if (Notification.permission === "granted") {
-                new Notification("FLOWPRO S.A.", { body: txt });
-            } else { alert(txt); }
+            if (Notification.permission === "granted") new Notification("FLOWPRO", { body: txt });
         }
-
         window.onload = () => { Notification.requestPermission(); };
     </script>
 </body>
