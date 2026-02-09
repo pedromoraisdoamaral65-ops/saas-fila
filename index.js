@@ -1,3 +1,9 @@
+console.log("Sistema Iniciado!"); // Se isso aparecer no console, o JS está vivo.
+
+window.onerror = function(msg, url, linenumber) {
+    alert('Erro detectado: ' + msg + '\nLinha: ' + linenumber);
+    return true;
+};
 let config = JSON.parse(localStorage.getItem('flow_cfg')) || { nome: "Minha Operação", nicho: "Barbearia", taxa: 50 };
 let lucros = JSON.parse(localStorage.getItem('flow_lucros')) || { total: 0, empresa: 0 };
 let historico = JSON.parse(localStorage.getItem('flow_hist')) || [];
