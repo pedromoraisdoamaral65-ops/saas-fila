@@ -1,111 +1,130 @@
-// --- CONFIGURAÇÕES DE SEGURANÇA E ESTADO ---
-let user = JSON.parse(localStorage.getItem('flow_user')) || null;
-let tela = 'login'; 
+// --- SISTEMA DE DADOS ---
+// Armazena todos os usuários num array dentro do LocalStorage
+let usuarios = JSON.parse(localStorage.getItem('flow_db')) || [];
+let userLogado = JSON.parse(sessionStorage.getItem('flow_sessao')) || null;
+let telaAtual = 'login';
 
-// Regra da Senha: 8 caracteres, 1 Maiúscula, 1 Minúscula, 1 Número e 1 Especial
-const validarSenha = (s) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/.test(s);
+// --- VALIDAÇÃO DE SENHA (A regra que você pediu) ---
+const validarSenha = (s) => {
+    const temOito = s.length >= 8;
+    const temMaiuscula = /[A-Z]/.test(s);
+    const temMinuscula = /[a-z]/.test(s);
+    const temNumero = /[0-9]/.test(s);
+    const temEspecial = /[!@#$%^&*(),.?":{}|<>]/.test(s);
+    return temOito && temMaiuscula && temMinuscula && temNumero && temEspecial;
+};
 
+// --- RENDERIZAÇÃO ---
 function render() {
-    const root = document.getElementById('app');
-    if (!user) {
-        if (tela === 'login') root.innerHTML = viewLogin();
-        else if (tela === 'cadastro') root.innerHTML = viewCadastro();
-        else if (tela === 'esqueci') root.innerHTML = viewEsqueci();
+    const app = document.getElementById('app');
+    if (userLogado) {
+        app.innerHTML = telaDashboard();
     } else {
-        root.innerHTML = viewDash();
+        if (telaAtual === 'login') app.innerHTML = telaLogin();
+        else if (telaAtual === 'cadastro') app.innerHTML = telaCadastro();
     }
 }
 
-// --- TELAS (HTML EM JS) ---
-function viewLogin() {
+// --- COMPONENTES DE DESIGN MODERNO ---
+const EstilosComuns = `
+    display: flex; flex-direction: column; gap: 15px;
+    background: var(--card); padding: 40px; border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4); border: 1px solid #222;
+`;
+
+const InputStyle = `
+    padding: 15px; border-radius: 12px; border: 1px solid #333;
+    background: #000; color: #fff; font-size: 16px; outline: none;
+`;
+
+const BtnPrincipal = (cor) => `
+    padding: 15px; border-radius: 12px; border: none; font-weight: 800;
+    cursor: pointer; background: ${cor}; color: #000; font-size: 16px;
+    transition: transform 0.2s;
+`;
+
+// --- TELAS ---
+function telaLogin() {
     return `
-    <div style="max-width:350px; margin:100px auto; padding:30px; background:#1e1e1e; border-radius:15px; text-align:center;">
-        <h2 style="color:#f1c40f">Flow Admin</h2>
-        <input id="email" type="email" placeholder="E-mail" style="width:100%; padding:12px; margin:10px 0; border-radius:5px; border:none;">
-        <input id="pass" type="password" placeholder="Senha" style="width:100%; padding:12px; margin:10px 0; border-radius:5px; border:none;">
-        <button onclick="logar()" style="width:100%; padding:12px; background:#f1c40f; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Entrar no Sistema</button>
-        <p style="font-size:14px; margin-top:15px;">
-            <span onclick="ir('cadastro')" style="color:#3498db; cursor:pointer">Criar Conta</span> | 
-            <span onclick="ir('esqueci')" style="color:#e74c3c; cursor:pointer">Esqueci a Senha</span>
-        </p>
+    <div style="${EstilosComuns}">
+        <h1 style="margin:0; font-weight:800; color:var(--primary)">FLOW.</h1>
+        <p style="color:#888; margin-top:-10px">Gestão Profissional de Barbearia</p>
+        <input type="email" id="l_email" placeholder="Email" style="${InputStyle}">
+        <input type="password" id="l_pass" placeholder="Senha" style="${InputStyle}">
+        <button onclick="fazerLogin()" style="${BtnPrincipal('var(--primary)')}">Aceder ao Painel</button>
+        <p style="text-align:center; font-size:14px">Novo aqui? <span onclick="irPara('cadastro')" style="color:var(--accent); cursor:pointer">Criar Conta Multinível</span></p>
     </div>`;
 }
 
-function viewCadastro() {
+function telaCadastro() {
     return `
-    <div style="max-width:350px; margin:80px auto; padding:30px; background:#1e1e1e; border-radius:15px; text-align:center;">
-        <h2 style="color:#2ecc71">Nova Conta</h2>
-        <p style="font-size:11px; color:#aaa">Senha: 8+ caracteres, A-Z, a-z, @#$ e números.</p>
-        <input id="cadEmail" type="email" placeholder="E-mail" style="width:100%; padding:12px; margin:10px 0;">
-        <input id="cadPass" type="password" placeholder="Senha Forte" style="width:100%; padding:12px; margin:10px 0;">
-        <button onclick="criarConta()" style="width:100%; padding:12px; background:#2ecc71; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Registar Salão</button>
-        <p onclick="ir('login')" style="color:#3498db; cursor:pointer; font-size:14px">Já tenho acesso</p>
+    <div style="${EstilosComuns}">
+        <h2 style="margin:0">Nova Conta</h2>
+        <p style="font-size:12px; color:#aaa">A senha deve ter 8+ dígitos, Maiúscula, Minúscula, Número e Símbolo.</p>
+        <input type="email" id="c_email" placeholder="Email do Administrador" style="${InputStyle}">
+        <input type="password" id="c_pass" placeholder="Criar Senha Forte" style="${InputStyle}">
+        <button onclick="fazerCadastro()" style="${BtnPrincipal('#2ecc71')}">Finalizar Registo</button>
+        <p onclick="irPara('login')" style="text-align:center; cursor:pointer; font-size:14px; color:#888">Voltar ao Login</p>
     </div>`;
 }
 
-function viewEsqueci() {
+function telaDashboard() {
     return `
-    <div style="max-width:350px; margin:100px auto; padding:30px; background:#1e1e1e; border-radius:15px; text-align:center;">
-        <h2 style="color:#e67e22">Recuperar Acesso</h2>
-        <p style="font-size:14px">Insira o seu e-mail cadastrado:</p>
-        <input id="recEmail" type="email" placeholder="Seu e-mail" style="width:100%; padding:12px; margin:10px 0;">
-        <button onclick="suporte()" style="width:100%; padding:12px; background:#25D366; color:white; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">Pedir Senha no WhatsApp</button>
-        <p onclick="ir('login')" style="color:#3498db; cursor:pointer; font-size:14px">Voltar</p>
-    </div>`;
-}
-
-function viewDash() {
-    return `
-    <div style="padding:20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid #333; padding-bottom:10px;">
-            <h2 style="color:#f1c40f">✂️ Painel Flow Pro</h2>
-            <button onclick="sair()" style="background:#e74c3c; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Sair</button>
+    <div style="${EstilosComuns}">
+        <div style="display:flex; justify-content:space-between; align-items:center">
+            <span style="font-weight:800">DASHBOARD</span>
+            <button onclick="sair()" style="background:none; border:1px solid #e74c3c; color:#e74c3c; padding:5px 10px; border-radius:8px; cursor:pointer">Sair</button>
         </div>
-        <p>Bem-vindo, <b>${user.email}</b></p>
-        
-        <div style="background:#252525; padding:20px; border-radius:10px; margin-top:20px;">
-            <h3>💰 Calculadora de Comissões</h3>
-            <p>Valor do Serviço: R$ <input type="number" id="vS" value="100" style="width:60px"></p>
-            <p>Comissão Profissional: <input type="number" id="pP" value="50" style="width:40px"> %</p>
-            <button onclick="calc()" style="padding:10px; background:#3498db; color:white; border:none; border-radius:5px; cursor:pointer;">Calcular Divisão</button>
-            <div id="result" style="margin-top:15px; font-weight:bold;"></div>
+        <div style="background:linear-gradient(45deg, #1a1a1a, #000); padding:20px; border-radius:15px; border-left: 4px solid var(--primary)">
+            <p style="margin:0; color:#888; font-size:12px">Utilizador Ativo</p>
+            <h3 style="margin:5px 0">${userLogado.email}</h3>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px">
+            <div style="background:#1a1a1a; padding:15px; border-radius:12px; text-align:center">
+                <small>Comissão</small><br><strong>50%</strong>
+            </div>
+            <div style="background:#1a1a1a; padding:15px; border-radius:12px; text-align:center">
+                <small>Status</small><br><strong style="color:#2ecc71">Ativo</strong>
+            </div>
         </div>
     </div>`;
 }
 
-// --- FUNÇÕES DE LÓGICA ---
-window.ir = (t) => { tela = t; render(); };
+// --- FUNÇÕES DE AÇÃO ---
+window.irPara = (tela) => { telaAtual = tela; render(); };
 
-window.criarConta = () => {
-    const e = document.getElementById('cadEmail').value;
-    const p = document.getElementById('cadPass').value;
-    if (!validarSenha(p)) return alert("ERRO: A senha precisa de 8 caracteres, maiúscula, minúscula, número e símbolo (@#$...)");
-    localStorage.setItem('flow_user', JSON.stringify({ email: e, pass: p }));
-    alert("Conta Criada com Sucesso!");
-    ir('login');
+window.fazerCadastro = () => {
+    const email = document.getElementById('c_email').value;
+    const pass = document.getElementById('c_pass').value;
+
+    if (usuarios.find(u => u.email === email)) return alert("Este email já existe!");
+    if (!validarSenha(pass)) return alert("SENHA FRACA! Use: 8 caracteres, Maiúscula, Minúscula, Número e Símbolo.");
+
+    usuarios.push({ email, pass });
+    localStorage.setItem('flow_db', JSON.stringify(usuarios));
+    alert("Conta criada com sucesso! Agora faça login.");
+    irPara('login');
 };
 
-window.logar = () => {
-    const e = document.getElementById('email').value;
-    const p = document.getElementById('pass').value;
-    const s = JSON.parse(localStorage.getItem('flow_user'));
-    if (s && s.email === e && s.pass === p) { user = s; render(); }
-    else { alert("E-mail ou Senha incorretos!"); }
+window.fazerLogin = () => {
+    const email = document.getElementById('l_email').value;
+    const pass = document.getElementById('l_pass').value;
+    const user = usuarios.find(u => u.email === email && u.pass === pass);
+
+    if (user) {
+        userLogado = user;
+        sessionStorage.setItem('flow_sessao', JSON.stringify(user));
+        render();
+    } else {
+        alert("Email ou Senha incorretos!");
+    }
 };
 
-window.calc = () => {
-    const v = document.getElementById('vS').value;
-    const p = document.getElementById('pP').value;
-    const prof = v * (p / 100);
-    const casa = v - prof;
-    document.getElementById('result').innerHTML = `Profissional: R$ ${prof.toFixed(2)} | Salão: R$ ${casa.toFixed(2)}`;
+window.sair = () => {
+    sessionStorage.removeItem('flow_sessao');
+    userLogado = null;
+    irPara('login');
 };
 
-window.suporte = () => {
-    const e = document.getElementById('recEmail').value;
-    window.open(`https://wa.me/5561999999999?text=Esqueci%20minha%20senha.%20Email:%20${e}`);
-};
-
-window.sair = () => { user = null; ir('login'); };
-
-window.onload = render;
+// Inicializar
+render();
