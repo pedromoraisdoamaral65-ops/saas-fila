@@ -5,6 +5,14 @@ let lucros = JSON.parse(localStorage.getItem('barber_lucros')) || { dia: 0, sema
 let historico = JSON.parse(localStorage.getItem('barber_historico')) || [];
 let sessao = JSON.parse(sessionStorage.getItem('active_user')) || null;
 
+// --- PREÇOS AJUSTÁVEIS ---
+let tabelaPrecos = JSON.parse(localStorage.getItem('barber_precos')) || [
+    { servico: "Cabelo", valor: 30 },
+    { servico: "Barba", valor: 20 },
+    { servico: "Sobrancelha", valor: 10 },
+    { servico: "Combo", valor: 50 }
+];
+
 const senhaValida = (s) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/.test(s);
 
 function render() {
@@ -36,7 +44,6 @@ function ViewLogin() {
         <button class="btn-blue" onclick="acaoLogin()">ENTRAR</button>
         <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:12px">
             <span onclick="document.getElementById('app').innerHTML = ViewCadastro()" style="color:var(--secondary); cursor:pointer">Criar Conta</span>
-            <span onclick="alert('Reset de senha: limpe o cache do navegador.')" style="color:#8899a6; cursor:pointer">Esqueci a Senha</span>
         </div>
     </div>`;
 }
@@ -45,7 +52,6 @@ function ViewCadastro() {
     return `
     <div class="card">
         <h2>Criar Conta</h2>
-        <p style="font-size:11px; color:#8899a6; margin-bottom:15px">8+ dígitos, 1 Maiúscula e 1 Símbolo.</p>
         <input type="email" id="c_email" placeholder="Email">
         <input type="password" id="c_pass" placeholder="Senha Forte">
         <button class="btn-blue" onclick="acaoCadastro()">REGISTRAR</button>
@@ -69,13 +75,26 @@ function ViewDashboard() {
 
         <div class="chart-container"><canvas id="myChart"></canvas></div>
 
+        <details style="margin-top:20px; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px">
+            <summary style="cursor:pointer; font-size:12px; color:var(--secondary)">⚙️ AJUSTAR PREÇOS DOS SERVIÇOS</summary>
+            <div style="margin-top:10px" id="config-precos">
+                ${tabelaPrecos.map((p, i) => `
+                    <div style="display:flex; gap:5px; margin-bottom:5px">
+                        <input type="text" value="${p.servico}" onchange="editPreco(${i}, 'servico', this.value)" style="margin:0; font-size:12px">
+                        <input type="number" value="${p.valor}" onchange="editPreco(${i}, 'valor', this.value)" style="margin:0; width:80px; font-size:12px">
+                    </div>
+                `).join('')}
+                <button onclick="salvarPrecos()" style="background:var(--secondary); color:black; font-size:10px; padding:5px; margin-top:5px">SALVAR NOVOS PREÇOS</button>
+            </div>
+        </details>
+
         <div style="margin-top:25px">
             <h4 style="color:var(--secondary); margin-bottom:10px">👤 FILA E CHAMADA</h4>
             <div id="lista-fila">
                 ${fila.length === 0 ? '<p style="font-size:12px; color:#8899a6">Fila vazia.</p>' : 
                 fila.map((c, i) => `
                     <div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:8px; align-items:center">
-                        <span style="font-size:13px">${c.nome} <br><small style="color:#8899a6">${c.servico}</small></span>
+                        <span style="font-size:13px">${c.nome} <br><small style="color:#8899a6">${c.servico} (R$${c.valor})</small></span>
                         <div style="display:flex; gap:5px">
                             <button onclick="chamarNoWhats('${c.nome}')" style="width:auto; background:#25d366; padding:5px 8px">📲</button>
                             <button onclick="finalizarServico(${i}, ${c.valor})" style="width:auto; background:#2ecc71; padding:5px 10px; font-size:10px">OK</button>
@@ -85,8 +104,7 @@ function ViewDashboard() {
             </div>
             <input type="text" id="novo-cliente" placeholder="Nome do Cliente">
             <select id="tipo-servico">
-                <option value="30">Cabelo (R$30)</option>
-                <option value="50">Combo (R$50)</option>
+                ${tabelaPrecos.map(p => `<option value="${p.valor}">${p.servico} (R$${p.valor})</option>`).join('')}
             </select>
             <button class="btn-blue" onclick="addFila()">ADICIONAR À FILA</button>
         </div>
@@ -103,6 +121,7 @@ function ViewDashboard() {
     </div>`;
 }
 
+// --- LÓGICA DO GRÁFICO ---
 function initChart() {
     try {
         const ctx = document.getElementById('myChart');
@@ -123,6 +142,17 @@ function initChart() {
     } catch (e) { console.error(e); }
 }
 
+// --- AÇÕES DE CONFIGURAÇÃO ---
+window.editPreco = (index, campo, valor) => {
+    tabelaPrecos[index][campo] = campo === 'valor' ? parseInt(valor) : valor;
+};
+
+window.salvarPrecos = () => {
+    localStorage.setItem('barber_precos', JSON.stringify(tabelaPrecos));
+    alert("Preços atualizados!");
+    render();
+};
+
 window.chamarNoWhats = (nome) => {
     const msg = encodeURIComponent(`Olá ${nome}! A tua vez chegou aqui na Barbearia. Podes vir! ✂️`);
     window.open(`https://wa.me/?text=${msg}`, '_blank');
@@ -131,7 +161,7 @@ window.chamarNoWhats = (nome) => {
 window.acaoCadastro = () => {
     const email = document.getElementById('c_email').value;
     const pass = document.getElementById('c_pass').value;
-    if (!senhaValida(pass)) return alert("Senha fraca!");
+    if (!senhaValida(pass)) return alert("Senha fraca! Use 8+ dígitos, maiúscula e símbolo.");
     db.push({ email, pass });
     localStorage.setItem('barber_flow_pro', JSON.stringify(db));
     alert("Conta criada!"); render();
@@ -147,7 +177,7 @@ window.addFila = () => {
     const nome = document.getElementById('novo-cliente').value;
     const sel = document.getElementById('tipo-servico');
     if(!nome) return;
-    fila.push({ nome, valor: parseInt(sel.value), servico: sel.options[sel.selectedIndex].text });
+    fila.push({ nome, valor: parseInt(sel.value), servico: sel.options[sel.selectedIndex].text.split(' (')[0] });
     salvarEAtualizar();
 };
 
