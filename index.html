@@ -3,27 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flow Admin Pro | Barber Management</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Barber Flow Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root {
-            --primary: #f1c40f;
-            --bg: #0a0a0a;
-            --card: #161616;
-            --text: #ffffff;
-            --accent: #3498db;
+        :root { --primary: #001f3f; --secondary: #00d4ff; --dark: #0a0a0c; }
+        body { 
+            margin: 0; font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #050505 0%, #001f3f 100%); 
+            color: white; min-height: 100vh; display: flex; justify-content: center;
         }
-        body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+        #app { width: 100%; max-width: 500px; padding: 20px; }
+        .card { 
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
+            padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        #app { width: 100%; max-width: 450px; padding: 20px; }
+        input, select { 
+            width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px;
+            border: 1px solid #333; background: #111; color: white; box-sizing: border-box;
+        }
+        button { 
+            width: 100%; padding: 12px; border: none; border-radius: 10px;
+            font-weight: bold; cursor: pointer; transition: 0.3s; 
+        }
+        .btn-blue { 
+            background: linear-gradient(to right, #00d4ff, #0072ff); color: white;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+        }
+        .btn-blue:active { transform: scale(0.95); }
+        .stat-card { background: rgba(0, 212, 255, 0.1); border-radius: 15px; border: 1px solid rgba(0, 212, 255, 0.2); }
+        .chart-container { margin-top: 20px; height: 200px; }
     </style>
 </head>
 <body>
