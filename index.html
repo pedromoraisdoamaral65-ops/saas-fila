@@ -3,56 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flow Pro | Gateway de Gestão</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Flow Pro S.A. | Gestão de Elite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00ff88; --bg: #050505; --surface: #111111; --border: #222222; --text-main: #ffffff; --text-sub: #888888; }
-        
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text-main); -webkit-font-smoothing: antialiased; }
-        
-        #app { width: 100%; max-width: 600px; margin: 0 auto; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-
-        /* Estilo Gateway */
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 24px; margin-bottom: 20px; transition: 0.3s; }
-        
-        .stat-label { font-size: 13px; color: var(--text-sub); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-        .stat-value { font-size: 32px; font-weight: 800; margin-top: 8px; letter-spacing: -1px; }
-        .stat-value.green { color: var(--primary); }
-
-        input, select { 
-            width: 100%; padding: 16px; margin: 12px 0; border-radius: 16px; border: 1px solid var(--border); 
-            background: #000; color: #fff; font-size: 16px; outline: none; transition: 0.2s;
-        }
-        input:focus { border-color: var(--primary); }
-
-        button { 
-            width: 100%; padding: 18px; border: none; border-radius: 16px; font-weight: 700; 
-            font-size: 16px; cursor: pointer; transition: 0.2s; background: var(--primary); color: #000; 
-        }
-        button:active { transform: scale(0.98); }
-
-        .btn-secondary { background: #1a1a1a; color: #fff; border: 1px solid var(--border); margin-top: 12px; }
-
-        .fila-item { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 18px; background: #0c0c0c; border-radius: 20px; margin-bottom: 12px; border: 1px solid var(--border);
+        :root {
+            --bg: #050505;
+            --card: #111111;
+            --neon: #00ff88;
+            --text: #ffffff;
+            --subtext: #888888;
+            --danger: #ff4444;
+            --whatsapp: #25d366;
         }
 
-        .badge { background: rgba(0, 255, 136, 0.1); color: var(--primary); padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; }
-        
-        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0 40px 0; }
-        
-        .pass-box { position: relative; }
-        .eye { position: absolute; right: 15px; top: 22px; cursor: pointer; color: var(--text-sub); font-size: 20px; }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
 
-        /* Animação de entrada */
-        .fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Header e Logo */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #222;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--neon);
+            letter-spacing: -1px;
+        }
+
+        .logo span { color: white; }
+
+        /* IA Insight */
+        .ai-box {
+            background: linear-gradient(90deg, #111, #001a0d);
+            border-left: 4px solid var(--neon);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #222;
+            transition: 0.3s;
+        }
+
+        .card:hover { border-color: var(--neon); transform: translateY(-3px); }
+        .card h3 { font-size: 13px; color: var(--subtext); margin: 0; text-transform: uppercase; }
+        .card .value { font-size: 32px; font-weight: 800; margin: 10px 0; }
+        .card .detail { font-size: 12px; color: var(--neon); }
+
+        /* Tabelas */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            background: var(--card);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #222;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #1a1a1a; padding: 15px; text-align: left; color: var(--subtext); font-size: 13px; }
+        td { padding: 15px; border-bottom: 1px solid #222; font-size: 14px; }
+
+        /* Remarketing */
+        .remarketing-section {
+            margin-top: 40px;
+            background: #0a0a0a;
+            border: 1px dashed #333;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .client-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .btn-wa {
+            background: var(--whatsapp);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .btn-main {
+            background: var(--neon);
+            color: black;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .header { flex-direction: column; gap: 20px; }
+        }
     </style>
 </head>
 <body>
-    <div id="app"></div>
-    <script src="index.js"></script>
+
+    <header class="header">
+        <div class="logo">FLOWPRO <span>S.A.</span></div>
+        <button class="btn-main" onclick="novoServico()">+ LANÇAR SERVIÇO</button>
+    </header>
+
+    <div class="ai-box">
+        <span style="font-size: 24px;">🧠</span>
+        <div>
+            <strong style="color: var(--neon);">Insight da IA:</strong> 
+            Sua agenda de terça-feira está com 40% de ociosidade. Dispare o remarketing para aumentar o faturamento em até R$ 450,00.
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="card">
+            <h3>Faturamento Bruto</h3>
+            <div class="value">R$ 4.250,00</div>
+            <div class="detail">↑ 12% em relação ao mês anterior</div>
+        </div>
+        <div class="card">
+            <h3>Split Profissionais</h3>
+            <div class="value" style="color: var(--danger);">R$ 1.700,00</div>
+            <div class="detail">Baseado em 40% de comissão</div>
+        </div>
+        <div class="card" style="border-color: var(--neon);">
+            <h3>Lucro Líquido (Real)</h3>
+            <div class="value" style="color: var(--neon);">R$ 2.550,00</div>
+            <div class="detail">Disponível para reinvestimento</div>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <h2 style="margin: 0; font-size: 18px;">📊 Fluxo de Caixa Recente</h2>
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>CLIENTE</th>
+                    <th>SERVIÇO</th>
+                    <th>PROFISSIONAL</th>
+                    <th>VALOR</th>
+                    <th>SPLIT (CASA)</th>
+                </tr>
+            </thead>
+            <tbody id="lista-vendas">
+                <tr>
+                    <td>João Silva</td>
+                    <td>Corte + Barba</td>
+                    <td>Marcos Barber</td>
+                    <td>R$ 80,00</td>
+                    <td style="color: var(--neon);">R$ 48,00</td>
+                </tr>
+                <tr>
+                    <td>Felipe Melo</td>
+                    <td>Degradê Americano</td>
+                    <td>Ítalo Barber</td>
+                    <td>R$ 50,00</td>
+                    <td style="color: var(--neon);">R$ 30,00</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="remarketing-section">
+        <h2 style="margin: 0 0 10px 0; font-size: 18px; color: var(--neon);">🎯 Recuperação de Clientes</h2>
+        <p style="color: var(--subtext); font-size: 14px;">Estes clientes não retornam há mais de 21 dias:</p>
+        
+        <div class="client-row">
+            <div>
+                <strong>Carlos Alberto</strong><br>
+                <small style="color: var(--subtext);">Última visita: 24 dias atrás</small>
+            </div>
+            <button class="btn-wa" onclick="enviarWA('5561999999999', 'Carlos')">REENGAJAR</button>
+        </div>
+
+        <div class="client-row" style="border: none;">
+            <div>
+                <strong>Mateus Oliveira</strong><br>
+                <small style="color: var(--subtext);">Última visita: 30 dias atrás</small>
+            </div>
+            <button class="btn-wa" onclick="enviarWA('5561888888888', 'Mateus')">REENGAJAR</button>
+        </div>
+    </div>
+
+    <script>
+        // Função para lançar novo serviço com Split Automático
+        function novoServico() {
+            const valor = prompt("Qual o valor total do serviço (R$)?");
+            if (valor && !isNaN(valor)) {
+                const comissao = valor * 0.4;
+                const lucroCasa = valor - comissao;
+
+                const tabela = document.getElementById('lista-vendas');
+                const novaLinha = `
+                    <tr>
+                        <td>Novo Cliente</td>
+                        <td>Serviço Rápido</td>
+                        <td>Admin</td>
+                        <td>R$ ${valor},00</td>
+                        <td style="color: var(--neon);">R$ ${lucroCasa},00</td>
+                    </tr>
+                `;
+                tabela.innerHTML = novaLinha + tabela.innerHTML;
+                
+                dispararNotificacao(`Venda de R$ ${valor} registrada. Seu lucro: R$ ${lucroCasa}!`);
+            }
+        }
+
+        // Sistema de Remarketing via WhatsApp
+        function enviarWA(num, nome) {
+            const msg = `Fala ${nome}, beleza? Notamos que seu visual já está perdendo o corte! Que tal agendar um horário na Nobre essa semana? Horários disponíveis amanhã às 14h e 16h.`;
+            window.open(`https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(msg)}`);
+        }
+
+        // Notificações Push
+        function dispararNotificacao(texto) {
+            if (Notification.permission === "granted") {
+                new Notification("FLOW PRO", { body: texto });
+            } else {
+                alert(texto);
+            }
+        }
+
+        // Pedir permissão ao iniciar
+        window.onload = () => {
+            if (Notification.permission !== "denied") {
+                Notification.requestPermission();
+            }
+        };
+    </script>
 </body>
 </html>
