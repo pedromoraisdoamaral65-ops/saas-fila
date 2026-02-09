@@ -1,205 +1,182 @@
-// --- BANCO DE DADOS LOCAL ---
-let db = JSON.parse(localStorage.getItem('barber_flow_pro')) || [];
-let fila = JSON.parse(localStorage.getItem('barber_fila')) || [];
-let lucros = JSON.parse(localStorage.getItem('barber_lucros')) || { dia: 0, semana: 0, mes: 0 };
-let historico = JSON.parse(localStorage.getItem('barber_historico')) || [];
-let sessao = JSON.parse(sessionStorage.getItem('active_user')) || null;
+// --- CONFIGURAÇÕES E DADOS ---
+let config = JSON.parse(localStorage.getItem('flow_config')) || { nomeNegocio: "Meu Negócio", comissao: 50 };
+let precos = JSON.parse(localStorage.getItem('flow_precos')) || [{serv: "Serviço Padrão", val: 50}];
+let lucros = JSON.parse(localStorage.getItem('flow_lucros')) || { total: 0, empresa: 0 };
+let fila = JSON.parse(localStorage.getItem('flow_fila')) || [];
+let historico = JSON.parse(localStorage.getItem('flow_hist')) || [];
+let db = JSON.parse(localStorage.getItem('flow_users')) || [];
+let sessao = JSON.parse(sessionStorage.getItem('flow_sessao')) || null;
 
-// --- PREÇOS AJUSTÁVEIS ---
-let tabelaPrecos = JSON.parse(localStorage.getItem('barber_precos')) || [
-    { servico: "Cabelo", valor: 30 },
-    { servico: "Barba", valor: 20 },
-    { servico: "Sobrancelha", valor: 10 },
-    { servico: "Combo", valor: 50 }
-];
-
-const senhaValida = (s) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/.test(s);
-
-function render() {
+const render = () => {
     const app = document.getElementById('app');
-    if (!app) return;
     const path = window.location.pathname;
     if (path.includes('/admin')) {
-        sessao ? (app.innerHTML = ViewDashboard(), setTimeout(initChart, 100)) : app.innerHTML = ViewLogin();
-    } else {
-        app.innerHTML = ViewLanding();
-    }
-}
+        sessao ? (app.innerHTML = ViewDashboard(), initChart()) : app.innerHTML = ViewLogin();
+    } else { app.innerHTML = ViewLanding(); }
+};
 
+// --- VIEWS ---
 function ViewLanding() {
     return `
-    <div style="text-align:center; padding-top:100px">
-        <h1 style="font-size:42px; background: linear-gradient(to right, #fff, #00d4ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight:800">BARBER FLOW</h1>
-        <p style="color:#8899a6">Gestão de elite para barbearias.</p>
-        <button class="btn-blue" style="width:250px; margin-top:40px" onclick="window.location.href='/admin'">PAINEL ADMINISTRATIVO</button>
+    <div style="text-align:center; padding-top:120px">
+        <h1 style="font-size:45px; font-weight:800; letter-spacing:-1px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">FLOW MASTER<span style="color:#00d4ff; -webkit-text-fill-color: #00d4ff">.</span></h1>
+        <p style="color:#8899a6; margin-top:-10px">O cérebro do seu negócio.</p>
+        <button class="btn-main" style="width:240px; margin-top:50px" onclick="window.location.href='/admin'">GESTÃO PROFISSIONAL</button>
     </div>`;
 }
 
 function ViewLogin() {
     return `
     <div class="card">
-        <h2 style="margin-bottom:20px">Login Admin</h2>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="pass" placeholder="Senha">
-        <button class="btn-blue" onclick="acaoLogin()">ENTRAR</button>
-        <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:12px">
-            <span onclick="document.getElementById('app').innerHTML = ViewCadastro()" style="color:var(--secondary); cursor:pointer">Criar Conta</span>
-        </div>
+        <h2>Entrar</h2>
+        <input type="email" id="email" placeholder="Seu e-mail">
+        <input type="password" id="pass" placeholder="Sua senha">
+        <button class="btn-main" onclick="acaoLogin()">ACESSAR PAINEL</button>
+        <p style="font-size:12px; text-align:center; color:#8899a6; margin-top:20px">Novo sócio? <span onclick="document.getElementById('app').innerHTML = ViewCadastro()" style="color:#00d4ff; cursor:pointer">Registrar-se</span></p>
     </div>`;
 }
 
 function ViewCadastro() {
     return `
     <div class="card">
-        <h2>Criar Conta</h2>
-        <input type="email" id="c_email" placeholder="Email">
-        <input type="password" id="c_pass" placeholder="Senha Forte">
-        <button class="btn-blue" onclick="acaoCadastro()">REGISTRAR</button>
-        <p onclick="render()" style="text-align:center; cursor:pointer; font-size:14px; margin-top:15px">Voltar</p>
+        <h2>Seja um Sócio</h2>
+        <p style="font-size:11px; color:#8899a6">Mínimo 8 caracteres, 1 Maiúscula e 1 Símbolo.</p>
+        <input type="email" id="c_email" placeholder="E-mail principal">
+        <input type="password" id="c_pass" placeholder="Crie sua senha forte">
+        <button class="btn-main" onclick="acaoCadastro()">FINALIZAR REGISTRO</button>
     </div>`;
 }
 
 function ViewDashboard() {
     return `
     <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center">
-            <h3 style="color:var(--secondary); margin:0">DASHBOARD PRO</h3>
-            <button onclick="acaoSair()" style="width:auto; background:#e74c3c; font-size:10px; padding:5px 10px">SAIR</button>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+            <div>
+                <h4 style="margin:0; color:#00d4ff">${config.nomeNegocio.toUpperCase()}</h4>
+                <small style="font-size:10px; color:#8899a6">PAINEL DE CONTROLE</small>
+            </div>
+            <button onclick="acaoSair()" style="width:auto; background:#ff4757; padding:6px 12px; font-size:10px">SAIR</button>
         </div>
 
-        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:20px">
-            <div class="stat-card" style="padding:10px; text-align:center"><small style="font-size:9px">HOJE</small><br><b style="color:#2ecc71">R$${lucros.dia}</b></div>
-            <div class="stat-card" style="padding:10px; text-align:center"><small style="font-size:9px">SEM.</small><br><b style="color:#3498db">R$${lucros.semana}</b></div>
-            <div class="stat-card" style="padding:10px; text-align:center"><small style="font-size:9px">MÊS</small><br><b style="color:#9b59b6">R$${lucros.mes}</b></div>
+        <div class="stat-grid">
+            <div class="stat-box"><small>BRUTO TOTAL</small><br><b style="color:#2ecc71; font-size:18px">R$ ${lucros.total}</b></div>
+            <div class="stat-box"><small>LUCRO EMPRESA</small><br><b style="color:#00d4ff; font-size:18px">R$ ${lucros.empresa}</b></div>
         </div>
 
-        <div class="chart-container"><canvas id="myChart"></canvas></div>
+        <div style="height:180px; margin-top:20px"><canvas id="flowChart"></canvas></div>
 
-        <details style="margin-top:20px; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px">
-            <summary style="cursor:pointer; font-size:12px; color:var(--secondary)">⚙️ AJUSTAR PREÇOS DOS SERVIÇOS</summary>
-            <div style="margin-top:10px" id="config-precos">
-                ${tabelaPrecos.map((p, i) => `
-                    <div style="display:flex; gap:5px; margin-bottom:5px">
-                        <input type="text" value="${p.servico}" onchange="editPreco(${i}, 'servico', this.value)" style="margin:0; font-size:12px">
-                        <input type="number" value="${p.valor}" onchange="editPreco(${i}, 'valor', this.value)" style="margin:0; width:80px; font-size:12px">
-                    </div>
-                `).join('')}
-                <button onclick="salvarPrecos()" style="background:var(--secondary); color:black; font-size:10px; padding:5px; margin-top:5px">SALVAR NOVOS PREÇOS</button>
+        <details style="margin-top:20px">
+            <summary>⚙️ CONFIGURAR NEGÓCIO</summary>
+            <div style="padding:10px 0">
+                <input type="text" id="conf_nome" placeholder="Nome do Negócio" value="${config.nomeNegocio}">
+                <input type="number" id="conf_com" placeholder="% Comissão Profissional" value="${config.comissao}">
+                <button onclick="salvarConfig()" style="background:#00d4ff; color:#000; padding:8px; font-size:12px">SALVAR CONFIGS</button>
+                <p style="font-size:11px; margin-top:15px; color:#8899a6">TABELA DE PREÇOS:</p>
+                <div id="lista-precos">${precos.map((p,i) => `<div style="display:flex; gap:5px"><input type="text" value="${p.serv}" onchange="editP(${i},'serv',this.value)"><input type="number" value="${p.val}" onchange="editP(${i},'val',this.value)"></div>`).join('')}</div>
+                <button onclick="salvarPrecos()" style="background:transparent; border:1px solid #333; color:#fff; font-size:10px; margin-top:5px">+ ATUALIZAR TABELA</button>
             </div>
         </details>
 
-        <div style="margin-top:25px">
-            <h4 style="color:var(--secondary); margin-bottom:10px">👤 FILA E CHAMADA</h4>
-            <div id="lista-fila">
-                ${fila.length === 0 ? '<p style="font-size:12px; color:#8899a6">Fila vazia.</p>' : 
-                fila.map((c, i) => `
-                    <div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:8px; align-items:center">
-                        <span style="font-size:13px">${c.nome} <br><small style="color:#8899a6">${c.servico} (R$${c.valor})</small></span>
-                        <div style="display:flex; gap:5px">
-                            <button onclick="chamarNoWhats('${c.nome}')" style="width:auto; background:#25d366; padding:5px 8px">📲</button>
-                            <button onclick="finalizarServico(${i}, ${c.valor})" style="width:auto; background:#2ecc71; padding:5px 10px; font-size:10px">OK</button>
-                        </div>
+        <div style="margin-top:30px">
+            <h4 style="margin-bottom:15px; font-size:14px">👤 FILA ATIVA</h4>
+            ${fila.length === 0 ? '<p style="color:#555; font-size:12px">Ninguém na fila...</p>' : fila.map((c, i) => `
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.03); padding:12px; border-radius:12px; margin-bottom:8px">
+                    <span>${c.nome}<br><small style="color:#8899a6">${c.serv} (R$${c.val})</small></span>
+                    <div style="display:flex; gap:8px">
+                        <button onclick="chamar('${c.nome}')" style="width:auto; background:#25d366; padding:8px">📲</button>
+                        <button onclick="concluir(${i})" style="width:auto; background:#2ecc71; padding:8px 15px; font-size:11px">OK</button>
                     </div>
-                `).join('')}
-            </div>
-            <input type="text" id="novo-cliente" placeholder="Nome do Cliente">
-            <select id="tipo-servico">
-                ${tabelaPrecos.map(p => `<option value="${p.valor}">${p.servico} (R$${p.valor})</option>`).join('')}
-            </select>
-            <button class="btn-blue" onclick="addFila()">ADICIONAR À FILA</button>
+                </div>
+            `).join('')}
+            <input type="text" id="add_nome" placeholder="Nome do Cliente">
+            <select id="add_serv">${precos.map(p => `<option value="${p.val}">${p.serv} (R$${p.val})</option>`).join('')}</select>
+            <button class="btn-main" onclick="addFila()">+ ADICIONAR À FILA</button>
         </div>
 
-        <div style="margin-top:20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top:15px">
-            <h4 style="color:#e74c3c; font-size:11px">🕒 HISTÓRICO (DESFAZER)</h4>
+        <div style="margin-top:20px; opacity:0.6">
+            <h4 style="font-size:11px; color:#ff4757">ESTORNAR ÚLTIMOS:</h4>
             ${historico.slice(-2).reverse().map((h, i) => `
-                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:5px; background:rgba(231,76,60,0.1); padding:8px; border-radius:8px">
-                    <span>${h.nome} - R$${h.valor}</span>
-                    <span onclick="cancelarServico(${historico.length - 1 - i})" style="color:#e74c3c; cursor:pointer; font-weight:bold">CANCELAR</span>
+                <div style="display:flex; justify-content:space-between; font-size:10px; padding:5px 0">
+                    <span>${h.nome} (R$${h.val})</span>
+                    <span onclick="estornar(${historico.length - 1 - i})" style="color:#ff4757; cursor:pointer">DESFAZER</span>
                 </div>
             `).join('')}
         </div>
     </div>`;
 }
 
-// --- LÓGICA DO GRÁFICO ---
+// --- LÓGICA ---
 function initChart() {
-    try {
-        const ctx = document.getElementById('myChart');
-        if (!ctx) return;
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Hoje', 'Sem.', 'Mês'],
-                datasets: [{
-                    label: 'Lucro R$',
-                    data: [lucros.dia, lucros.semana, lucros.mes],
-                    backgroundColor: ['#2ecc71', '#3498db', '#9b59b6'],
-                    borderRadius: 8
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } } } }
-        });
-    } catch (e) { console.error(e); }
+    const ctx = document.getElementById('flowChart');
+    if (!ctx) return;
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Total Bruto', 'Lucro Empresa'],
+            datasets: [{
+                data: [lucros.total, lucros.empresa],
+                borderColor: '#00d4ff', backgroundColor: 'rgba(0, 212, 255, 0.1)', fill: true, tension: 0.4
+            }]
+        },
+        options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
+    });
 }
-
-// --- AÇÕES DE CONFIGURAÇÃO ---
-window.editPreco = (index, campo, valor) => {
-    tabelaPrecos[index][campo] = campo === 'valor' ? parseInt(valor) : valor;
-};
-
-window.salvarPrecos = () => {
-    localStorage.setItem('barber_precos', JSON.stringify(tabelaPrecos));
-    alert("Preços atualizados!");
-    render();
-};
-
-window.chamarNoWhats = (nome) => {
-    const msg = encodeURIComponent(`Olá ${nome}! A tua vez chegou aqui na Barbearia. Podes vir! ✂️`);
-    window.open(`https://wa.me/?text=${msg}`, '_blank');
-};
 
 window.acaoCadastro = () => {
     const email = document.getElementById('c_email').value;
     const pass = document.getElementById('c_pass').value;
-    if (!senhaValida(pass)) return alert("Senha fraca! Use 8+ dígitos, maiúscula e símbolo.");
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/.test(pass)) return alert("Senha fraca!");
     db.push({ email, pass });
-    localStorage.setItem('barber_flow_pro', JSON.stringify(db));
-    alert("Conta criada!"); render();
+    localStorage.setItem('flow_users', JSON.stringify(db));
+    alert("Sócio registrado!"); render();
 };
 
 window.acaoLogin = () => {
     const user = db.find(u => u.email === document.getElementById('email').value && u.pass === document.getElementById('pass').value);
-    if (user) { sessionStorage.setItem('active_user', JSON.stringify(user)); location.reload(); }
-    else alert("Dados incorretos!");
+    if (user) { sessionStorage.setItem('flow_sessao', JSON.stringify(user)); location.reload(); }
+    else alert("Erro!");
 };
+
+window.salvarConfig = () => {
+    config.nomeNegocio = document.getElementById('conf_nome').value;
+    config.comissao = parseInt(document.getElementById('conf_com').value);
+    localStorage.setItem('flow_config', JSON.stringify(config));
+    location.reload();
+};
+
+window.editP = (i, f, v) => { precos[i][f] = f === 'val' ? parseInt(v) : v; };
+window.salvarPrecos = () => { localStorage.setItem('flow_precos', JSON.stringify(precos)); render(); };
 
 window.addFila = () => {
-    const nome = document.getElementById('novo-cliente').value;
-    const sel = document.getElementById('tipo-servico');
+    const nome = document.getElementById('add_nome').value;
+    const sel = document.getElementById('add_serv');
     if(!nome) return;
-    fila.push({ nome, valor: parseInt(sel.value), servico: sel.options[sel.selectedIndex].text.split(' (')[0] });
-    salvarEAtualizar();
+    fila.push({ nome, val: parseInt(sel.value), serv: sel.options[sel.selectedIndex].text.split(' (')[0] });
+    localStorage.setItem('flow_fila', JSON.stringify(fila));
+    render();
 };
 
-window.finalizarServico = (index, valor) => {
+window.concluir = (index) => {
     const item = fila.splice(index, 1)[0];
     historico.push(item);
-    lucros.dia += valor; lucros.semana += valor; lucros.mes += valor;
-    salvarEAtualizar();
+    lucros.total += item.val;
+    lucros.empresa += (item.val * (100 - config.comissao) / 100);
+    salvar();
 };
 
-window.cancelarServico = (index) => {
+window.estornar = (index) => {
     const item = historico.splice(index, 1)[0];
-    lucros.dia -= item.valor; lucros.semana -= item.valor; lucros.mes -= item.valor;
-    salvarEAtualizar();
+    lucros.total -= item.val;
+    lucros.empresa -= (item.val * (100 - config.comissao) / 100);
+    salvar();
 };
 
-function salvarEAtualizar() {
-    localStorage.setItem('barber_fila', JSON.stringify(fila));
-    localStorage.setItem('barber_lucros', JSON.stringify(lucros));
-    localStorage.setItem('barber_historico', JSON.stringify(historico));
+window.chamar = (nome) => { window.open(`https://wa.me/?text=${encodeURIComponent('Olá '+nome+'! Chegou sua vez no '+config.nomeNegocio+'!')}`); };
+function salvar() {
+    localStorage.setItem('flow_fila', JSON.stringify(fila));
+    localStorage.setItem('flow_lucros', JSON.stringify(lucros));
+    localStorage.setItem('flow_hist', JSON.stringify(historico));
     render();
 }
-
-window.acaoSair = () => { sessionStorage.removeItem('active_user'); location.reload(); };
+window.acaoSair = () => { sessionStorage.removeItem('flow_sessao'); location.reload(); };
 window.onload = render;
