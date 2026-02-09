@@ -1,21 +1,23 @@
-// --- DADOS ---
+// --- BANCO DE DADOS LOCAL ---
 let db = JSON.parse(localStorage.getItem('barber_flow_pro')) || [];
 let fila = JSON.parse(localStorage.getItem('barber_fila')) || [];
 let lucros = JSON.parse(localStorage.getItem('barber_lucros')) || { dia: 0, semana: 0, mes: 0 };
 let historico = JSON.parse(localStorage.getItem('barber_historico')) || [];
 let sessao = JSON.parse(sessionStorage.getItem('active_user')) || null;
 
+// --- SEGURANÇA ---
+const senhaValida = (s) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/.test(s);
+
 // --- MOTOR DE RENDERIZAÇÃO ---
 function render() {
     const app = document.getElementById('app');
     if (!app) return;
-
     const path = window.location.pathname;
-    
+
     if (path.includes('/admin')) {
         if (sessao) {
             app.innerHTML = ViewDashboard();
-            setTimeout(initChart, 100); // Carrega o gráfico logo após renderizar
+            setTimeout(initChart, 100);
         } else {
             app.innerHTML = ViewLogin();
         }
@@ -37,10 +39,26 @@ function ViewLanding() {
 function ViewLogin() {
     return `
     <div class="card">
-        <h2>Acesso Restrito</h2>
-        <input type="email" id="email" placeholder="O seu email">
-        <input type="password" id="pass" placeholder="A sua senha">
+        <h2 style="margin-bottom:20px">Login Admin</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="pass" placeholder="Senha">
         <button class="btn-blue" onclick="acaoLogin()">ENTRAR</button>
+        <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:12px">
+            <span onclick="document.getElementById('app').innerHTML = ViewCadastro()" style="color:var(--secondary); cursor:pointer">Criar Conta</span>
+            <span onclick="alert('Funcionalidade em desenvolvimento. Por enquanto, limpe o cache do navegador para resetar.')" style="color:#8899a6; cursor:pointer">Esqueci a Senha</span>
+        </div>
+    </div>`;
+}
+
+function ViewCadastro() {
+    return `
+    <div class="card">
+        <h2>Criar Conta</h2>
+        <p style="font-size:11px; color:#8899a6; margin-bottom:15px">Requisitos: 8+ dígitos, 1 Maiúscula e 1 Símbolo (!@#).</p>
+        <input type="email" id="c_email" placeholder="Email">
+        <input type="password" id="c_pass" placeholder="Senha Forte">
+        <button class="btn-blue" onclick="acaoCadastro()">REGISTRAR</button>
+        <p onclick="render()" style="text-align:center; cursor:pointer; font-size:14px; margin-top:15px">Voltar ao Login</p>
     </div>`;
 }
 
@@ -87,6 +105,16 @@ function ViewDashboard() {
             </select>
             <button class="btn-blue" onclick="addFila()">ADICIONAR À FILA</button>
         </div>
+
+        <div style="margin-top:20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top:15px">
+            <h4 style="color:#e74c3c; font-size:11px">🕒 HISTÓRICO (ESTORNAR)</h4>
+            ${historico.slice(-3).reverse().map((h, i) => `
+                <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:5px; background:rgba(231,76,60,0.1); padding:8px; border-radius:8px">
+                    <span>${h.nome} - R$${h.valor}</span>
+                    <span onclick="cancelarServico(${historico.length - 1 - i})" style="color:#e74c3c; cursor:pointer; font-weight:bold">CANCELAR</span>
+                </div>
+            `).join('')}
+        </div>
     </div>`;
 }
 
@@ -98,54 +126,74 @@ function initChart() {
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Dia', 'Sem.', 'Mês'],
+                labels: ['Hoje', 'Sem.', 'Mês'],
                 datasets: [{
                     label: 'Lucro R$',
                     data: [lucros.dia, lucros.semana, lucros.mes],
                     backgroundColor: ['#2ecc71', '#3498db', '#9b59b6'],
-                    borderWidth: 0,
                     borderRadius: 8
                 }]
             },
             options: { 
-                responsive: true, 
-                maintainAspectRatio: false,
+                responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } } }
             }
         });
-    } catch (e) { console.error("Erro no gráfico:", e); }
+    } catch (e) { console.error(e); }
 }
 
 // --- AÇÕES ---
+window.acaoCadastro = () => {
+    const email = document.getElementById('c_email').value;
+    const pass = document.getElementById('c_pass').value;
+    if (!senhaValida(pass)) return alert("SEGURANÇA: A senha deve ter 8+ dígitos, uma letra maiúscula e um símbolo (!@#).");
+    db.push({ email, pass });
+    localStorage.setItem('barber_flow_pro', JSON.stringify(db));
+    alert("Conta criada com sucesso! Entre agora.");
+    render();
+};
+
 window.acaoLogin = () => {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('pass').value;
-    // Para facilitar o teu teste agora, qualquer login entra, ou podes usar o teu do DB
-    sessionStorage.setItem('active_user', JSON.stringify({email}));
-    location.reload();
+    const user = db.find(u => u.email === email && u.pass === pass);
+    if (user) { 
+        sessionStorage.setItem('active_user', JSON.stringify(user)); 
+        location.reload(); 
+    } else {
+        alert("Dados incorretos ou conta inexistente!");
+    }
 };
 
 window.addFila = () => {
     const nome = document.getElementById('novo-cliente').value;
     const sel = document.getElementById('tipo-servico');
-    if(!nome) return alert("Digite o nome!");
+    if(!nome) return;
     fila.push({ nome, valor: parseInt(sel.value), servico: sel.options[sel.selectedIndex].text });
-    localStorage.setItem('barber_fila', JSON.stringify(fila));
-    render();
+    salvarEAtualizar();
 };
 
 window.finalizarServico = (index, valor) => {
     const item = fila.splice(index, 1)[0];
     historico.push(item);
     lucros.dia += valor; lucros.semana += valor; lucros.mes += valor;
+    salvarEAtualizar();
+};
+
+window.cancelarServico = (index) => {
+    if(!confirm("Deseja estornar este valor?")) return;
+    const item = historico.splice(index, 1)[0];
+    lucros.dia -= item.valor; lucros.semana -= item.valor; lucros.mes -= item.valor;
+    salvarEAtualizar();
+};
+
+function salvarEAtualizar() {
     localStorage.setItem('barber_fila', JSON.stringify(fila));
     localStorage.setItem('barber_lucros', JSON.stringify(lucros));
     localStorage.setItem('barber_historico', JSON.stringify(historico));
     render();
-};
+}
 
 window.acaoSair = () => { sessionStorage.removeItem('active_user'); location.reload(); };
-
-// Inicia o sistema
 window.onload = render;
