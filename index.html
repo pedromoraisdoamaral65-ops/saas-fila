@@ -5,33 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flow Master Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00d4ff; --dark-bg: #050505; --card-bg: rgba(255,255,255,0.06); }
+        :root { 
+            --gold: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            --dark-gold: #aa771c;
+            --bg: #0a0a0a;
+            --card: rgba(30, 30, 30, 0.6);
+        }
         body { 
-            margin: 0; font-family: 'Poppins', sans-serif; 
-            background: radial-gradient(circle at top right, #001f3f, #050505); 
-            color: white; min-height: 100vh; display: flex; justify-content: center;
+            margin: 0; font-family: 'Inter', sans-serif; 
+            background: radial-gradient(circle at top, #1a1a1a 0%, #000 100%); 
+            color: #e0e0e0; min-height: 100vh; display: flex; justify-content: center;
         }
-        #app { width: 100%; max-width: 500px; padding: 15px; }
+        #app { width: 100%; max-width: 480px; padding: 20px; box-sizing: border-box; }
         .card { 
-            background: var(--card-bg); backdrop-filter: blur(15px);
-            padding: 20px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4); margin-bottom: 20px;
+            background: var(--card); backdrop-filter: blur(20px);
+            padding: 25px; border-radius: 28px; border: 1px solid rgba(191, 149, 63, 0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8); margin-bottom: 20px;
         }
+        h1, h2, h3 { color: #fff; margin-top: 0; }
         input, select { 
-            width: 100%; padding: 14px; margin: 8px 0; border-radius: 12px;
-            border: 1px solid #333; background: #000; color: white; box-sizing: border-box;
+            width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px;
+            border: 1px solid #333; background: #000; color: #fff; box-sizing: border-box;
+            outline: none;
         }
+        input:focus { border-color: #aa771c; }
         button { 
-            width: 100%; padding: 14px; border: none; border-radius: 12px;
-            font-weight: 600; cursor: pointer; transition: 0.3s;
+            width: 100%; padding: 15px; border: none; border-radius: 12px;
+            font-weight: 700; cursor: pointer; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
         }
-        .btn-main { background: linear-gradient(135deg, #00d4ff, #0072ff); color: white; }
-        .btn-main:hover { opacity: 0.9; transform: translateY(-2px); }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-box { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-        details summary { cursor: pointer; color: var(--primary); font-size: 13px; font-weight: 600; }
+        .btn-gold { background: var(--gold); color: #000; box-shadow: 0 4px 15px rgba(170, 119, 28, 0.4); }
+        .btn-gold:active { transform: scale(0.96); }
+        .btn-red { background: #631010; color: #fff; font-size: 10px; width: auto; padding: 5px 15px; }
+        .stat-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 18px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+        .gold-text { background: var(--gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; }
     </style>
 </head>
 <body>
