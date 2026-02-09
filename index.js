@@ -5,28 +5,19 @@ let lucros = JSON.parse(localStorage.getItem('barber_lucros')) || { dia: 0, sema
 let historico = JSON.parse(localStorage.getItem('barber_historico')) || [];
 let sessao = JSON.parse(sessionStorage.getItem('active_user')) || null;
 
-// --- SEGURANÇA ---
 const senhaValida = (s) => /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{8,}$/.test(s);
 
-// --- MOTOR DE RENDERIZAÇÃO ---
 function render() {
     const app = document.getElementById('app');
     if (!app) return;
     const path = window.location.pathname;
-
     if (path.includes('/admin')) {
-        if (sessao) {
-            app.innerHTML = ViewDashboard();
-            setTimeout(initChart, 100);
-        } else {
-            app.innerHTML = ViewLogin();
-        }
+        sessao ? (app.innerHTML = ViewDashboard(), setTimeout(initChart, 100)) : app.innerHTML = ViewLogin();
     } else {
         app.innerHTML = ViewLanding();
     }
 }
 
-// --- VIEWS ---
 function ViewLanding() {
     return `
     <div style="text-align:center; padding-top:100px">
@@ -45,7 +36,7 @@ function ViewLogin() {
         <button class="btn-blue" onclick="acaoLogin()">ENTRAR</button>
         <div style="display:flex; justify-content:space-between; margin-top:15px; font-size:12px">
             <span onclick="document.getElementById('app').innerHTML = ViewCadastro()" style="color:var(--secondary); cursor:pointer">Criar Conta</span>
-            <span onclick="alert('Funcionalidade em desenvolvimento. Por enquanto, limpe o cache do navegador para resetar.')" style="color:#8899a6; cursor:pointer">Esqueci a Senha</span>
+            <span onclick="alert('Reset de senha: limpe o cache do navegador.')" style="color:#8899a6; cursor:pointer">Esqueci a Senha</span>
         </div>
     </div>`;
 }
@@ -54,11 +45,11 @@ function ViewCadastro() {
     return `
     <div class="card">
         <h2>Criar Conta</h2>
-        <p style="font-size:11px; color:#8899a6; margin-bottom:15px">Requisitos: 8+ dígitos, 1 Maiúscula e 1 Símbolo (!@#).</p>
+        <p style="font-size:11px; color:#8899a6; margin-bottom:15px">8+ dígitos, 1 Maiúscula e 1 Símbolo.</p>
         <input type="email" id="c_email" placeholder="Email">
         <input type="password" id="c_pass" placeholder="Senha Forte">
         <button class="btn-blue" onclick="acaoCadastro()">REGISTRAR</button>
-        <p onclick="render()" style="text-align:center; cursor:pointer; font-size:14px; margin-top:15px">Voltar ao Login</p>
+        <p onclick="render()" style="text-align:center; cursor:pointer; font-size:14px; margin-top:15px">Voltar</p>
     </div>`;
 }
 
@@ -71,29 +62,24 @@ function ViewDashboard() {
         </div>
 
         <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:20px">
-            <div class="stat-card" style="padding:10px; text-align:center">
-                <small style="font-size:9px">HOJE</small><br><b style="color:#2ecc71">R$${lucros.dia}</b>
-            </div>
-            <div class="stat-card" style="padding:10px; text-align:center">
-                <small style="font-size:9px">SEMANA</small><br><b style="color:#3498db">R$${lucros.semana}</b>
-            </div>
-            <div class="stat-card" style="padding:10px; text-align:center">
-                <small style="font-size:9px">MÊS</small><br><b style="color:#9b59b6">R$${lucros.mes}</b>
-            </div>
+            <div class="stat-card" style="padding:10px; text-align:center"><small style="font-size:9px">HOJE</small><br><b style="color:#2ecc71">R$${lucros.dia}</b></div>
+            <div class="stat-card" style="padding:10px; text-align:center"><small style="font-size:9px">SEM.</small><br><b style="color:#3498db">R$${lucros.semana}</b></div>
+            <div class="stat-card" style="padding:10px; text-align:center"><small style="font-size:9px">MÊS</small><br><b style="color:#9b59b6">R$${lucros.mes}</b></div>
         </div>
 
-        <div class="chart-container">
-            <canvas id="myChart"></canvas>
-        </div>
+        <div class="chart-container"><canvas id="myChart"></canvas></div>
 
         <div style="margin-top:25px">
-            <h4 style="color:var(--secondary); margin-bottom:10px">👤 FILA DE ESPERA</h4>
+            <h4 style="color:var(--secondary); margin-bottom:10px">👤 FILA E CHAMADA</h4>
             <div id="lista-fila">
                 ${fila.length === 0 ? '<p style="font-size:12px; color:#8899a6">Fila vazia.</p>' : 
                 fila.map((c, i) => `
                     <div style="display:flex; justify-content:space-between; background:rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-bottom:8px; align-items:center">
                         <span style="font-size:13px">${c.nome} <br><small style="color:#8899a6">${c.servico}</small></span>
-                        <button onclick="finalizarServico(${i}, ${c.valor})" style="width:auto; background:#2ecc71; font-size:10px; padding:5px">OK</button>
+                        <div style="display:flex; gap:5px">
+                            <button onclick="chamarNoWhats('${c.nome}')" style="width:auto; background:#25d366; padding:5px 8px">📲</button>
+                            <button onclick="finalizarServico(${i}, ${c.valor})" style="width:auto; background:#2ecc71; padding:5px 10px; font-size:10px">OK</button>
+                        </div>
                     </div>
                 `).join('')}
             </div>
@@ -101,14 +87,13 @@ function ViewDashboard() {
             <select id="tipo-servico">
                 <option value="30">Cabelo (R$30)</option>
                 <option value="50">Combo (R$50)</option>
-                <option value="15">Barba (R$15)</option>
             </select>
             <button class="btn-blue" onclick="addFila()">ADICIONAR À FILA</button>
         </div>
 
         <div style="margin-top:20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top:15px">
-            <h4 style="color:#e74c3c; font-size:11px">🕒 HISTÓRICO (ESTORNAR)</h4>
-            ${historico.slice(-3).reverse().map((h, i) => `
+            <h4 style="color:#e74c3c; font-size:11px">🕒 HISTÓRICO (DESFAZER)</h4>
+            ${historico.slice(-2).reverse().map((h, i) => `
                 <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:5px; background:rgba(231,76,60,0.1); padding:8px; border-radius:8px">
                     <span>${h.nome} - R$${h.valor}</span>
                     <span onclick="cancelarServico(${historico.length - 1 - i})" style="color:#e74c3c; cursor:pointer; font-weight:bold">CANCELAR</span>
@@ -118,7 +103,6 @@ function ViewDashboard() {
     </div>`;
 }
 
-// --- LÓGICA DO GRÁFICO ---
 function initChart() {
     try {
         const ctx = document.getElementById('myChart');
@@ -134,36 +118,29 @@ function initChart() {
                     borderRadius: 8
                 }]
             },
-            options: { 
-                responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } } }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } } } }
         });
     } catch (e) { console.error(e); }
 }
 
-// --- AÇÕES ---
+window.chamarNoWhats = (nome) => {
+    const msg = encodeURIComponent(`Olá ${nome}! A tua vez chegou aqui na Barbearia. Podes vir! ✂️`);
+    window.open(`https://wa.me/?text=${msg}`, '_blank');
+};
+
 window.acaoCadastro = () => {
     const email = document.getElementById('c_email').value;
     const pass = document.getElementById('c_pass').value;
-    if (!senhaValida(pass)) return alert("SEGURANÇA: A senha deve ter 8+ dígitos, uma letra maiúscula e um símbolo (!@#).");
+    if (!senhaValida(pass)) return alert("Senha fraca!");
     db.push({ email, pass });
     localStorage.setItem('barber_flow_pro', JSON.stringify(db));
-    alert("Conta criada com sucesso! Entre agora.");
-    render();
+    alert("Conta criada!"); render();
 };
 
 window.acaoLogin = () => {
-    const email = document.getElementById('email').value;
-    const pass = document.getElementById('pass').value;
-    const user = db.find(u => u.email === email && u.pass === pass);
-    if (user) { 
-        sessionStorage.setItem('active_user', JSON.stringify(user)); 
-        location.reload(); 
-    } else {
-        alert("Dados incorretos ou conta inexistente!");
-    }
+    const user = db.find(u => u.email === document.getElementById('email').value && u.pass === document.getElementById('pass').value);
+    if (user) { sessionStorage.setItem('active_user', JSON.stringify(user)); location.reload(); }
+    else alert("Dados incorretos!");
 };
 
 window.addFila = () => {
@@ -182,7 +159,6 @@ window.finalizarServico = (index, valor) => {
 };
 
 window.cancelarServico = (index) => {
-    if(!confirm("Deseja estornar este valor?")) return;
     const item = historico.splice(index, 1)[0];
     lucros.dia -= item.valor; lucros.semana -= item.valor; lucros.mes -= item.valor;
     salvarEAtualizar();
