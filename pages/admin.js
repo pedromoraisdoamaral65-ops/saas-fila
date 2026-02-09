@@ -3,116 +3,135 @@ import { createClient } from '@supabase/supabase-js'
 
 const supabase = createClient('https://ucghxvsaouiribuhjkqz.supabase.co', 'sb_publishable_f-8qTdYZ5pqQ16SJ0jB5Jw_wI1_8v4r')
 
-export default function SunizeStyleDashboard() {
-  const [step, setStep] = useState(2)
-  const [todosDados, setTodosDados] = useState([])
-  const [form, setForm] = useState({ cliente: '', servico: 'Corte', valor: 50 })
+export default function SunizeAuthDashboard() {
+  const [user, setUser] = useState(null)
+  const [perfil, setPerfil] = useState({ nome_barbeiro: 'Barbeiro', nome_barbearia: 'Minha Barbearia', avatar_url: '' })
+  const [step, setStep] = useState('dash') // dash, add, perfil
+  const [email, setEmail] = useState(''); const [senha, setSenha] = useState('')
+  const [dados, setDados] = useState([]); const [form, setForm] = useState({ cliente: '', valor: 50 })
 
-  const carregarDados = async () => {
-    const { data } = await supabase.from('agendamentos').select('*').order('created_at', { ascending: false })
-    if (data) setTodosDados(data)
+  // 1. GERENCIAR LOGIN
+  useEffect(() => {
+    const session = supabase.auth.getSession()
+    setUser(session?.user ?? null)
+    if (session?.user) carregarTudo()
+    
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+      if (session?.user) carregarTudo()
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  async function carregarTudo() {
+    const { data: v } = await supabase.from('agendamentos').select('*').order('created_at', { ascending: false })
+    if (v) setDados(v)
+    const { data: p } = await supabase.from('perfis').select('*').single()
+    if (p) setPerfil(p)
   }
 
-  useEffect(() => { carregarDados() }, [])
-
-  // CÁLCULOS ESTILO SUNIZE
-  const vendasConcluidas = todosDados.filter(i => i.status === 'concluido')
-  const totalVendas = vendasConcluidas.reduce((acc, curr) => acc + Number(curr.valor), 0)
-  const quantidadeVendas = vendasConcluidas.length
-  const filaEspera = todosDados.filter(i => i.status === 'pendente')
-
-  const finalizarCadastro = async () => {
-    if (!form.cliente) return alert('Nome obrigatório')
-    await supabase.from('agendamentos').insert([{ ...form, status: 'pendente' }])
-    await carregarDados()
-    setStep(2)
+  const handleLogin = async () => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password: senha })
+    if (error) { // Se não existe, tenta criar
+      const { error: signUpErr } = await supabase.auth.signUp({ email, password: senha })
+      if (signUpErr) alert(signUpErr.message)
+      else alert('Conta criada! Verifique seu e-mail ou tente logar.')
+    }
   }
 
-  const concluirCorte = async (id) => {
-    await supabase.from('agendamentos').update({ status: 'concluido' }).match({ id })
-    carregarDados()
-  }
+  // 2. CÁLCULOS ESTILO SUNIZE
+  const concluidos = dados.filter(i => i.status === 'concluido')
+  const total = concluidos.reduce((acc, curr) => acc + Number(curr.valor), 0)
+  const fila = dados.filter(i => i.status === 'pendente')
+
+  if (!user) return (
+    <div style={authContainer}>
+      <h2 style={{color:'#38bdf8'}}>BARBERFLOW</h2>
+      <p style={{color:'#94a3b8'}}>Faça login para acessar seu dashboard</p>
+      <input style={inputS} placeholder="E-mail" onChange={e => setEmail(e.target.value)} />
+      <input style={inputS} type="password" placeholder="Senha" onChange={e => setSenha(e.target.value)} />
+      <button onClick={handleLogin} style={btnMain}>ENTRAR / CADASTRAR</button>
+    </div>
+  )
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', color: '#f8fafc', fontFamily: 'sans-serif', padding: '15px' }}>
-      
-      {/* HEADER BAR */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', padding: '10px' }}>
-        <div style={{ fontSize: '20px', fontWeight: 'bold' }}>Dashboard</div>
-        <div style={{ width: '35px', height: '35px', backgroundColor: '#1e293b', borderRadius: '50%', border: '1px solid #334155' }}></div>
-      </div>
-
-      {/* CARDS ESTILO SUNIZE */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', marginBottom: '30px' }}>
-        <div style={cardSunize}>
-          <div style={cardHeader}>
-            <span style={cardTitle}>Total em vendas</span>
-            <span style={cardIcon}>$</span>
-          </div>
-          <h2 style={cardValue}>R$ {totalVendas.toFixed(2)}</h2>
-        </div>
-
-        <div style={cardSunize}>
-          <div style={cardHeader}>
-            <span style={cardTitle}>Quantidade de vendas</span>
-            <span style={cardIcon}>💳</span>
-          </div>
-          <h2 style={cardValue}>{quantidadeVendas}</h2>
-        </div>
-
-        <div style={cardSunize}>
-          <div style={cardHeader}>
-            <span style={cardTitle}>Saldo disponível</span>
-            <span style={cardIcon}>📈</span>
-          </div>
-          <h2 style={cardValue}>R$ {totalVendas.toFixed(2)}</h2>
-        </div>
-      </div>
-
-      {step === 1 ? (
-        <div style={modalStyle}>
-          <h3 style={{marginBottom: '20px'}}>Novo Agendamento</h3>
-          <input style={inputSunize} placeholder="Nome do Cliente" onChange={e => setForm({...form, cliente: e.target.value})} />
-          <button onClick={finalizarCadastro} style={btnMain}>CRIAR VENDA</button>
-          <button onClick={() => setStep(2)} style={{background:'none', border:'none', color:'#94a3b8', width:'100%', marginTop:'10px'}}>Voltar</button>
-        </div>
-      ) : (
+    <div style={bgMain}>
+      {/* HEADER DINÂMICO COM FOTO */}
+      <div style={headerDash}>
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px' }}>
-            <span style={{ fontWeight: 'bold', color: '#94a3b8' }}>FILA DE ESPERA</span>
-            <button onClick={() => setStep(1)} style={{ color: '#38bdf8', background: 'none', border: 'none', fontWeight: 'bold' }}>+ ADICIONAR</button>
-          </div>
+          <div style={{fontSize:'12px', color:'#94a3b8'}}>{perfil.nome_barbearia}</div>
+          <div style={{fontSize:'18px', fontWeight:'bold'}}>Olá, {perfil.nome_barbeiro}</div>
+        </div>
+        <img 
+          onClick={() => setStep('perfil')}
+          src={perfil.avatar_url || 'https://cdn-icons-png.flaticon.com/512/147/147144.png'} 
+          style={avatarStyle} 
+        />
+      </div>
 
-          {filaEspera.map(item => (
-            <div key={item.id} style={itemFila}>
-              <div>
-                <div style={{fontWeight: 'bold'}}>{item.cliente}</div>
-                <div style={{fontSize: '12px', color: '#94a3b8'}}>Pendente</div>
-              </div>
-              <button onClick={() => concluirCorte(item.id)} style={btnConcluir}>CONCLUIR</button>
+      {step === 'dash' && (
+        <div style={{animation: 'fadeIn 0.5s'}}>
+          <div style={cardS}>
+            <div style={cardH}><span style={cardT}>Total em vendas</span><span>$</span></div>
+            <h2 style={cardV}>R$ {total.toFixed(2)}</h2>
+          </div>
+          <div style={{display:'flex', justifyContent:'space-between', margin:'20px 0'}}>
+            <span style={{color:'#94a3b8', fontWeight:'bold'}}>FILA ({fila.length})</span>
+            <button onClick={() => setStep('add')} style={btnTxt}>+ ADICIONAR</button>
+          </div>
+          {fila.map(i => (
+            <div key={i.id} style={itemF}>
+              <span>{i.cliente}</span>
+              <button onClick={async () => {
+                await supabase.from('agendamentos').update({status:'concluido'}).match({id: i.id})
+                carregarTudo()
+              }} style={btnCheck}>LIQUIDAR</button>
             </div>
           ))}
+          <button onClick={() => supabase.auth.signOut()} style={{marginTop:'40px', color:'#ef4444', background:'none', border:'none', width:'100%'}}>Sair da conta</button>
+        </div>
+      )}
+
+      {step === 'perfil' && (
+        <div style={cardS}>
+          <h3>Editar Perfil</h3>
+          <label style={labelS}>URL DA FOTO</label>
+          <input style={inputS} value={perfil.avatar_url} onChange={e => setPerfil({...perfil, avatar_url: e.target.value})} />
+          <label style={labelS}>NOME DO BARBEIRO</label>
+          <input style={inputS} value={perfil.nome_barbeiro} onChange={e => setPerfil({...perfil, nome_barbeiro: e.target.value})} />
+          <button onClick={async () => {
+            await supabase.from('perfis').upsert({ id: user.id, ...perfil })
+            setStep('dash')
+          }} style={btnMain}>SALVAR ALTERAÇÕES</button>
+          <button onClick={() => setStep('dash')} style={btnTxt}>Voltar</button>
+        </div>
+      )}
+
+      {step === 'add' && (
+        <div style={cardS}>
+          <h3>Nova Venda</h3>
+          <input style={inputS} placeholder="Nome do Cliente" onChange={e => setForm({...form, cliente: e.target.value})} />
+          <button onClick={async () => {
+            await supabase.from('agendamentos').insert([{...form, status:'pendente'}])
+            carregarTudo(); setStep('dash')
+          }} style={btnMain}>CONFIRMAR</button>
         </div>
       )}
     </div>
   )
 }
 
-// ESTILIZAÇÃO BASEADA NO PRINT DA SUNIZE
-const cardSunize = {
-  backgroundColor: '#1e293b',
-  padding: '20px',
-  borderRadius: '12px',
-  border: '1px solid #334155',
-}
-
-const cardHeader = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }
-const cardTitle = { fontSize: '14px', color: '#94a3b8' }
-const cardIcon = { color: '#475569', fontSize: '16px' }
-const cardValue = { fontSize: '28px', fontWeight: 'bold', margin: 0 }
-
-const modalStyle = { backgroundColor: '#1e293b', padding: '25px', borderRadius: '15px', border: '1px solid #334155' }
-const inputSunize = { width: '100%', padding: '15px', marginBottom: '15px', borderRadius: '8px', border: '1px solid #334155', backgroundColor: '#0f172a', color: '#fff', outline: 'none' }
-const btnMain = { width: '100%', padding: '15px', backgroundColor: '#38bdf8', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 'bold' }
-const itemFila = { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '15px', backgroundColor: '#1e293b', borderRadius: '10px', marginBottom: '10px', border: '1px solid #334155' }
-const btnConcluir = { backgroundColor: '#0f172a', color: '#38bdf8', border: '1px solid #38bdf8', padding: '8px 15px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold' }
+// ESTILOS SUNIZE PREMIUM
+const bgMain = { minHeight:'100vh', backgroundColor:'#0f172a', color:'#f8fafc', padding:'20px', fontFamily:'sans-serif' }
+const authContainer = { ...bgMain, display:'flex', flexDirection:'column', justifyContent:'center', textAlign:'center' }
+const headerDash = { display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'30px' }
+const avatarStyle = { width:'45px', height:'45px', borderRadius:'50%', border:'2px solid #1e293b', cursor:'pointer', objectFit:'cover' }
+const cardS = { backgroundColor:'#1e293b', padding:'20px', borderRadius:'15px', border:'1px solid #334155', marginBottom:'15px' }
+const cardH = { display:'flex', justifyContent:'space-between', color:'#94a3b8', fontSize:'13px' }
+const cardV = { fontSize:'32px', fontWeight:'bold', margin:'10px 0 0 0' }
+const inputS = { width:'100%', padding:'15px', backgroundColor:'#0f172a', border:'1px solid #334155', borderRadius:'10px', color:'#fff', marginBottom:'15px', boxSizing:'border-box' }
+const btnMain = { width:'100%', padding:'15px', backgroundColor:'#38bdf8', color:'#000', border:'none', borderRadius:'10px', fontWeight:'bold' }
+const btnTxt = { background:'none', border:'none', color:'#38bdf8', fontWeight:'bold' }
+const itemF = { display:'flex', justifyContent:'space-between', alignItems:'center', padding:'15px', backgroundColor:'#1e293b', borderRadius:'12px', marginBottom:'10px', border:'1px solid #334155' }
+const btnCheck = { backgroundColor:'#0f172a', color:'#38bdf8', border:'1px solid #38bdf8', padding:'8px 15px', borderRadius:'8px', fontSize:'12px', fontWeight:'bold' }
+const labelS = { fontSize:'10px', color:'#94a3b8', display:'block', marginBottom:'5px' }
