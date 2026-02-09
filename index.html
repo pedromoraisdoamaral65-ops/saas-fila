@@ -9,13 +9,14 @@
     <style>
         :root { --bg: #000000; --card: #0a0a0a; --neon: #00ff88; --text: #ffffff; --subtext: #666666; --border: #1a1a1a; --danger: #ff3333; }
         * { box-sizing: border-box; transition: 0.2s; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
 
         /* AUTH SCREENS */
         .auth-screen { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         .auth-card { background: var(--card); border: 1px solid var(--border); padding: 40px; border-radius: 20px; width: 100%; max-width: 400px; text-align: center; }
-        input { width: 100%; background: #111; border: 1px solid var(--border); padding: 15px; border-radius: 8px; color: white; margin-bottom: 12px; }
-        .btn-primary { width: 100%; background: var(--neon); color: black; border: none; padding: 15px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+        input { width: 100%; background: #111; border: 1px solid var(--border); padding: 15px; border-radius: 8px; color: white; margin-bottom: 12px; font-size: 14px; }
+        .btn-primary { width: 100%; background: var(--neon); color: black; border: none; padding: 15px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 14px; }
+        .btn-primary:hover { opacity: 0.8; transform: scale(1.01); }
         .link-alt { font-size: 13px; color: var(--subtext); cursor: pointer; display: block; margin-top: 15px; }
 
         /* DASHBOARD */
@@ -23,48 +24,211 @@
         .header { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 30px; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
-        .stat-card .val { font-size: 24px; font-weight: 800; color: var(--neon); }
+        .stat-card h4 { font-size: 12px; color: var(--subtext); margin: 0; text-transform: uppercase; }
+        .stat-card .val { font-size: 28px; font-weight: 800; color: var(--neon); margin-top: 10px; }
 
-        /* CHART & QUEUE */
+        /* CONTENT GRID */
         .main-content { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; }
-        .box { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid var(--border); }
-        .queue-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #050505; border: 1px solid #111; border-radius: 8px; margin-bottom: 8px; }
-        .btn-cancel { background: none; border: 1px solid var(--danger); color: var(--danger); padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10px; }
-
-        @media (max-width: 800px) { .main-content { grid-template-columns: 1fr; } }
+        .box { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid var(--border); height: fit-content; }
+        .queue-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #050505; border: 1px solid #111; border-radius: 8px; margin-bottom: 10px; }
+        .btn-cancel { background: none; border: 1px solid var(--danger); color: var(--danger); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; }
+        
+        @media (max-width: 850px) { .main-content { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
     <div id="login-screen" class="auth-screen">
         <div class="auth-card">
-            <div style="color: var(--neon); font-weight: 800; font-size: 24px; margin-bottom: 20px;">FLOWPRO S.A.</div>
-            <input type="email" id="l-email" placeholder="E-mail">
-            <input type="password" id="l-pass" placeholder="Senha">
-            <button class="btn-primary" onclick="handleLogin()">ENTRAR</button>
-            <span class="link-alt" onclick="switchScreen('signup-screen')">Criar Conta Corporativa</span>
+            <div style="color: var(--neon); font-weight: 800; font-size: 26px; margin-bottom: 10px;">FLOWPRO <span style="color:white">S.A.</span></div>
+            <p style="color: var(--subtext); font-size: 13px; margin-bottom: 25px;">Sistema de Gestão de Alto Nível</p>
+            <input type="email" id="l-email" placeholder="Seu e-mail">
+            <input type="password" id="l-pass" placeholder="Sua senha">
+            <button class="btn-primary" onclick="handleLogin()">ENTRAR NO SISTEMA</button>
+            <span class="link-alt" onclick="switchScreen('signup-screen')">Não tem conta? <strong>Cadastre-se</strong></span>
             <span class="link-alt" onclick="esqueciSenha()">Esqueci minha senha</span>
         </div>
     </div>
 
     <div id="signup-screen" class="auth-screen" style="display: none;">
         <div class="auth-card">
-            <h2>Novo Registro</h2>
+            <h2 style="margin-top:0">Nova Conta</h2>
             <input type="text" id="s-name" placeholder="Nome da Empresa">
-            <input type="email" id="s-email" placeholder="E-mail">
-            <input type="password" id="s-pass" placeholder="Senha">
-            <button class="btn-primary" onclick="handleSignup()">CADASTRAR</button>
-            <span class="link-alt" onclick="switchScreen('login-screen')">Voltar ao Login</span>
+            <input type="email" id="s-email" placeholder="E-mail Corporativo">
+            <input type="password" id="s-pass" placeholder="Senha Forte">
+            <button class="btn-primary" onclick="handleSignup()">FINALIZAR CADASTRO</button>
+            <span class="link-alt" onclick="switchScreen('login-screen')">Voltar para Login</span>
         </div>
     </div>
 
     <div id="dashboard-page">
         <header class="header">
-            <div style="font-weight: 800; color: var(--neon);">DASHBOARD ELITE</div>
-            <button class="btn-cancel" onclick="location.reload()">SAIR DA SESSÃO</button>
+            <div style="font-weight: 800; color: var(--neon); font-size: 18px;">DASHBOARD ELITE</div>
+            <button class="btn-cancel" onclick="location.reload()">ENCERRAR SESSÃO</button>
         </header>
 
         <div class="stats-grid">
-            <div class="stat-card"><h4>Mensal</h4><div class="val" id="d-mes">R$ 0</div></div>
-            <div class="stat
-                
+            <div class="stat-card"><h4>Lucro Mensal</h4><div class="val" id="d-mes">R$ 0,00</div></div>
+            <div class="stat-card"><h4>Projeção Anual</h4><div class="val" id="d-ano">R$ 0,00</div></div>
+        </div>
+
+        <div class="main-content">
+            <div class="box">
+                <h3 style="margin-top:0; color:var(--neon); font-size: 16px;">Análise de Performance</h3>
+                <div style="position: relative; height:300px; width:100%">
+                    <canvas id="lucroChart"></canvas>
+                </div>
+            </div>
+
+            <div class="box">
+                <h3 style="margin-top:0; font-size: 16px;">Gerenciar Fila</h3>
+                <input type="text" id="q-nome" placeholder="Nome do Cliente">
+                <input type="number" id="q-valor" placeholder="Valor do Serviço R$">
+                <button class="btn-primary" style="margin-bottom:20px" onclick="addFila()">ADICIONAR À FILA</button>
+                <div id="fila-lista">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // BANCO DE DADOS LOCAL
+        let db = JSON.parse(localStorage.getItem('flowpro_db')) || { users: [], lucro: 0, fila: [] };
+        let chartInstance = null;
+
+        function save() { localStorage.setItem('flowpro_db', JSON.stringify(db)); }
+
+        function switchScreen(id) {
+            document.querySelectorAll('.auth-screen, #dashboard-page').forEach(s => s.style.display = 'none');
+            const target = document.getElementById(id);
+            if(id === 'dashboard-page') target.style.display = 'block';
+            else target.style.display = 'flex';
+        }
+
+        function handleSignup() {
+            const email = document.getElementById('s-email').value;
+            const pass = document.getElementById('s-pass').value;
+            if(!email || !pass) return alert("Preencha os dados!");
+            
+            db.users.push({ email, pass });
+            save();
+            alert("Conta criada com sucesso!");
+            switchScreen('login-screen');
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('l-email').value;
+            const pass = document.getElementById('l-pass').value;
+            const user = db.users.find(u => u.email === email && u.pass === pass);
+
+            if(user) {
+                switchScreen('dashboard-page');
+                setTimeout(() => { // Espera a transição da tela para iniciar o gráfico
+                    initChart();
+                    renderFila();
+                    updateStats();
+                }, 100);
+            } else {
+                alert("E-mail ou senha incorretos.");
+            }
+        }
+
+        function esqueciSenha() {
+            const email = prompt("Digite seu e-mail para recuperação:");
+            if(email) alert("Se o e-mail estiver cadastrado, você receberá um link em breve.");
+        }
+
+        function addFila() {
+            const nome = document.getElementById('q-nome').value;
+            const valor = parseFloat(document.getElementById('q-valor').value);
+            if(!nome || !valor) return alert("Preencha nome e valor!");
+
+            db.fila.push({ id: Date.now(), nome, valor });
+            save();
+            renderFila();
+            document.getElementById('q-nome').value = '';
+            document.getElementById('q-valor').value = '';
+        }
+
+        function renderFila() {
+            const lista = document.getElementById('fila-lista');
+            lista.innerHTML = db.fila.length === 0 ? '<p style="color:#444; font-size:12px">Fila vazia...</p>' : '';
+            
+            db.fila.forEach(f => {
+                lista.innerHTML += `
+                    <div class="queue-item">
+                        <div>
+                            <strong>${f.nome}</strong><br>
+                            <small style="color:var(--neon)">R$ ${f.valor.toFixed(2)}</small>
+                        </div>
+                        <div style="display:flex; gap:5px">
+                            <button class="btn-primary" style="padding:5px 10px; width:auto; font-size:10px" onclick="concluir(${f.id})">CONCLUIR</button>
+                            <button class="btn-cancel" onclick="cancelar(${f.id})">X</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function concluir(id) {
+            const item = db.fila.find(f => f.id === id);
+            db.lucro += item.valor;
+            db.fila = db.fila.filter(f => f.id !== id);
+            save();
+            renderFila();
+            updateStats();
+            updateChart();
+        }
+
+        function cancelar(id) {
+            if(confirm("Deseja remover este cliente?")) {
+                db.fila = db.fila.filter(f => f.id !== id);
+                save();
+                renderFila();
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('d-mes').innerText = `R$ ${db.lucro.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+            document.getElementById('d-ano').innerText = `R$ ${(db.lucro * 12).toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('lucroChart').getContext('2d');
+            if(chartInstance) chartInstance.destroy();
+            
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+                    datasets: [{
+                        label: 'Faturamento (R$)',
+                        data: [db.lucro * 0.2, db.lucro * 0.5, db.lucro * 0.7, db.lucro],
+                        borderColor: '#00ff88',
+                        backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#1a1a1a' }, ticks: { color: '#666' } },
+                        x: { grid: { display: false }, ticks: { color: '#666' } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function updateChart() {
+            if(chartInstance) {
+                chartInstance.data.datasets[0].data[3] = db.lucro;
+                chartInstance.update();
+            }
+        }
+    </script>
+</body>
+</html>
