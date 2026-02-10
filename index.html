@@ -3,41 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlowPro - Dashboard Profissional</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>FlowPro S.A. | Modern Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-primary: #0f0f10;
-            --bg-secondary: #18181b;
-            --bg-tertiary: #27272a;
-            --bg-card: #18181b;
-            --accent: #8b5cf6;
-            --accent-hover: #7c3aed;
-            --text-primary: #fafafa;
-            --text-secondary: #a1a1aa;
-            --text-tertiary: #71717a;
-            --border: #27272a;
-            --success: #22c55e;
+            --bg-body: #0a0a0a;
+            --bg-sidebar: #111111;
+            --bg-card: #1a1a1a;
+            --bg-card-hover: #222222;
+            --accent: #00ff88;
+            --accent-hover: #00cc6a;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --text-tertiary: #6b7280;
+            --border: #2a2a2a;
+            --border-light: #1f1f1f;
             --danger: #ef4444;
+            --success: #10b981;
             --warning: #f59e0b;
-            --info: #3b82f6;
-            --sidebar-width: 240px;
+            --sidebar-width: 260px;
+            --sidebar-collapsed: 80px;
+            --topbar-height: 70px;
         }
 
-        * {
+        * { 
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
+        body { 
+            background: var(--bg-body);
             color: var(--text-primary);
-            font-size: 14px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 15px;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
         /* ============ SIDEBAR ============ */
@@ -47,109 +50,174 @@
             top: 0;
             width: var(--sidebar-width);
             height: 100vh;
-            background: var(--bg-secondary);
+            background: var(--bg-sidebar);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
-            transition: transform 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed);
         }
 
         .sidebar-header {
-            padding: 20px;
+            padding: 24px 20px;
             border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: var(--topbar-height);
         }
 
-        .logo {
+        .logo-container {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 18px;
-            font-weight: 700;
         }
 
-        .logo-icon {
+        .logo {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, var(--accent), #a78bfa);
-            border-radius: 8px;
+            background: linear-gradient(135deg, var(--accent) 0%, #00cc6a 100%);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
+            font-weight: 800;
+            flex-shrink: 0;
         }
 
-        .search-box {
-            margin: 16px;
-            position: relative;
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-primary);
+            white-space: nowrap;
+            opacity: 1;
+            transition: opacity 0.2s;
         }
 
-        .search-box input {
-            width: 100%;
-            padding: 10px 36px 10px 36px;
-            background: var(--bg-tertiary);
+        .sidebar.collapsed .logo-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+
+        .toggle-btn {
+            width: 32px;
+            height: 32px;
+            background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
 
-        .search-box input:focus {
-            outline: none;
+        .toggle-btn:hover {
+            background: var(--bg-card-hover);
             border-color: var(--accent);
         }
 
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-tertiary);
+        .sidebar-nav {
+            flex: 1;
+            padding: 24px 12px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar-nav::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
         }
 
         .nav-section {
-            flex: 1;
-            overflow-y: auto;
-            padding: 8px;
+            margin-bottom: 24px;
         }
 
         .nav-label {
-            padding: 8px 12px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 1px;
             color: var(--text-tertiary);
-            letter-spacing: 0.5px;
+            padding: 0 12px;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar.collapsed .nav-label {
+            opacity: 0;
         }
 
         .nav-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 12px;
-            margin-bottom: 2px;
-            border-radius: 8px;
-            color: var(--text-secondary);
+            padding: 12px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 14px;
+            position: relative;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
         }
 
         .nav-item:hover {
-            background: var(--bg-tertiary);
+            background: var(--bg-card);
             color: var(--text-primary);
         }
 
         .nav-item.active {
+            background: var(--bg-card);
+            color: var(--accent);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 20px;
             background: var(--accent);
-            color: white;
+            border-radius: 0 2px 2px 0;
         }
 
         .nav-icon {
-            font-size: 18px;
+            font-size: 20px;
             width: 20px;
             text-align: center;
+            flex-shrink: 0;
+        }
+
+        .nav-text {
+            font-weight: 500;
+            font-size: 14px;
+            white-space: nowrap;
+            opacity: 1;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar.collapsed .nav-text {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
         }
 
         .sidebar-footer {
@@ -161,52 +229,74 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 8px;
-            border-radius: 8px;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 12px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
 
         .user-profile:hover {
-            background: var(--bg-tertiary);
+            background: var(--bg-card-hover);
         }
 
         .user-avatar {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--accent), #a78bfa);
-            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent) 0%, #00cc6a 100%);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 18px;
+            flex-shrink: 0;
         }
 
         .user-info {
             flex: 1;
+            min-width: 0;
+            opacity: 1;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar.collapsed .user-info {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
         }
 
         .user-name {
-            font-size: 13px;
             font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .user-role {
-            font-size: 11px;
+        .user-email {
+            font-size: 12px;
             color: var(--text-tertiary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* ============ MAIN CONTENT ============ */
-        .main-content {
+        .main-wrapper {
             margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             min-height: 100vh;
         }
 
+        .main-wrapper.sidebar-collapsed {
+            margin-left: var(--sidebar-collapsed);
+        }
+
         .topbar {
-            background: var(--bg-secondary);
+            height: var(--topbar-height);
+            background: var(--bg-sidebar);
             border-bottom: 1px solid var(--border);
-            padding: 16px 32px;
+            padding: 0 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -215,16 +305,38 @@
             z-index: 100;
         }
 
-        .mobile-menu {
-            display: none;
-            width: 36px;
-            height: 36px;
-            background: var(--bg-tertiary);
-            border-radius: 8px;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
+        .search-bar {
+            flex: 1;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 42px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0 16px 0 44px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--bg-body);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--text-tertiary);
         }
 
         .topbar-actions {
@@ -234,53 +346,56 @@
         }
 
         .icon-btn {
-            width: 36px;
-            height: 36px;
-            background: var(--bg-tertiary);
-            border: none;
-            border-radius: 8px;
+            width: 42px;
+            height: 42px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
-            font-size: 16px;
+            font-size: 18px;
             position: relative;
         }
 
         .icon-btn:hover {
-            background: var(--bg-primary);
+            background: var(--bg-card-hover);
+            border-color: var(--accent);
         }
 
-        .badge {
+        .icon-btn .badge {
             position: absolute;
             top: -4px;
             right: -4px;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             background: var(--danger);
             border-radius: 50%;
-            font-size: 9px;
+            font-size: 10px;
             font-weight: 700;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 2px solid var(--bg-sidebar);
         }
 
+        /* ============ CONTENT AREA ============ */
         .content {
             padding: 32px;
             max-width: 1400px;
         }
 
-        /* ============ PAGE HEADER ============ */
         .page-header {
             margin-bottom: 32px;
         }
 
         .page-title {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 700;
             margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .page-subtitle {
@@ -288,49 +403,10 @@
             font-size: 15px;
         }
 
-        .header-actions {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        /* ============ BUTTONS ============ */
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-hover);
-        }
-
-        .btn-secondary {
-            background: var(--bg-tertiary);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-secondary);
-        }
-
-        /* ============ STATS GRID ============ */
+        /* ============ STATS CARDS ============ */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 20px;
             margin-bottom: 32px;
         }
@@ -338,13 +414,33 @@
         .stat-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
             transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
         }
 
         .stat-card:hover {
-            border-color: var(--accent);
+            transform: translateY(-2px);
+            border-color: var(--border-light);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
         }
 
         .stat-header {
@@ -356,44 +452,74 @@
 
         .stat-label {
             font-size: 13px;
+            font-weight: 600;
             color: var(--text-secondary);
-            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .stat-trend {
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .stat-trend.up {
-            color: var(--success);
-        }
-
-        .stat-trend.down {
-            color: var(--danger);
+            justify-content: center;
+            font-size: 18px;
         }
 
         .stat-value {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
         }
 
         .stat-change {
-            font-size: 12px;
-            color: var(--text-tertiary);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        /* ============ CARDS ============ */
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* ============ CONTENT CARDS ============ */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+        }
+
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 24px;
-            margin-bottom: 20px;
+            transition: all 0.2s;
+        }
+
+        .card-full {
+            grid-column: span 12;
+        }
+
+        .card-half {
+            grid-column: span 6;
+        }
+
+        .card-third {
+            grid-column: span 4;
+        }
+
+        .card:hover {
+            border-color: var(--border-light);
         }
 
         .card-header {
@@ -406,125 +532,159 @@
         .card-title {
             font-size: 18px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .card-action {
-            color: var(--accent);
             font-size: 13px;
-            font-weight: 600;
+            color: var(--accent);
             cursor: pointer;
-            transition: color 0.2s;
+            font-weight: 600;
+            transition: all 0.2s;
         }
 
         .card-action:hover {
             color: var(--accent-hover);
         }
 
-        /* ============ TABLE ============ */
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead th {
-            text-align: left;
-            padding: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            border-bottom: 1px solid var(--border);
-        }
-
-        tbody td {
-            padding: 16px 12px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        tbody tr:hover {
-            background: var(--bg-tertiary);
-        }
-
-        /* ============ ACTIVITY LIST ============ */
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .activity-item {
-            display: flex;
-            gap: 12px;
-        }
-
-        .activity-avatar {
-            width: 40px;
-            height: 40px;
-            background: var(--bg-tertiary);
-            border-radius: 50%;
-            display: flex;
+        /* ============ BUTTONS ============ */
+        .btn {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
             font-weight: 600;
             font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .activity-content {
-            flex: 1;
-        }
-
-        .activity-text {
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .activity-text strong {
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .activity-time {
-            font-size: 12px;
-            color: var(--text-tertiary);
-        }
-
-        /* ============ GRID LAYOUT ============ */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .grid-3 {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-
-        /* ============ FORMS ============ */
-        input, select {
-            width: 100%;
-            padding: 10px 14px;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 14px;
-            margin-bottom: 16px;
+            font-family: inherit;
+            cursor: pointer;
             transition: all 0.2s;
+            text-decoration: none;
         }
 
-        input:focus, select:focus {
-            outline: none;
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
             border-color: var(--accent);
         }
 
-        /* ============ MODAL ============ */
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* ============ LIST ITEMS ============ */
+        .list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .list-item:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-light);
+        }
+
+        .list-item-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex: 1;
+        }
+
+        .list-item-avatar {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--accent), #00cc6a);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .list-item-details {
+            flex: 1;
+        }
+
+        .list-item-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 2px;
+        }
+
+        .list-item-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .list-item-value {
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--accent);
+        }
+
+        .list-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* ============ FORMS ============ */
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--bg-card);
+        }
+
+        /* ============ MODALS ============ */
         .modal {
             position: fixed;
             top: 0;
@@ -532,7 +692,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(10px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -547,67 +707,159 @@
         .modal-content {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 20px;
             padding: 32px;
             max-width: 500px;
             width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
             position: relative;
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
         .modal-close {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 24px;
+            right: 24px;
             width: 32px;
             height: 32px;
-            background: var(--bg-tertiary);
+            background: var(--bg-body);
+            border: 1px solid var(--border);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-size: 18px;
+            transition: all 0.2s;
         }
 
-        .modal-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 24px;
+        .modal-close:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--danger);
+            color: var(--danger);
         }
 
-        /* ============ AUTH ============ */
+        /* ============ ANIMATIONS ============ */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1024px) {
+            .card-half {
+                grid-column: span 12;
+            }
+            
+            .card-third {
+                grid-column: span 6;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0 !important;
+            }
+
+            .topbar {
+                padding: 0 16px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card-third {
+                grid-column: span 12;
+            }
+
+            .mobile-menu-btn {
+                display: flex !important;
+            }
+
+            .search-bar {
+                display: none;
+            }
+        }
+
+        .mobile-menu-btn {
+            width: 42px;
+            height: 42px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        /* ============ AUTH SCREENS ============ */
         .auth-container {
             display: flex;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
             padding: 20px;
+            background: var(--bg-body);
         }
 
         .auth-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 20px;
             padding: 48px 40px;
             max-width: 420px;
             width: 100%;
         }
 
         .auth-logo {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
-        .auth-logo-icon {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, var(--accent), #a78bfa);
-            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent), #00cc6a);
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 30px;
-            margin: 0 auto 16px;
+            font-weight: 800;
+            margin: 0 auto 24px;
         }
 
         .auth-title {
@@ -635,6 +887,10 @@
             font-weight: 600;
         }
 
+        .auth-link a:hover {
+            color: var(--accent-hover);
+        }
+
         /* ============ NOTIFICATIONS ============ */
         .notification {
             position: fixed;
@@ -642,23 +898,18 @@
             right: 20px;
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 16px 20px;
             min-width: 300px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            max-width: 400px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             z-index: 3000;
-            animation: slideIn 0.3s ease;
+            animation: slideInFromRight 0.3s ease-out;
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        @keyframes slideInFromRight {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         .notification.success {
@@ -670,46 +921,16 @@
         }
 
         .notification.info {
-            border-left: 3px solid var(--info);
+            border-left: 3px solid var(--accent);
         }
 
-        /* ============ RESPONSIVE ============ */
-        @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .mobile-menu {
-                display: flex;
-            }
-
-            .content {
-                padding: 20px;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .grid-2, .grid-3 {
-                grid-template-columns: 1fr;
-            }
-
-            .page-title {
-                font-size: 24px;
-            }
-        }
-
-        .hidden {
+        /* Hide sections by default */
+        .dashboard-section {
             display: none;
+        }
+
+        .dashboard-section.active {
+            display: block;
         }
     </style>
 </head>
@@ -717,19 +938,26 @@
 
     <!-- ============ AUTH SCREEN (LOGIN) ============ -->
     <div id="auth-screen" class="auth-container">
-        <div class="auth-card">
-            <div class="auth-logo">
-                <div class="auth-logo-icon">💈</div>
-                <h1 class="auth-title">FlowPro</h1>
-                <p class="auth-subtitle">Dashboard Profissional para Barbearias</p>
+        <div class="auth-card fade-in">
+            <div class="auth-logo">💈</div>
+            <h1 class="auth-title">FlowPro</h1>
+            <p class="auth-subtitle">Sistema de Gestão Inteligente</p>
+            
+            <input type="email" id="login-email" placeholder="E-mail" required>
+            <input type="password" id="login-password" placeholder="Senha" required>
+            
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                <input type="checkbox" id="remember-me" style="width: auto; margin: 0;">
+                <label for="remember-me" style="color: var(--text-secondary); font-size: 14px; cursor: pointer; user-select: none;">Lembrar-me</label>
             </div>
             
-            <input type="email" id="login-email" placeholder="E-mail">
-            <input type="password" id="login-password" placeholder="Senha">
-            
-            <button class="btn btn-primary" style="width: 100%; margin-bottom: 12px;" onclick="login()">
+            <button class="btn btn-primary" style="width: 100%;" onclick="login()">
                 Entrar
             </button>
+            
+            <div style="text-align: center; margin-top: 16px;">
+                <a href="#" onclick="showForgotPassword(); return false;" style="color: var(--text-secondary); text-decoration: none; font-size: 14px;">Esqueci minha senha</a>
+            </div>
             
             <div class="auth-link">
                 Não tem conta? <a href="#" onclick="showSignup(); return false;">Criar conta</a>
@@ -738,19 +966,17 @@
     </div>
 
     <!-- ============ AUTH SCREEN (SIGNUP) ============ -->
-    <div id="signup-screen" class="auth-container hidden">
-        <div class="auth-card">
-            <div class="auth-logo">
-                <div class="auth-logo-icon">💈</div>
-                <h1 class="auth-title">Criar Conta</h1>
-                <p class="auth-subtitle">Comece a usar o FlowPro hoje</p>
-            </div>
+    <div id="signup-screen" class="auth-container" style="display: none;">
+        <div class="auth-card fade-in">
+            <div class="auth-logo">💈</div>
+            <h1 class="auth-title">Criar Conta</h1>
+            <p class="auth-subtitle">Comece sua jornada no FlowPro</p>
             
-            <input type="text" id="signup-nome" placeholder="Nome da Barbearia">
-            <input type="email" id="signup-email" placeholder="E-mail">
-            <input type="password" id="signup-password" placeholder="Senha">
+            <input type="text" id="signup-nome" placeholder="Nome da Barbearia" required>
+            <input type="email" id="signup-email" placeholder="E-mail" required>
+            <input type="password" id="signup-password" placeholder="Senha" required>
             
-            <button class="btn btn-primary" style="width: 100%; margin-bottom: 12px;" onclick="signup()">
+            <button class="btn btn-primary" style="width: 100%;" onclick="signup()">
                 Criar Conta
             </button>
             
@@ -760,429 +986,415 @@
         </div>
     </div>
 
-    <!-- ============ DASHBOARD ============ -->
-    <div id="dashboard-screen" class="hidden">
+    <!-- ============ AUTH SCREEN (FORGOT PASSWORD) ============ -->
+    <div id="forgot-screen" class="auth-container" style="display: none;">
+        <div class="auth-card fade-in">
+            <div class="auth-logo">🔑</div>
+            <h1 class="auth-title">Recuperar Senha</h1>
+            <p class="auth-subtitle">Insira seu e-mail para resetar a senha</p>
+            
+            <input type="email" id="forgot-email" placeholder="E-mail cadastrado" required>
+            
+            <button class="btn btn-primary" style="width: 100%;" onclick="sendPasswordReset()">
+                Enviar Link de Recuperação
+            </button>
+            
+            <div class="auth-link">
+                Lembrou a senha? <a href="#" onclick="showLogin(); return false;">Fazer login</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ AUTH SCREEN (RESET PASSWORD) ============ -->
+    <div id="reset-screen" class="auth-container" style="display: none;">
+        <div class="auth-card fade-in">
+            <div class="auth-logo">🔐</div>
+            <h1 class="auth-title">Nova Senha</h1>
+            <p class="auth-subtitle">Crie uma nova senha para sua conta</p>
+            
+            <input type="password" id="reset-password" placeholder="Nova senha" required>
+            <input type="password" id="reset-password-confirm" placeholder="Confirmar nova senha" required>
+            
+            <button class="btn btn-primary" style="width: 100%;" onclick="resetPassword()">
+                Redefinir Senha
+            </button>
+        </div>
+    </div>
+
+    <!-- ============ MAIN DASHBOARD ============ -->
+    <div id="dashboard-screen" style="display: none;">
         
         <!-- SIDEBAR -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="logo">
-                    <div class="logo-icon">💈</div>
-                    <span>FlowPro</span>
+                <div class="logo-container">
+                    <div class="logo">💈</div>
+                    <span class="logo-text">FlowPro</span>
+                </div>
+                <div class="toggle-btn" onclick="toggleSidebar()">
+                    ☰
                 </div>
             </div>
 
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" placeholder="Buscar...">
-            </div>
-
-            <nav class="nav-section">
-                <div class="nav-item active" onclick="switchSection('dashboard')">
-                    <span class="nav-icon">📊</span>
-                    <span>Dashboard</span>
-                </div>
-                <div class="nav-item" onclick="switchSection('vendas')">
-                    <span class="nav-icon">💰</span>
-                    <span>Vendas</span>
-                </div>
-                <div class="nav-item" onclick="switchSection('clientes')">
-                    <span class="nav-icon">👥</span>
-                    <span>Clientes</span>
-                </div>
-                <div class="nav-item" onclick="switchSection('fila')">
-                    <span class="nav-icon">⏱️</span>
-                    <span>Fila</span>
-                </div>
-                <div class="nav-item" onclick="switchSection('ia')">
-                    <span class="nav-icon">🤖</span>
-                    <span>IA Assistente</span>
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-label">Menu Principal</div>
+                    <div class="nav-item active" onclick="switchSection('inicio')">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-text">Dashboard</span>
+                    </div>
+                    <div class="nav-item" onclick="switchSection('vendas')">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Vendas</span>
+                    </div>
+                    <div class="nav-item" onclick="switchSection('clientes')">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Clientes</span>
+                    </div>
+                    <div class="nav-item" onclick="switchSection('fila')">
+                        <span class="nav-icon">⏱️</span>
+                        <span class="nav-text">Fila</span>
+                    </div>
                 </div>
 
-                <div class="nav-label">Configurações</div>
-                
-                <div class="nav-item" onclick="switchSection('perfil')">
-                    <span class="nav-icon">⚙️</span>
-                    <span>Perfil</span>
+                <div class="nav-section">
+                    <div class="nav-label">Ferramentas</div>
+                    <div class="nav-item" onclick="switchSection('ia')">
+                        <span class="nav-icon">🤖</span>
+                        <span class="nav-text">IA Assistente</span>
+                    </div>
+                    <div class="nav-item" onclick="switchSection('relatorios')">
+                        <span class="nav-icon">📈</span>
+                        <span class="nav-text">Relatórios</span>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-label">Configurações</div>
+                    <div class="nav-item" onclick="switchSection('perfil')">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text">Perfil</span>
+                    </div>
                 </div>
             </nav>
 
             <div class="sidebar-footer">
-                <div class="user-profile">
-                    <div class="user-avatar" id="sidebar-avatar">JC</div>
+                <div class="user-profile" onclick="switchSection('perfil')">
+                    <div class="user-avatar">👤</div>
                     <div class="user-info">
-                        <div class="user-name" id="sidebar-name">Usuário</div>
-                        <div class="user-role">Configurações da conta</div>
+                        <div class="user-name" id="sidebar-user-name">Usuário</div>
+                        <div class="user-email" id="sidebar-user-email">user@email.com</div>
                     </div>
                 </div>
             </div>
         </aside>
 
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
+        <!-- MAIN WRAPPER -->
+        <div class="main-wrapper" id="mainWrapper">
+            
+            <!-- TOPBAR -->
             <div class="topbar">
-                <div class="mobile-menu" onclick="toggleMobileSidebar()">☰</div>
-                <div style="flex: 1;"></div>
+                <div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
+                    ☰
+                </div>
+                
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Buscar clientes, serviços...">
+                </div>
+
                 <div class="topbar-actions">
-                    <button class="icon-btn">
+                    <div class="icon-btn" title="Notificações">
                         🔔
                         <span class="badge">3</span>
-                    </button>
-                    <button class="icon-btn" onclick="logout()">🚪</button>
+                    </div>
+                    <div class="icon-btn" onclick="logout()" title="Sair">
+                        🚪
+                    </div>
                 </div>
             </div>
 
+            <!-- CONTENT -->
             <div class="content">
                 
                 <!-- ============ DASHBOARD SECTION ============ -->
-                <section id="dashboard-section">
-                    <div class="page-header">
-                        <h1 class="page-title">Bem-vindo de volta, <span id="welcome-name">Usuário</span></h1>
-                        <p class="page-subtitle">Acompanhe o desempenho da sua barbearia em tempo real</p>
-                        <div class="header-actions">
-                            <button class="btn btn-secondary">Exportar dados</button>
-                            <button class="btn btn-primary" onclick="openModal('addVendaModal')">+ Nova Venda</button>
-                        </div>
+                <div id="inicio-section" class="dashboard-section active">
+                    <div class="page-header fade-in">
+                        <h1 class="page-title">Dashboard</h1>
+                        <p class="page-subtitle">Visão geral do seu negócio</p>
                     </div>
 
-                    <!-- Stats Grid -->
-                    <div class="stats-grid">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid fade-in">
                         <div class="stat-card">
                             <div class="stat-header">
-                                <span class="stat-label">Faturamento</span>
-                                <span class="stat-trend up">↗ +12.6%</span>
+                                <div class="stat-label">Lucro Total</div>
+                                <div class="stat-icon">💰</div>
                             </div>
-                            <div class="stat-value" id="stat-faturamento">R$ 0,00</div>
-                            <div class="stat-change">vs mês passado</div>
+                            <div class="stat-value" id="stat-lucro">R$ 0,00</div>
+                            <div class="stat-change positive">
+                                <span>↗</span>
+                                <span>+12.5% vs mês passado</span>
+                            </div>
                         </div>
 
                         <div class="stat-card">
                             <div class="stat-header">
-                                <span class="stat-label">Total Clientes</span>
-                                <span class="stat-trend up">↗ +8.2%</span>
+                                <div class="stat-label">Clientes</div>
+                                <div class="stat-icon">👥</div>
                             </div>
-                            <div class="stat-value" id="stat-total-clientes">0</div>
-                            <div class="stat-change">clientes ativos</div>
+                            <div class="stat-value" id="stat-clientes">0</div>
+                            <div class="stat-change positive">
+                                <span>↗</span>
+                                <span>+8 novos este mês</span>
+                            </div>
                         </div>
 
                         <div class="stat-card">
                             <div class="stat-header">
-                                <span class="stat-label">Novos Cadastros</span>
-                                <span class="stat-trend up">↗ +3.1%</span>
+                                <div class="stat-label">Fila Atual</div>
+                                <div class="stat-icon">⏱️</div>
                             </div>
-                            <div class="stat-value" id="stat-novos">0</div>
-                            <div class="stat-change">este mês</div>
+                            <div class="stat-value" id="stat-fila">0</div>
+                            <div class="stat-change">
+                                <span>→</span>
+                                <span>pessoas aguardando</span>
+                            </div>
                         </div>
 
                         <div class="stat-card">
                             <div class="stat-header">
-                                <span class="stat-label">Vendas Hoje</span>
-                                <span class="stat-trend up">↗ +4.6%</span>
+                                <div class="stat-label">Ticket Médio</div>
+                                <div class="stat-icon">💳</div>
                             </div>
-                            <div class="stat-value" id="stat-vendas-hoje">0</div>
-                            <div class="stat-change">atendimentos</div>
+                            <div class="stat-value" id="stat-ticket">R$ 0,00</div>
+                            <div class="stat-change positive">
+                                <span>↗</span>
+                                <span>+5.2% vs mês passado</span>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Content Grid -->
-                    <div class="grid-3">
-                        <div>
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Receita Total</h3>
-                                    <span class="card-action">Ver relatório</span>
-                                </div>
-                                <div style="font-size: 32px; font-weight: 700; margin-bottom: 8px;" id="total-revenue">R$ 0,00</div>
-                                <div style="color: var(--success); font-size: 13px; font-weight: 600;">↗ +12.5% vs mês anterior</div>
-                                <div style="margin-top: 24px;">
-                                    <canvas id="revenueChart" height="200"></canvas>
-                                </div>
+                    <div class="content-grid">
+                        <div class="card card-half slide-in">
+                            <div class="card-header">
+                                <h3 class="card-title">📊 Últimas Vendas</h3>
+                                <span class="card-action" onclick="switchSection('vendas')">Ver todas →</span>
                             </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Top Serviços</h3>
-                                    <span class="card-action">Ver relatório</span>
-                                </div>
-                                <div class="table-container">
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Serviço</th>
-                                                <th>Atendimentos</th>
-                                                <th>Variação</th>
-                                                <th>Receita</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="top-services">
-                                            <tr>
-                                                <td>Corte + Barba</td>
-                                                <td>142</td>
-                                                <td style="color: var(--success);">+14.2%</td>
-                                                <td>R$ 7.100</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Corte Simples</td>
-                                                <td>98</td>
-                                                <td style="color: var(--success);">+8.7%</td>
-                                                <td>R$ 3.920</td>
-                                            </tr>
-                                            <tr>
-                                                <td>Barba</td>
-                                                <td>67</td>
-                                                <td style="color: var(--success);">+3.1%</td>
-                                                <td>R$ 2.010</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                            <div class="list" id="ultimas-vendas">
+                                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                                    Nenhuma venda registrada ainda
                                 </div>
                             </div>
                         </div>
 
-                        <div>
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Lucro Total</h3>
-                                </div>
-                                <div style="font-size: 32px; font-weight: 700; margin-bottom: 8px;" id="total-profit">R$ 0,00</div>
-                                <div style="color: var(--success); font-size: 13px; font-weight: 600; margin-bottom: 20px;">↗ +8.3%</div>
-                                <div style="padding: 16px; background: var(--bg-tertiary); border-radius: 8px; margin-bottom: 12px;">
-                                    <div style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 4px;">Últimos 12 meses</div>
-                                    <div style="font-size: 18px; font-weight: 600;">Ver relatório →</div>
+                        <div class="card card-half slide-in">
+                            <div class="card-header">
+                                <h3 class="card-title">⏱️ Fila de Atendimento</h3>
+                                <span class="card-action" onclick="openModal('addFilaModal')">+ Adicionar</span>
+                            </div>
+                            <div class="list" id="fila-preview">
+                                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                                    Nenhum cliente na fila
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Total de Sessões</h3>
-                                </div>
-                                <div style="font-size: 32px; font-weight: 700; margin-bottom: 8px;" id="total-sessions">0</div>
-                                <div style="color: var(--success); font-size: 13px; font-weight: 600;">↗ +5.2%</div>
+                        <div class="card card-full slide-in">
+                            <div class="card-header">
+                                <h3 class="card-title">📈 Receita Mensal</h3>
                             </div>
-
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">Atividade Recente</h3>
-                                    <span class="card-action">Ver todas</span>
-                                </div>
-                                <div class="activity-list" id="recent-activity">
-                                    <div class="activity-item">
-                                        <div class="activity-avatar">💰</div>
-                                        <div class="activity-content">
-                                            <div class="activity-text"><strong>Nova venda</strong> registrada</div>
-                                            <div class="activity-time">há 2 minutos</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <canvas id="revenueChart" style="max-height: 300px;"></canvas>
                         </div>
                     </div>
-                </section>
+                </div>
 
                 <!-- ============ VENDAS SECTION ============ -->
-                <section id="vendas-section" class="hidden">
-                    <div class="page-header">
+                <div id="vendas-section" class="dashboard-section">
+                    <div class="page-header fade-in">
                         <h1 class="page-title">Vendas</h1>
-                        <p class="page-subtitle">Gerencie todas as suas vendas e transações</p>
-                        <div class="header-actions">
-                            <button class="btn btn-primary" onclick="openModal('addVendaModal')">+ Nova Venda</button>
-                        </div>
+                        <p class="page-subtitle">Gerencie todas as suas vendas</p>
                     </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Histórico de Vendas</h3>
-                        </div>
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Cliente</th>
-                                        <th>Serviço</th>
-                                        <th>Data</th>
-                                        <th>Valor</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="vendas-table">
-                                    <tr>
-                                        <td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
-                                            Nenhuma venda registrada
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="content-grid">
+                        <div class="card card-full">
+                            <div class="card-header">
+                                <h3 class="card-title">💰 Histórico de Vendas</h3>
+                                <button class="btn btn-primary" onclick="openModal('addVendaModal')">
+                                    + Nova Venda
+                                </button>
+                            </div>
+                            <div class="list" id="vendas-list">
+                                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                                    Nenhuma venda registrada
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
                 <!-- ============ CLIENTES SECTION ============ -->
-                <section id="clientes-section" class="hidden">
-                    <div class="page-header">
+                <div id="clientes-section" class="dashboard-section">
+                    <div class="page-header fade-in">
                         <h1 class="page-title">Clientes</h1>
                         <p class="page-subtitle">Gerencie sua base de clientes</p>
-                        <div class="header-actions">
-                            <button class="btn btn-primary" onclick="openModal('addClienteModal')">+ Novo Cliente</button>
-                        </div>
                     </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Lista de Clientes</h3>
-                        </div>
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Nome</th>
-                                        <th>Telefone</th>
-                                        <th>Última Visita</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="clientes-table">
-                                    <tr>
-                                        <td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
-                                            Nenhum cliente cadastrado
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="content-grid">
+                        <div class="card card-full">
+                            <div class="card-header">
+                                <h3 class="card-title">👥 Lista de Clientes</h3>
+                                <button class="btn btn-primary" onclick="openModal('addClienteModal')">
+                                    + Novo Cliente
+                                </button>
+                            </div>
+                            <div class="list" id="clientes-list">
+                                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                                    Nenhum cliente cadastrado
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
                 <!-- ============ FILA SECTION ============ -->
-                <section id="fila-section" class="hidden">
-                    <div class="page-header">
+                <div id="fila-section" class="dashboard-section">
+                    <div class="page-header fade-in">
                         <h1 class="page-title">Fila de Atendimento</h1>
-                        <p class="page-subtitle">Gerencie a fila de espera</p>
-                        <div class="header-actions">
-                            <button class="btn btn-primary" onclick="openModal('addFilaModal')">+ Adicionar à Fila</button>
-                        </div>
+                        <p class="page-subtitle">Gerencie a fila de clientes</p>
                     </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">Fila Atual</h3>
-                        </div>
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Posição</th>
-                                        <th>Cliente</th>
-                                        <th>Serviço</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="fila-table">
-                                    <tr>
-                                        <td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
-                                            Nenhum cliente na fila
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="content-grid">
+                        <div class="card card-full">
+                            <div class="card-header">
+                                <h3 class="card-title">⏱️ Fila Atual</h3>
+                                <button class="btn btn-primary" onclick="openModal('addFilaModal')">
+                                    + Adicionar à Fila
+                                </button>
+                            </div>
+                            <div class="list" id="fila-list">
+                                <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                                    Nenhum cliente na fila
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
                 <!-- ============ IA SECTION ============ -->
-                <section id="ia-section" class="hidden">
-                    <div class="page-header">
+                <div id="ia-section" class="dashboard-section">
+                    <div class="page-header fade-in">
                         <h1 class="page-title">IA Assistente</h1>
                         <p class="page-subtitle">Seu assistente inteligente de negócios</p>
                     </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">🤖 FlowPro IA</h3>
-                        </div>
-                        
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;">
-                            <button class="btn btn-secondary" onclick="quickAIPrompt('Analise meu desempenho')">
-                                📊 Análise
-                            </button>
-                            <button class="btn btn-secondary" onclick="quickAIPrompt('Como aumentar lucro?')">
-                                💰 Aumentar Lucro
-                            </button>
-                            <button class="btn btn-secondary" onclick="quickAIPrompt('Marketing')">
-                                📱 Marketing
-                            </button>
-                            <button class="btn btn-secondary" onclick="quickAIPrompt('Dicas')">
-                                💡 Dicas
-                            </button>
-                        </div>
+                    <div class="content-grid">
+                        <div class="card card-full">
+                            <div class="card-header">
+                                <h3 class="card-title">🤖 FlowPro IA</h3>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;">
+                                <button class="btn btn-secondary" onclick="quickAIPrompt('Analise meu desempenho mensal')">
+                                    📊 Analisar Desempenho
+                                </button>
+                                <button class="btn btn-secondary" onclick="quickAIPrompt('Como aumentar lucro?')">
+                                    💰 Aumentar Lucro
+                                </button>
+                                <button class="btn btn-secondary" onclick="quickAIPrompt('Criar campanha marketing')">
+                                    📱 Marketing
+                                </button>
+                                <button class="btn btn-secondary" onclick="quickAIPrompt('Melhores práticas')">
+                                    💡 Dicas Pro
+                                </button>
+                            </div>
 
-                        <div id="ai-chat" style="background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; padding: 20px; min-height: 400px; max-height: 500px; overflow-y: auto; margin-bottom: 16px;">
-                            <div class="activity-item">
-                                <div class="activity-avatar" style="background: var(--accent);">🤖</div>
-                                <div class="activity-content">
-                                    <div style="font-weight: 600; margin-bottom: 8px;">FlowPro IA</div>
-                                    <div style="color: var(--text-secondary);">
-                                        Olá! Sou seu assistente inteligente. Posso ajudar com análises, estratégias e otimização do seu negócio.
+                            <div id="ai-chat-container" style="background: var(--bg-body); border: 1px solid var(--border); border-radius: 12px; padding: 24px; min-height: 400px; max-height: 500px; overflow-y: auto; margin-bottom: 16px;">
+                                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                                    <div style="width: 40px; height: 40px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">🤖</div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 8px;">FlowPro IA</div>
+                                        <div style="color: var(--text-secondary); line-height: 1.8;">
+                                            Olá! Sou seu assistente inteligente. Posso ajudar com:
+                                            <br><br>
+                                            • 📊 Análise de métricas<br>
+                                            • 💡 Estratégias de crescimento<br>
+                                            • 📱 Marketing e comunicação<br>
+                                            • 💰 Otimização de lucros<br>
+                                            <br>
+                                            Como posso ajudar hoje?
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div style="display: flex; gap: 12px;">
-                            <input type="text" id="ai-input" placeholder="Digite sua pergunta..." style="margin: 0; flex: 1;" onkeypress="if(event.key==='Enter') sendAI()">
-                            <button class="btn btn-primary" onclick="sendAI()">Enviar</button>
+                            <div style="display: flex; gap: 12px;">
+                                <input type="text" id="ai-input" placeholder="Digite sua pergunta..." style="margin: 0; flex: 1;" onkeypress="if(event.key==='Enter') sendAIMessage()">
+                                <button class="btn btn-primary" onclick="sendAIMessage()">Enviar</button>
+                                <button class="btn btn-danger" onclick="clearAIChat()">Limpar</button>
+                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
                 <!-- ============ PERFIL SECTION ============ -->
-                <section id="perfil-section" class="hidden">
-                    <div class="page-header">
-                        <h1 class="page-title">Configurações</h1>
-                        <p class="page-subtitle">Gerencie suas informações e preferências</p>
+                <div id="perfil-section" class="dashboard-section">
+                    <div class="page-header fade-in">
+                        <h1 class="page-title">Perfil</h1>
+                        <p class="page-subtitle">Configurações da sua conta</p>
                     </div>
 
-                    <div class="grid-2">
-                        <div class="card">
+                    <div class="content-grid">
+                        <div class="card card-half">
                             <div class="card-header">
-                                <h3 class="card-title">Informações da Conta</h3>
+                                <h3 class="card-title">⚙️ Informações da Conta</h3>
                             </div>
+                            
                             <div style="margin-bottom: 20px;">
-                                <label style="display: block; font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px;">Nome da Barbearia</label>
-                                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 8px; font-weight: 600;" id="perfil-nome">-</div>
+                                <label style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">Nome da Barbearia</label>
+                                <div style="padding: 16px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 10px; font-weight: 600;" id="perfil-nome">-</div>
                             </div>
+
                             <div style="margin-bottom: 20px;">
-                                <label style="display: block; font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px;">E-mail</label>
-                                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 8px;" id="perfil-email">-</div>
+                                <label style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">E-mail</label>
+                                <div style="padding: 16px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 10px;" id="perfil-email">-</div>
                             </div>
+
                             <div style="margin-bottom: 20px;">
-                                <label style="display: block; font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px;">Membro desde</label>
-                                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 8px;" id="perfil-data">-</div>
+                                <label style="display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">Membro desde</label>
+                                <div style="padding: 16px; background: var(--bg-body); border: 1px solid var(--border); border-radius: 10px;" id="perfil-data">-</div>
                             </div>
-                            <button class="btn btn-secondary" style="width: 100%; background: var(--danger); color: white; border: none;" onclick="limparDados()">
-                                🗑️ Limpar Dados
+
+                            <button class="btn btn-danger" style="width: 100%;" onclick="limparDados()">
+                                🗑️ Limpar Todos os Dados
                             </button>
                         </div>
 
-                        <div class="card">
+                        <div class="card card-half">
                             <div class="card-header">
-                                <h3 class="card-title">Estatísticas</h3>
+                                <h3 class="card-title">📊 Estatísticas</h3>
                             </div>
-                            <div style="display: grid; gap: 16px;">
-                                <div style="padding: 20px; background: var(--bg-tertiary); border-radius: 8px; text-align: center;">
-                                    <div style="font-size: 32px; font-weight: 700; color: var(--accent);" id="perfil-vendas">0</div>
-                                    <div style="color: var(--text-tertiary); font-size: 13px;">Total de Vendas</div>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 16px;">
+                                <div style="padding: 20px; background: var(--bg-body); border-radius: 12px; text-align: center;">
+                                    <div style="font-size: 32px; font-weight: 700; color: var(--accent);" id="perfil-stat-vendas">0</div>
+                                    <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Total de Vendas</div>
                                 </div>
-                                <div style="padding: 20px; background: var(--bg-tertiary); border-radius: 8px; text-align: center;">
-                                    <div style="font-size: 32px; font-weight: 700; color: var(--accent);" id="perfil-clientes">0</div>
-                                    <div style="color: var(--text-tertiary); font-size: 13px;">Clientes</div>
+                                
+                                <div style="padding: 20px; background: var(--bg-body); border-radius: 12px; text-align: center;">
+                                    <div style="font-size: 32px; font-weight: 700; color: var(--accent);" id="perfil-stat-clientes">0</div>
+                                    <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Clientes Cadastrados</div>
                                 </div>
-                                <div style="padding: 20px; background: var(--bg-tertiary); border-radius: 8px; text-align: center;">
-                                    <div style="font-size: 32px; font-weight: 700; color: var(--accent);" id="perfil-lucro">R$ 0</div>
-                                    <div style="color: var(--text-tertiary); font-size: 13px;">Receita Total</div>
+                                
+                                <div style="padding: 20px; background: var(--bg-body); border-radius: 12px; text-align: center;">
+                                    <div style="font-size: 32px; font-weight: 700; color: var(--accent);" id="perfil-stat-lucro">R$ 0</div>
+                                    <div style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">Receita Total</div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
             </div>
         </div>
@@ -1194,11 +1406,13 @@
     <div id="addVendaModal" class="modal">
         <div class="modal-content">
             <div class="modal-close" onclick="closeModal('addVendaModal')">×</div>
-            <h2 class="modal-title">Nova Venda</h2>
+            <div class="modal-header">
+                <h2 class="modal-title">Nova Venda</h2>
+            </div>
             <select id="venda-cliente">
                 <option value="">Selecionar Cliente</option>
             </select>
-            <input type="text" id="venda-servico" placeholder="Serviço">
+            <input type="text" id="venda-servico" placeholder="Serviço (ex: Corte + Barba)">
             <input type="number" id="venda-valor" placeholder="Valor (R$)" step="0.01">
             <button class="btn btn-primary" style="width: 100%;" onclick="addVenda()">Registrar Venda</button>
         </div>
@@ -1208,10 +1422,12 @@
     <div id="addClienteModal" class="modal">
         <div class="modal-content">
             <div class="modal-close" onclick="closeModal('addClienteModal')">×</div>
-            <h2 class="modal-title">Novo Cliente</h2>
+            <div class="modal-header">
+                <h2 class="modal-title">Novo Cliente</h2>
+            </div>
             <input type="text" id="cliente-nome" placeholder="Nome">
-            <input type="tel" id="cliente-telefone" placeholder="Telefone">
-            <button class="btn btn-primary" style="width: 100%;" onclick="addCliente()">Cadastrar</button>
+            <input type="tel" id="cliente-telefone" placeholder="Telefone (WhatsApp)">
+            <button class="btn btn-primary" style="width: 100%;" onclick="addCliente()">Cadastrar Cliente</button>
         </div>
     </div>
 
@@ -1219,7 +1435,9 @@
     <div id="addFilaModal" class="modal">
         <div class="modal-content">
             <div class="modal-close" onclick="closeModal('addFilaModal')">×</div>
-            <h2 class="modal-title">Adicionar à Fila</h2>
+            <div class="modal-header">
+                <h2 class="modal-title">Adicionar à Fila</h2>
+            </div>
             <select id="fila-cliente">
                 <option value="">Selecionar Cliente</option>
             </select>
@@ -1230,34 +1448,109 @@
 
     <script>
         // ============ DATABASE ============
-        const DB_KEY = 'flowpro_dashdark_db';
+        const DB_KEY = 'flowpro_modern_db';
+        const COOKIE_SESSION = 'flowpro_session';
+        const COOKIE_REMEMBER = 'flowpro_remember';
+        
         let db = {
             users: [],
             lucro: 0,
             fila: [],
             clientes: [],
             historico: [],
-            currentUser: null
+            currentUser: null,
+            passwordResetTokens: {} // email: {token, expires}
         };
 
+        // ============ COOKIE MANAGEMENT ============
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function deleteCookie(name) {
+            document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;SameSite=Strict';
+        }
+
+        function saveSession(email, remember = false) {
+            const sessionData = btoa(email); // Base64 encode
+            
+            if (remember) {
+                // Session cookie (30 days)
+                setCookie(COOKIE_SESSION, sessionData, 30);
+                setCookie(COOKIE_REMEMBER, 'true', 30);
+            } else {
+                // Session cookie (expires when browser closes)
+                document.cookie = `${COOKIE_SESSION}=${sessionData};path=/;SameSite=Strict`;
+            }
+        }
+
+        function loadSession() {
+            const sessionData = getCookie(COOKIE_SESSION);
+            if (sessionData) {
+                try {
+                    const email = atob(sessionData); // Base64 decode
+                    const user = db.users.find(u => u.email === email);
+                    if (user) {
+                        db.currentUser = user;
+                        return true;
+                    }
+                } catch (e) {
+                    console.error('Invalid session cookie');
+                }
+            }
+            return false;
+        }
+
+        function clearSession() {
+            deleteCookie(COOKIE_SESSION);
+            deleteCookie(COOKIE_REMEMBER);
+        }
+
+        // ============ STORAGE FUNCTIONS ============
         function saveDB() {
             localStorage.setItem(DB_KEY, JSON.stringify(db));
         }
 
         function loadDB() {
             const saved = localStorage.getItem(DB_KEY);
-            if (saved) db = JSON.parse(saved);
+            if (saved) {
+                db = JSON.parse(saved);
+            }
         }
 
-        // ============ AUTH ============
+        // ============ AUTH FUNCTIONS ============
         function showLogin() {
-            document.getElementById('signup-screen').classList.add('hidden');
-            document.getElementById('auth-screen').classList.remove('hidden');
+            document.getElementById('signup-screen').style.display = 'none';
+            document.getElementById('forgot-screen').style.display = 'none';
+            document.getElementById('reset-screen').style.display = 'none';
+            document.getElementById('auth-screen').style.display = 'flex';
         }
 
         function showSignup() {
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('signup-screen').classList.remove('hidden');
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('forgot-screen').style.display = 'none';
+            document.getElementById('reset-screen').style.display = 'none';
+            document.getElementById('signup-screen').style.display = 'flex';
+        }
+
+        function showForgotPassword() {
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('signup-screen').style.display = 'none';
+            document.getElementById('reset-screen').style.display = 'none';
+            document.getElementById('forgot-screen').style.display = 'flex';
         }
 
         function signup() {
@@ -1270,6 +1563,16 @@
                 return;
             }
 
+            if (!validateEmail(email)) {
+                showNotification('E-mail inválido', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showNotification('Senha deve ter no mínimo 6 caracteres', 'error');
+                return;
+            }
+
             if (db.users.find(u => u.email === email)) {
                 showNotification('E-mail já cadastrado', 'error');
                 return;
@@ -1278,76 +1581,239 @@
             db.users.push({
                 nome,
                 email,
-                password,
+                password: hashPassword(password),
                 dataCadastro: new Date().toISOString()
             });
 
             saveDB();
-            showNotification('Conta criada!', 'success');
-            setTimeout(showLogin, 1500);
+            showNotification('Conta criada com sucesso!', 'success');
+            
+            setTimeout(() => {
+                showLogin();
+            }, 1500);
         }
 
         function login() {
             const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
+            const rememberMe = document.getElementById('remember-me')?.checked || false;
 
             if (!email || !password) {
                 showNotification('Preencha todos os campos', 'error');
                 return;
             }
 
-            const user = db.users.find(u => u.email === email && u.password === password);
+            const user = db.users.find(u => u.email === email);
 
             if (!user) {
-                showNotification('Credenciais inválidas', 'error');
+                showNotification('E-mail não encontrado', 'error');
+                return;
+            }
+
+            if (user.password !== hashPassword(password)) {
+                showNotification('Senha incorreta', 'error');
                 return;
             }
 
             db.currentUser = user;
             saveDB();
+            saveSession(email, rememberMe);
 
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('dashboard-screen').classList.remove('hidden');
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('dashboard-screen').style.display = 'block';
             
             loadDashboard();
-            showNotification('Bem-vindo!', 'success');
+            showNotification('Bem-vindo de volta!', 'success');
         }
 
         function logout() {
-            if (confirm('Deseja sair?')) {
+            if (confirm('Deseja realmente sair?')) {
                 db.currentUser = null;
                 saveDB();
+                clearSession();
                 location.reload();
             }
         }
 
+        function sendPasswordReset() {
+            const email = document.getElementById('forgot-email').value.trim();
+
+            if (!email) {
+                showNotification('Digite seu e-mail', 'error');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                showNotification('E-mail inválido', 'error');
+                return;
+            }
+
+            const user = db.users.find(u => u.email === email);
+
+            if (!user) {
+                // Por segurança, não revelar se o e-mail existe ou não
+                showNotification('Se o e-mail estiver cadastrado, você receberá as instruções', 'info');
+                
+                setTimeout(() => {
+                    showLogin();
+                }, 3000);
+                return;
+            }
+
+            // Gerar token de reset (simulado - em produção seria enviado por e-mail)
+            const resetToken = generateResetToken();
+            const expires = Date.now() + (30 * 60 * 1000); // 30 minutos
+            
+            db.passwordResetTokens[email] = { token: resetToken, expires };
+            saveDB();
+
+            // Em produção, isso seria enviado por e-mail
+            console.log(`Reset token para ${email}: ${resetToken}`);
+            
+            showNotification('Instruções enviadas! (Simulado: verifique o console)', 'success');
+            
+            // Simular redirecionamento automático para tela de reset
+            setTimeout(() => {
+                document.getElementById('forgot-screen').style.display = 'none';
+                document.getElementById('reset-screen').style.display = 'flex';
+                
+                // Auto-preencher o token (apenas para simulação)
+                window.currentResetEmail = email;
+                window.currentResetToken = resetToken;
+                
+                showNotification('Token de reset gerado! Você pode criar uma nova senha agora.', 'info');
+            }, 2000);
+        }
+
+        function resetPassword() {
+            const newPassword = document.getElementById('reset-password').value;
+            const confirmPassword = document.getElementById('reset-password-confirm').value;
+
+            if (!newPassword || !confirmPassword) {
+                showNotification('Preencha todos os campos', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showNotification('Senha deve ter no mínimo 6 caracteres', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showNotification('As senhas não coincidem', 'error');
+                return;
+            }
+
+            // Verificar token (simulado)
+            if (!window.currentResetEmail || !window.currentResetToken) {
+                showNotification('Token de reset inválido', 'error');
+                return;
+            }
+
+            const email = window.currentResetEmail;
+            const tokenData = db.passwordResetTokens[email];
+
+            if (!tokenData || tokenData.token !== window.currentResetToken) {
+                showNotification('Token de reset inválido', 'error');
+                return;
+            }
+
+            if (Date.now() > tokenData.expires) {
+                showNotification('Token expirado. Solicite um novo reset', 'error');
+                delete db.passwordResetTokens[email];
+                saveDB();
+                return;
+            }
+
+            // Atualizar senha
+            const user = db.users.find(u => u.email === email);
+            if (user) {
+                user.password = hashPassword(newPassword);
+                delete db.passwordResetTokens[email];
+                saveDB();
+
+                showNotification('Senha redefinida com sucesso!', 'success');
+                
+                // Limpar variáveis temporárias
+                delete window.currentResetEmail;
+                delete window.currentResetToken;
+
+                setTimeout(() => {
+                    showLogin();
+                }, 2000);
+            }
+        }
+
+        function generateResetToken() {
+            return Math.random().toString(36).substring(2, 15) + 
+                   Math.random().toString(36).substring(2, 15);
+        }
+
+        function hashPassword(password) {
+            // Simples hash (em produção use bcrypt ou similar)
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString(36);
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // ============ SIDEBAR FUNCTIONS ============
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainWrapper = document.getElementById('mainWrapper');
+            
+            sidebar.classList.toggle('collapsed');
+            mainWrapper.classList.toggle('sidebar-collapsed');
+        }
+
+        function toggleMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
         // ============ NAVIGATION ============
         function switchSection(section) {
-            document.querySelectorAll('.content > section').forEach(s => s.classList.add('hidden'));
-            document.getElementById(section + '-section').classList.remove('hidden');
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section').forEach(s => {
+                s.classList.remove('active');
+            });
 
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            // Show selected section
+            document.getElementById(section + '-section').classList.add('active');
+
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
             event.currentTarget.classList.add('active');
 
+            // Close mobile sidebar
             document.getElementById('sidebar').classList.remove('active');
 
-            if (section === 'dashboard') loadDashboard();
+            // Refresh data based on section
+            if (section === 'inicio') loadDashboard();
             else if (section === 'vendas') loadVendas();
             else if (section === 'clientes') loadClientes();
             else if (section === 'fila') loadFila();
             else if (section === 'perfil') loadPerfil();
         }
 
-        function toggleMobileSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
-        // ============ MODALS ============
-        function openModal(id) {
-            document.getElementById(id).classList.add('active');
+        // ============ MODAL FUNCTIONS ============
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
             
-            if (id === 'addVendaModal' || id === 'addFilaModal') {
-                const select = document.getElementById(id === 'addVendaModal' ? 'venda-cliente' : 'fila-cliente');
+            // Populate select options
+            if (modalId === 'addVendaModal' || modalId === 'addFilaModal') {
+                const select = document.getElementById(modalId === 'addVendaModal' ? 'venda-cliente' : 'fila-cliente');
                 select.innerHTML = '<option value="">Selecionar Cliente</option>';
                 db.clientes.forEach(c => {
                     select.innerHTML += `<option value="${c.nome}">${c.nome}</option>`;
@@ -1355,111 +1821,98 @@
             }
         }
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
         }
 
-        // ============ DASHBOARD ============
+        // ============ DASHBOARD FUNCTIONS ============
         function loadDashboard() {
             if (!db.currentUser) return;
 
-            const initials = db.currentUser.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            document.getElementById('sidebar-avatar').textContent = initials;
-            document.getElementById('sidebar-name').textContent = db.currentUser.nome;
-            document.getElementById('welcome-name').textContent = db.currentUser.nome;
+            // Update user info
+            document.getElementById('sidebar-user-name').textContent = db.currentUser.nome;
+            document.getElementById('sidebar-user-email').textContent = db.currentUser.email;
 
-            document.getElementById('stat-faturamento').textContent = formatCurrency(db.lucro);
-            document.getElementById('stat-total-clientes').textContent = db.clientes.length;
-            document.getElementById('stat-novos').textContent = db.clientes.length;
-            document.getElementById('stat-vendas-hoje').textContent = db.historico.length;
-            document.getElementById('total-revenue').textContent = formatCurrency(db.lucro);
-            document.getElementById('total-profit').textContent = formatCurrency(db.lucro * 0.6);
-            document.getElementById('total-sessions').textContent = db.historico.length;
+            // Update stats
+            document.getElementById('stat-lucro').textContent = formatCurrency(db.lucro);
+            document.getElementById('stat-clientes').textContent = db.clientes.length;
+            document.getElementById('stat-fila').textContent = db.fila.length;
+            
+            const ticketMedio = db.historico.length > 0 
+                ? db.lucro / db.historico.length 
+                : 0;
+            document.getElementById('stat-ticket').textContent = formatCurrency(ticketMedio);
 
-            createChart();
-            loadRecentActivity();
+            // Load recent sales
+            loadRecentSales();
+            loadFilaPreview();
+            createRevenueChart();
         }
 
-        function createChart() {
-            const ctx = document.getElementById('revenueChart');
-            if (!ctx) return;
-
-            const monthlyData = {};
-            db.historico.forEach(v => {
-                const month = new Date(v.data).toLocaleDateString('pt-BR', { month: 'short' });
-                monthlyData[month] = (monthlyData[month] || 0) + v.valor;
-            });
-
-            const labels = Object.keys(monthlyData);
-            const data = Object.values(monthlyData);
-
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels.length > 0 ? labels : ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-                    datasets: [{
-                        label: 'Receita',
-                        data: data.length > 0 ? data : [0, 0, 0, 0, 0, 0],
-                        borderColor: '#8b5cf6',
-                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: '#27272a' },
-                            ticks: { color: '#a1a1aa' }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#a1a1aa' }
-                        }
-                    }
-                }
-            });
-        }
-
-        function loadRecentActivity() {
-            const container = document.getElementById('recent-activity');
+        function loadRecentSales() {
+            const container = document.getElementById('ultimas-vendas');
+            
             if (db.historico.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-tertiary);">Nenhuma atividade</div>';
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">Nenhuma venda registrada ainda</div>';
                 return;
             }
 
-            const recent = db.historico.slice(-3).reverse();
+            const recent = db.historico.slice(-5).reverse();
             container.innerHTML = recent.map(v => `
-                <div class="activity-item">
-                    <div class="activity-avatar">💰</div>
-                    <div class="activity-content">
-                        <div class="activity-text"><strong>${v.cliente}</strong> - ${v.servico}</div>
-                        <div class="activity-time">${formatCurrency(v.valor)}</div>
+                <div class="list-item">
+                    <div class="list-item-info">
+                        <div class="list-item-avatar">💰</div>
+                        <div class="list-item-details">
+                            <div class="list-item-title">${v.cliente}</div>
+                            <div class="list-item-subtitle">${v.servico} • ${new Date(v.data).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+                    <div class="list-item-value">${formatCurrency(v.valor)}</div>
+                </div>
+            `).join('');
+        }
+
+        function loadFilaPreview() {
+            const container = document.getElementById('fila-preview');
+            
+            if (db.fila.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">Nenhum cliente na fila</div>';
+                return;
+            }
+
+            container.innerHTML = db.fila.slice(0, 3).map((item, i) => `
+                <div class="list-item">
+                    <div class="list-item-info">
+                        <div class="list-item-avatar">${i + 1}</div>
+                        <div class="list-item-details">
+                            <div class="list-item-title">${item.cliente}</div>
+                            <div class="list-item-subtitle">${item.servico}</div>
+                        </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        // ============ VENDAS ============
+        // ============ VENDAS FUNCTIONS ============
         function loadVendas() {
-            const tbody = document.getElementById('vendas-table');
+            const container = document.getElementById('vendas-list');
             
             if (db.historico.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">Nenhuma venda registrada</td></tr>';
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">Nenhuma venda registrada</div>';
                 return;
             }
 
-            tbody.innerHTML = db.historico.map(v => `
-                <tr>
-                    <td>${v.cliente}</td>
-                    <td>${v.servico}</td>
-                    <td>${new Date(v.data).toLocaleDateString()}</td>
-                    <td style="font-weight: 600;">${formatCurrency(v.valor)}</td>
-                </tr>
+            container.innerHTML = db.historico.map(v => `
+                <div class="list-item">
+                    <div class="list-item-info">
+                        <div class="list-item-avatar">💰</div>
+                        <div class="list-item-details">
+                            <div class="list-item-title">${v.cliente}</div>
+                            <div class="list-item-subtitle">${v.servico} • ${new Date(v.data).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+                    <div class="list-item-value">${formatCurrency(v.valor)}</div>
+                </div>
             `).join('');
         }
 
@@ -1468,8 +1921,8 @@
             const servico = document.getElementById('venda-servico').value.trim();
             const valor = parseFloat(document.getElementById('venda-valor').value);
 
-            if (!cliente || !servico || !valor) {
-                showNotification('Preencha todos os campos', 'error');
+            if (!cliente || !servico || !valor || valor <= 0) {
+                showNotification('Preencha todos os campos corretamente', 'error');
                 return;
             }
 
@@ -1484,39 +1937,44 @@
             saveDB();
 
             closeModal('addVendaModal');
-            showNotification('Venda registrada!', 'success');
+            showNotification('Venda registrada com sucesso!', 'success');
             
             loadDashboard();
             loadVendas();
 
+            // Clear form
             document.getElementById('venda-cliente').value = '';
             document.getElementById('venda-servico').value = '';
             document.getElementById('venda-valor').value = '';
         }
 
-        // ============ CLIENTES ============
+        // ============ CLIENTES FUNCTIONS ============
         function loadClientes() {
-            const tbody = document.getElementById('clientes-table');
+            const container = document.getElementById('clientes-list');
             
             if (db.clientes.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">Nenhum cliente cadastrado</td></tr>';
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">Nenhum cliente cadastrado</div>';
                 return;
             }
 
-            tbody.innerHTML = db.clientes.map(c => `
-                <tr>
-                    <td style="font-weight: 600;">${c.nome}</td>
-                    <td>${c.telefone}</td>
-                    <td>-</td>
-                    <td>
-                        <a href="https://wa.me/55${c.telefone.replace(/\D/g, '')}" target="_blank" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">
-                            WhatsApp
+            container.innerHTML = db.clientes.map(c => `
+                <div class="list-item">
+                    <div class="list-item-info">
+                        <div class="list-item-avatar">👤</div>
+                        <div class="list-item-details">
+                            <div class="list-item-title">${c.nome}</div>
+                            <div class="list-item-subtitle">📱 ${c.telefone}</div>
+                        </div>
+                    </div>
+                    <div class="list-item-actions">
+                        <a href="https://wa.me/55${c.telefone.replace(/\D/g, '')}" target="_blank" class="btn btn-secondary" style="font-size: 12px; padding: 8px 16px;">
+                            📱 WhatsApp
                         </a>
-                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; background: var(--danger); color: white; border: none;" onclick="removeCliente('${c.nome}')">
-                            Remover
+                        <button class="btn btn-danger" style="font-size: 12px; padding: 8px 16px;" onclick="removeCliente('${c.nome}')">
+                            🗑️
                         </button>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             `).join('');
         }
 
@@ -1529,51 +1987,62 @@
                 return;
             }
 
+            if (db.clientes.find(c => c.nome === nome)) {
+                showNotification('Cliente já cadastrado', 'error');
+                return;
+            }
+
             db.clientes.push({ nome, telefone });
             saveDB();
 
             closeModal('addClienteModal');
-            showNotification('Cliente cadastrado!', 'success');
+            showNotification('Cliente cadastrado com sucesso!', 'success');
             
             loadClientes();
             loadDashboard();
 
+            // Clear form
             document.getElementById('cliente-nome').value = '';
             document.getElementById('cliente-telefone').value = '';
         }
 
         function removeCliente(nome) {
-            if (confirm(`Remover ${nome}?`)) {
+            if (confirm(`Deseja remover ${nome}?`)) {
                 db.clientes = db.clientes.filter(c => c.nome !== nome);
                 saveDB();
                 showNotification('Cliente removido', 'success');
                 loadClientes();
+                loadDashboard();
             }
         }
 
-        // ============ FILA ============
+        // ============ FILA FUNCTIONS ============
         function loadFila() {
-            const tbody = document.getElementById('fila-table');
+            const container = document.getElementById('fila-list');
             
             if (db.fila.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">Nenhum cliente na fila</td></tr>';
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-secondary);">Nenhum cliente na fila</div>';
                 return;
             }
 
-            tbody.innerHTML = db.fila.map((item, i) => `
-                <tr>
-                    <td style="font-weight: 700; color: var(--accent);">#${i + 1}</td>
-                    <td>${item.cliente}</td>
-                    <td>${item.servico}</td>
-                    <td>
-                        <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="atenderFila(${i})">
-                            Atender
+            container.innerHTML = db.fila.map((item, i) => `
+                <div class="list-item">
+                    <div class="list-item-info">
+                        <div class="list-item-avatar">${i + 1}</div>
+                        <div class="list-item-details">
+                            <div class="list-item-title">${item.cliente}</div>
+                            <div class="list-item-subtitle">${item.servico}</div>
+                        </div>
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="btn btn-primary" style="font-size: 12px; padding: 8px 16px;" onclick="atenderFila(${i})">
+                            ✓ Atender
                         </button>
-                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; background: var(--danger); color: white; border: none;" onclick="removeFromFila(${i})">
-                            Remover
+                        <button class="btn btn-danger" style="font-size: 12px; padding: 8px 16px;" onclick="removeFromFila(${i})">
+                            🗑️
                         </button>
-                    </td>
-                </tr>
+                    </div>
+                </div>
             `).join('');
         }
 
@@ -1590,19 +2059,22 @@
             saveDB();
 
             closeModal('addFilaModal');
-            showNotification('Adicionado à fila', 'success');
+            showNotification('Cliente adicionado à fila', 'success');
             
             loadFila();
             loadDashboard();
 
+            // Clear form
             document.getElementById('fila-cliente').value = '';
             document.getElementById('fila-servico').value = '';
         }
 
         function atenderFila(index) {
+            const item = db.fila[index];
             db.fila.splice(index, 1);
             saveDB();
-            showNotification('Cliente atendido!', 'success');
+            
+            showNotification(`${item.cliente} atendido!`, 'success');
             loadFila();
             loadDashboard();
         }
@@ -1612,9 +2084,10 @@
             saveDB();
             showNotification('Removido da fila', 'success');
             loadFila();
+            loadDashboard();
         }
 
-        // ============ PERFIL ============
+        // ============ PERFIL FUNCTIONS ============
         function loadPerfil() {
             if (!db.currentUser) return;
 
@@ -1622,82 +2095,191 @@
             document.getElementById('perfil-email').textContent = db.currentUser.email;
             document.getElementById('perfil-data').textContent = new Date(db.currentUser.dataCadastro).toLocaleDateString();
             
-            document.getElementById('perfil-vendas').textContent = db.historico.length;
-            document.getElementById('perfil-clientes').textContent = db.clientes.length;
-            document.getElementById('perfil-lucro').textContent = formatCurrency(db.lucro);
+            document.getElementById('perfil-stat-vendas').textContent = db.historico.length;
+            document.getElementById('perfil-stat-clientes').textContent = db.clientes.length;
+            document.getElementById('perfil-stat-lucro').textContent = formatCurrency(db.lucro);
         }
 
         function limparDados() {
-            if (confirm('Apagar todos os dados?')) {
-                db.lucro = 0;
-                db.fila = [];
-                db.clientes = [];
-                db.historico = [];
-                saveDB();
-                showNotification('Dados limpos', 'info');
-                loadDashboard();
-                loadPerfil();
+            if (confirm('Tem certeza? Isso apagará TODOS os seus dados!')) {
+                if (confirm('ÚLTIMA CONFIRMAÇÃO: Todos os dados serão perdidos permanentemente!')) {
+                    db.lucro = 0;
+                    db.fila = [];
+                    db.clientes = [];
+                    db.historico = [];
+                    saveDB();
+                    
+                    showNotification('Todos os dados foram limpos', 'info');
+                    loadDashboard();
+                    loadPerfil();
+                }
             }
         }
 
-        // ============ IA ============
+        // ============ AI FUNCTIONS ============
         function quickAIPrompt(prompt) {
             document.getElementById('ai-input').value = prompt;
-            sendAI();
+            sendAIMessage();
         }
 
-        function sendAI() {
+        function sendAIMessage() {
             const input = document.getElementById('ai-input');
             const message = input.value.trim();
             
             if (!message) return;
 
-            const chat = document.getElementById('ai-chat');
+            const container = document.getElementById('ai-chat-container');
             
-            chat.innerHTML += `
-                <div class="activity-item" style="justify-content: flex-end; margin-top: 16px;">
-                    <div style="background: var(--accent); color: white; padding: 12px 16px; border-radius: 8px; max-width: 70%;">
-                        ${message}
+            // Add user message
+            container.innerHTML += `
+                <div style="display: flex; gap: 16px; margin-bottom: 20px; justify-content: flex-end;">
+                    <div style="max-width: 70%; background: var(--accent); color: #000; padding: 16px; border-radius: 12px;">
+                        <div style="font-weight: 600; margin-bottom: 4px;">Você</div>
+                        <div>${message}</div>
                     </div>
                 </div>
             `;
 
+            // Simulate AI response
             setTimeout(() => {
                 const response = generateAIResponse(message);
-                chat.innerHTML += `
-                    <div class="activity-item" style="margin-top: 16px;">
-                        <div class="activity-avatar" style="background: var(--accent);">🤖</div>
-                        <div style="background: var(--bg-tertiary); padding: 12px 16px; border-radius: 8px; max-width: 70%;">
-                            ${response}
+                container.innerHTML += `
+                    <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                        <div style="width: 40px; height: 40px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">🤖</div>
+                        <div style="flex: 1; max-width: 70%;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">FlowPro IA</div>
+                            <div style="color: var(--text-secondary); line-height: 1.8;">${response}</div>
                         </div>
                     </div>
                 `;
-                chat.scrollTop = chat.scrollHeight;
+                container.scrollTop = container.scrollHeight;
             }, 1000);
 
             input.value = '';
-            chat.scrollTop = chat.scrollHeight;
+            container.scrollTop = container.scrollHeight;
         }
 
-        function generateAIResponse(msg) {
-            const lower = msg.toLowerCase();
+        function generateAIResponse(message) {
+            const msg = message.toLowerCase();
             
-            if (lower.includes('desempenho') || lower.includes('análise')) {
-                return `Análise atual:<br>💰 Lucro: ${formatCurrency(db.lucro)}<br>👥 Clientes: ${db.clientes.length}<br>📊 Vendas: ${db.historico.length}`;
+            if (msg.includes('desempenho') || msg.includes('análise') || msg.includes('métricas')) {
+                return `Com base nos dados atuais:<br><br>
+                    • 💰 Lucro total: ${formatCurrency(db.lucro)}<br>
+                    • 👥 ${db.clientes.length} clientes cadastrados<br>
+                    • 📊 ${db.historico.length} vendas realizadas<br>
+                    • 💳 Ticket médio: ${formatCurrency(db.historico.length > 0 ? db.lucro / db.historico.length : 0)}<br><br>
+                    Recomendo focar em aumentar a frequência de visitas dos clientes existentes!`;
             }
             
-            if (lower.includes('lucro') || lower.includes('aumentar')) {
-                return `Dicas para aumentar lucro:<br>• Programa de fidelidade<br>• Combos de serviços<br>• Marketing digital<br>• Horários promocionais`;
+            if (msg.includes('lucro') || msg.includes('aumentar') || msg.includes('ganhar')) {
+                return `Para aumentar seus lucros, sugiro:<br><br>
+                    • 📱 Criar programa de fidelidade<br>
+                    • 💇 Oferecer combos de serviços<br>
+                    • 🎁 Bonificação para indicações<br>
+                    • ⏰ Promoções em horários menos movimentados<br>
+                    • 📊 Analisar serviços mais rentáveis`;
             }
             
-            if (lower.includes('marketing')) {
-                return `Sugestão de campanha: "🔥 Traga um amigo e ganhe 20% OFF! Seu amigo também ganha desconto na primeira visita. Agende já!"`;
+            if (msg.includes('marketing') || msg.includes('mensagem') || msg.includes('campanha')) {
+                return `Aqui está uma mensagem de marketing sugerida:<br><br>
+                    "🔥 Promoção Especial! Traga um amigo e ganhe 20% OFF no próximo corte. 
+                    Seu amigo também ganha 15% de desconto na primeira visita! 
+                    💈 Agende já pelo WhatsApp!"<br><br>
+                    Use essa mensagem para reativar clientes inativos!`;
             }
             
-            return `Entendi! Como posso ajudar especificamente?`;
+            if (msg.includes('práticas') || msg.includes('dicas') || msg.includes('melhorar')) {
+                return `Melhores práticas para barbearias:<br><br>
+                    • ✨ Mantenha o ambiente sempre limpo<br>
+                    • 🎵 Música ambiente adequada<br>
+                    • ☕ Ofereça água/café aos clientes<br>
+                    • 📱 Sistema de agendamento online<br>
+                    • 🌟 Peça avaliações no Google<br>
+                    • 💬 Mantenha contato via WhatsApp`;
+            }
+            
+            return `Entendi sua pergunta! Posso ajudar com:<br><br>
+                • Análise de desempenho<br>
+                • Estratégias de crescimento<br>
+                • Campanhas de marketing<br>
+                • Otimização de lucros<br><br>
+                O que gostaria de saber especificamente?`;
         }
 
-        // ============ UTILS ============
+        function clearAIChat() {
+            document.getElementById('ai-chat-container').innerHTML = `
+                <div style="display: flex; gap: 16px; margin-bottom: 20px;">
+                    <div style="width: 40px; height: 40px; background: var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">🤖</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600; margin-bottom: 8px;">FlowPro IA</div>
+                        <div style="color: var(--text-secondary); line-height: 1.8;">
+                            Conversa limpa! Como posso ajudar?
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============ CHART FUNCTIONS ============
+        function createRevenueChart() {
+            const ctx = document.getElementById('revenueChart');
+            if (!ctx) return;
+
+            // Get monthly data
+            const monthlyData = {};
+            db.historico.forEach(v => {
+                const month = new Date(v.data).toLocaleDateString('pt-BR', { month: 'short' });
+                monthlyData[month] = (monthlyData[month] || 0) + v.valor;
+            });
+
+            const labels = Object.keys(monthlyData);
+            const data = Object.values(monthlyData);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels.length > 0 ? labels : ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                    datasets: [{
+                        label: 'Receita',
+                        data: data.length > 0 ? data : [0, 0, 0, 0, 0, 0],
+                        borderColor: '#00ff88',
+                        backgroundColor: 'rgba(0, 255, 136, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#2a2a2a'
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#9ca3af'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============ UTILITY FUNCTIONS ============
         function formatCurrency(value) {
             return new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
@@ -1706,26 +2288,38 @@
         }
 
         function showNotification(message, type = 'info') {
-            const notif = document.createElement('div');
-            notif.className = `notification ${type}`;
-            notif.textContent = message;
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
             
-            document.body.appendChild(notif);
+            document.body.appendChild(notification);
             
-            setTimeout(() => notif.remove(), 3000);
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
         }
 
-        // ============ INIT ============
+        // ============ INITIALIZATION ============
         window.addEventListener('DOMContentLoaded', () => {
             loadDB();
             
-            if (db.currentUser) {
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('dashboard-screen').classList.remove('hidden');
+            // Verificar se existe sessão ativa via cookie
+            const hasSession = loadSession();
+            
+            if (hasSession && db.currentUser) {
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('dashboard-screen').style.display = 'block';
+                loadDashboard();
+                showNotification('Sessão restaurada!', 'info');
+            } else if (db.currentUser) {
+                // Tem usuário no localStorage mas não tem cookie válido
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('dashboard-screen').style.display = 'block';
                 loadDashboard();
             }
         });
 
+        // Close modals when clicking outside
         window.addEventListener('click', (e) => {
             if (e.target.classList.contains('modal')) {
                 e.target.classList.remove('active');
