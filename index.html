@@ -3,1170 +3,1734 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlowPro S.A. | Elite Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>FlowPro - Dashboard Profissional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-body: #000000;
-            --bg-card: #1c1c1e;
-            --bg-card-elevated: #2c2c2e;
-            --neon-green: #30d158;
-            --neon-green-hover: #32d75a;
-            --text-main: #ffffff;
-            --text-secondary: #98989d;
-            --text-tertiary: #636366;
-            --border: #38383a;
-            --danger: #ff453a;
-            --wa-green: #25d366;
-            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.6);
-            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.7);
+            --bg-primary: #0f0f10;
+            --bg-secondary: #18181b;
+            --bg-tertiary: #27272a;
+            --bg-card: #18181b;
+            --accent: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #71717a;
+            --border: #27272a;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --sidebar-width: 240px;
         }
 
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
-        body { 
-            background: var(--bg-body);
-            color: var(--text-main); 
+        body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            font-size: 16px;
-            line-height: 1.5;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            overflow-x: hidden;
         }
 
-        /* ============ ANIMATIONS ============ */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* ============ SIDEBAR ============ */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            transition: transform 0.3s ease;
         }
 
-        @keyframes slideInFromRight {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
         }
 
-        @keyframes scaleIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 700;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
         }
 
-        @keyframes shimmer {
-            0% { background-position: -1000px 0; }
-            100% { background-position: 1000px 0; }
+        .search-box {
+            margin: 16px;
+            position: relative;
         }
 
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        .slide-in { animation: slideInFromRight 0.4s ease-out forwards; }
-        .scale-in { animation: scaleIn 0.3s ease-out forwards; }
-
-        /* ============ AUTH SCREENS ============ */
-        .auth-container { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            padding: 24px;
-            background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
-        }
-
-        .auth-card { 
-            background: var(--bg-card);
+        .search-box input {
+            width: 100%;
+            padding: 10px 36px 10px 36px;
+            background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            padding: 48px 40px;
-            border-radius: 24px;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: var(--shadow-lg);
-            animation: scaleIn 0.4s ease-out;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            transition: all 0.2s;
         }
 
-        .auth-logo { 
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--neon-green);
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-
-        .auth-sub { 
-            color: var(--text-secondary);
-            font-size: 15px;
-            margin-bottom: 32px;
-            font-weight: 400;
-        }
-
-        input { 
-            width: 100%;
-            background: var(--bg-body);
-            border: 1.5px solid var(--border);
-            padding: 16px 18px;
-            border-radius: 12px;
-            color: var(--text-main);
-            margin-bottom: 16px;
-            font-size: 16px;
-            font-family: inherit;
+        .search-box input:focus {
             outline: none;
-            transition: all 0.2s ease;
+            border-color: var(--accent);
         }
 
-        input:focus { 
-            border-color: var(--neon-green);
-            background: var(--bg-card);
-            box-shadow: 0 0 0 4px rgba(48, 209, 88, 0.1);
-        }
-
-        input::placeholder {
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
             color: var(--text-tertiary);
         }
 
-        .btn-main { 
-            width: 100%;
-            background: var(--neon-green);
-            color: #000;
-            border: none;
+        .nav-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .nav-label {
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            margin-bottom: 2px;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
             padding: 16px;
+            border-top: 1px solid var(--border);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .user-profile:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: var(--text-tertiary);
+        }
+
+        /* ============ MAIN CONTENT ============ */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .mobile-menu {
+            display: none;
+            width: 36px;
+            height: 36px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-tertiary);
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-primary);
+        }
+
+        .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 16px;
+            height: 16px;
+            background: var(--danger);
+            border-radius: 50%;
+            font-size: 9px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content {
+            padding: 32px;
+            max-width: 1400px;
+        }
+
+        /* ============ PAGE HEADER ============ */
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        /* ============ BUTTONS ============ */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+        }
+
+        /* ============ STATS GRID ============ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stat-trend.up {
+            color: var(--success);
+        }
+
+        .stat-trend.down {
+            color: var(--danger);
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        /* ============ CARDS ============ */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .card-action {
+            color: var(--accent);
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
-            font-family: inherit;
-            transition: all 0.2s ease;
-            letter-spacing: 0.3px;
+            transition: color 0.2s;
         }
 
-        .btn-main:hover {
-            background: var(--neon-green-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(48, 209, 88, 0.3);
+        .card-action:hover {
+            color: var(--accent-hover);
         }
 
-        .btn-main:active {
-            transform: translateY(0);
+        /* ============ TABLE ============ */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody td {
+            padding: 16px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* ============ ACTIVITY LIST ============ */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 12px;
+        }
+
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-tertiary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .activity-text strong {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        /* ============ GRID LAYOUT ============ */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        /* ============ FORMS ============ */
+        input, select {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* ============ MODAL ============ */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 32px;
+            height: 32px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        /* ============ AUTH ============ */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 48px 40px;
+            max-width: 420px;
+            width: 100%;
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .auth-logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), #a78bfa);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 16px;
+        }
+
+        .auth-title {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
         }
 
         .auth-link {
             text-align: center;
             margin-top: 24px;
             color: var(--text-secondary);
-            font-size: 14px;
         }
 
-        .auth-link b {
-            color: var(--neon-green);
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .auth-link b:hover {
-            color: var(--neon-green-hover);
-        }
-
-        /* ============ DASHBOARD LAYOUT ============ */
-        #dashboard-page { 
-            display: none;
-            padding: 24px;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding-bottom: 100px;
-        }
-
-        .top-nav { 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .user-greeting { 
-            font-size: 28px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .user-greeting span { 
-            color: var(--text-secondary);
-            display: block;
-            font-size: 14px;
-            font-weight: 400;
-            margin-top: 4px;
-            letter-spacing: 0;
-        }
-
-        .logout-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 18px;
-        }
-
-        .logout-btn:hover {
-            background: var(--bg-card-elevated);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-sm);
-        }
-
-        /* ============ BALANCE CARD ============ */
-        .balance-card { 
-            background: linear-gradient(135deg, var(--neon-green) 0%, #28a745 100%);
-            padding: 32px;
-            border-radius: 20px;
-            margin-bottom: 32px;
-            box-shadow: var(--shadow-md);
-            position: relative;
-            overflow: hidden;
-            animation: fadeIn 0.6s ease-out 0.1s backwards;
-        }
-
-        .balance-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .balance-label { 
-            color: rgba(0, 0, 0, 0.7);
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .balance-value { 
-            font-size: 48px;
-            font-weight: 800;
-            color: #000;
-            letter-spacing: -1px;
-            margin-bottom: 12px;
-        }
-
-        .balance-sub {
-            color: rgba(0, 0, 0, 0.6);
-            font-size: 15px;
-            font-weight: 500;
-        }
-
-        .balance-sub span {
-            color: #000;
-            font-weight: 700;
-        }
-
-        /* ============ GRID & CARDS ============ */
-        .grid-container { 
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-        }
-
-        .card-box { 
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 28px;
-            border-radius: 20px;
-            box-shadow: var(--shadow-sm);
-            transition: all 0.3s ease;
-            animation: fadeIn 0.5s ease-out backwards;
-        }
-
-        .card-box:nth-child(1) { animation-delay: 0.2s; }
-        .card-box:nth-child(2) { animation-delay: 0.3s; }
-        .card-box:nth-child(3) { animation-delay: 0.4s; }
-
-        .card-box:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-md);
-            border-color: rgba(48, 209, 88, 0.3);
-        }
-
-        .card-title { 
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: -0.3px;
-        }
-
-        /* ============ LISTS ============ */
-        .list-item { 
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--bg-card-elevated);
-            border: 1px solid var(--border);
-            padding: 18px;
-            border-radius: 14px;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            animation: slideInFromRight 0.3s ease-out backwards;
-        }
-
-        .list-item:hover {
-            background: var(--bg-body);
-            transform: translateX(4px);
-        }
-
-        .item-info b { 
-            display: block;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-            letter-spacing: -0.2px;
-        }
-
-        .item-info span { 
-            color: var(--neon-green);
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .item-info small {
-            color: var(--text-secondary);
-            font-size: 13px;
-            display: block;
-            margin-top: 2px;
-        }
-
-        .action-btns { 
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-sm { 
-            padding: 10px 16px;
-            border-radius: 10px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 13px;
-            font-family: inherit;
-            transition: all 0.2s ease;
-            letter-spacing: 0.3px;
-        }
-
-        .btn-ok { 
-            background: var(--neon-green);
-            color: #000;
-        }
-
-        .btn-ok:hover {
-            background: var(--neon-green-hover);
-            transform: scale(1.05);
-        }
-
-        .btn-del { 
-            background: rgba(255, 69, 58, 0.15);
-            color: var(--danger);
-        }
-
-        .btn-del:hover {
-            background: rgba(255, 69, 58, 0.25);
-            transform: scale(1.05);
-        }
-
-        .btn-wa { 
-            background: var(--wa-green);
-            color: #fff;
+        .auth-link a {
+            color: var(--accent);
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn-wa:hover {
-            background: #22c55e;
-            transform: scale(1.05);
-        }
-
-        /* ============ INPUT GROUP ============ */
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 24px;
-        }
-
-        .input-group input {
-            margin: 0;
-        }
-
-        .input-group .btn-add {
-            width: 50px;
-            min-width: 50px;
-            padding: 0;
-            font-size: 24px;
-            background: var(--neon-green);
-            color: #000;
-        }
-
-        .input-group .btn-add:hover {
-            transform: scale(1.05);
-        }
-
-        /* ============ CHART ============ */
-        #mainChart {
-            max-height: 220px;
-        }
-
-        /* ============ BOTTOM MENU ============ */
-        .bottom-menu {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 20px 20px;
-            z-index: 100;
-            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.3);
-        }
-
-        .menu-icon { 
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 11px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            padding: 8px 16px;
-            border-radius: 12px;
-        }
-
-        .menu-icon:hover {
-            color: var(--neon-green);
-            background: rgba(48, 209, 88, 0.1);
-        }
-
-        .menu-icon.active { 
-            color: var(--neon-green);
-            background: rgba(48, 209, 88, 0.15);
-        }
-
-        .menu-icon div {
-            font-size: 20px;
-            margin-bottom: 4px;
-        }
-
-        /* ============ SUCCESS ANIMATION ============ */
-        @keyframes success {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        .success-flash {
-            animation: success 0.4s ease;
-        }
-
-        /* ============ EMPTY STATE ============ */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
-        }
-
-        .empty-state div {
-            font-size: 48px;
-            margin-bottom: 12px;
-            opacity: 0.5;
-        }
-
-        .empty-state p {
-            font-size: 15px;
-        }
-
-        /* ============ RESPONSIVE ============ */
-        @media (max-width: 768px) {
-            .balance-value { font-size: 36px; }
-            .user-greeting { font-size: 24px; }
-            .grid-container { grid-template-columns: 1fr; }
-            .auth-card { padding: 36px 28px; }
-        }
-
-        /* ============ LOADING STATE ============ */
-        .loading {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--neon-green);
-            animation: pulse 1s ease-in-out infinite;
         }
 
         /* ============ NOTIFICATIONS ============ */
         .notification {
             position: fixed;
-            top: 24px;
-            right: 24px;
+            top: 20px;
+            right: 20px;
             background: var(--bg-card);
             border: 1px solid var(--border);
+            border-radius: 8px;
             padding: 16px 20px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
-            z-index: 1000;
-            animation: slideInFromRight 0.3s ease-out;
-            max-width: 320px;
+            min-width: 300px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            z-index: 3000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         .notification.success {
-            border-left: 4px solid var(--neon-green);
+            border-left: 3px solid var(--success);
         }
 
         .notification.error {
-            border-left: 4px solid var(--danger);
+            border-left: 3px solid var(--danger);
+        }
+
+        .notification.info {
+            border-left: 3px solid var(--info);
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+        }
+
+        .hidden {
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <!-- ============ LOGIN PAGE ============ -->
-    <div id="login-page" class="auth-container">
+    <!-- ============ AUTH SCREEN (LOGIN) ============ -->
+    <div id="auth-screen" class="auth-container">
         <div class="auth-card">
-            <div class="auth-logo">FLOWPRO <span style="color:#fff; font-weight:600">S.A.</span></div>
-            <div class="auth-sub">Acesse seu dashboard inteligente</div>
-            <input type="email" id="l-email" placeholder="E-mail de acesso" autocomplete="email">
-            <input type="password" id="l-pass" placeholder="Sua senha" autocomplete="current-password">
-            <button class="btn-main" onclick="handleLogin()">ENTRAR AGORA</button>
+            <div class="auth-logo">
+                <div class="auth-logo-icon">💈</div>
+                <h1 class="auth-title">FlowPro</h1>
+                <p class="auth-subtitle">Dashboard Profissional para Barbearias</p>
+            </div>
+            
+            <input type="email" id="login-email" placeholder="E-mail">
+            <input type="password" id="login-password" placeholder="Senha">
+            
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 12px;" onclick="login()">
+                Entrar
+            </button>
+            
             <div class="auth-link">
-                <span>Não tem conta? <b onclick="switchPage('signup-page')">Criar uma</b></span>
+                Não tem conta? <a href="#" onclick="showSignup(); return false;">Criar conta</a>
             </div>
         </div>
     </div>
 
-    <!-- ============ SIGNUP PAGE ============ -->
-    <div id="signup-page" class="auth-container" style="display:none">
+    <!-- ============ AUTH SCREEN (SIGNUP) ============ -->
+    <div id="signup-screen" class="auth-container hidden">
         <div class="auth-card">
-            <div class="auth-logo">CADASTRO</div>
-            <div class="auth-sub">Crie sua conta corporativa gratuita</div>
-            <input type="text" id="s-name" placeholder="Nome da Barbearia" autocomplete="organization">
-            <input type="email" id="s-email" placeholder="E-mail profissional" autocomplete="email">
-            <input type="password" id="s-pass" placeholder="Definir senha" autocomplete="new-password">
-            <button class="btn-main" onclick="handleSignup()">FINALIZAR CADASTRO</button>
+            <div class="auth-logo">
+                <div class="auth-logo-icon">💈</div>
+                <h1 class="auth-title">Criar Conta</h1>
+                <p class="auth-subtitle">Comece a usar o FlowPro hoje</p>
+            </div>
+            
+            <input type="text" id="signup-nome" placeholder="Nome da Barbearia">
+            <input type="email" id="signup-email" placeholder="E-mail">
+            <input type="password" id="signup-password" placeholder="Senha">
+            
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 12px;" onclick="signup()">
+                Criar Conta
+            </button>
+            
             <div class="auth-link">
-                <span>Já sou cliente? <b onclick="switchPage('login-page')">Fazer Login</b></span>
+                Já tem conta? <a href="#" onclick="showLogin(); return false;">Fazer login</a>
             </div>
         </div>
     </div>
 
-    <!-- ============ DASHBOARD PAGE ============ -->
-    <div id="dashboard-page">
-        <div class="top-nav">
-            <div class="user-greeting">
-                Olá, <span id="user-name-display">Usuário</span>
-            </div>
-            <div class="logout-btn" onclick="handleLogout()" title="Sair">
-                🔒
-            </div>
-        </div>
-
-        <div class="balance-card">
-            <div class="balance-label">Lucro Mensal Total</div>
-            <div class="balance-value" id="val-mensal">R$ 0,00</div>
-            <div class="balance-sub">Projeção Anual: <span id="val-anual">R$ 0,00</span></div>
-        </div>
-
-        <div class="grid-container">
-            <!-- ============ PERFORMANCE CHART ============ -->
-            <div class="card-box">
-                <div class="card-title">📈 Métricas de Performance</div>
-                <canvas id="mainChart"></canvas>
-            </div>
-
-            <!-- ============ FILA DE ESPERA ============ -->
-            <div class="card-box">
-                <div class="card-title">⏳ Fila de Espera</div>
-                <div class="input-group">
-                    <input type="text" id="q-name" placeholder="Nome do cliente">
-                    <input type="number" id="q-val" placeholder="Valor R$" min="0" step="0.01">
-                    <button class="btn-main btn-add" onclick="addFila()">+</button>
+    <!-- ============ DASHBOARD ============ -->
+    <div id="dashboard-screen" class="hidden">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">💈</div>
+                    <span>FlowPro</span>
                 </div>
-                <div id="fila-lista"></div>
             </div>
 
-            <!-- ============ REATIVAÇÃO ============ -->
-            <div class="card-box">
-                <div class="card-title">🎯 Reativação de Clientes</div>
-                <input type="text" id="rem-name" placeholder="Nome do cliente">
-                <input type="tel" id="rem-tel" placeholder="WhatsApp (ex: 5511999999999)">
-                <button class="btn-main" style="background:var(--bg-card-elevated); color:var(--text-main); margin-top:12px" onclick="addRemarketing()">SALVAR NA LISTA</button>
-                <div id="rem-lista" style="margin-top: 24px;"></div>
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="Buscar...">
+            </div>
+
+            <nav class="nav-section">
+                <div class="nav-item active" onclick="switchSection('dashboard')">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </div>
+                <div class="nav-item" onclick="switchSection('vendas')">
+                    <span class="nav-icon">💰</span>
+                    <span>Vendas</span>
+                </div>
+                <div class="nav-item" onclick="switchSection('clientes')">
+                    <span class="nav-icon">👥</span>
+                    <span>Clientes</span>
+                </div>
+                <div class="nav-item" onclick="switchSection('fila')">
+                    <span class="nav-icon">⏱️</span>
+                    <span>Fila</span>
+                </div>
+                <div class="nav-item" onclick="switchSection('ia')">
+                    <span class="nav-icon">🤖</span>
+                    <span>IA Assistente</span>
+                </div>
+
+                <div class="nav-label">Configurações</div>
+                
+                <div class="nav-item" onclick="switchSection('perfil')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Perfil</span>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar" id="sidebar-avatar">JC</div>
+                    <div class="user-info">
+                        <div class="user-name" id="sidebar-name">Usuário</div>
+                        <div class="user-role">Configurações da conta</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="topbar">
+                <div class="mobile-menu" onclick="toggleMobileSidebar()">☰</div>
+                <div style="flex: 1;"></div>
+                <div class="topbar-actions">
+                    <button class="icon-btn">
+                        🔔
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="icon-btn" onclick="logout()">🚪</button>
+                </div>
+            </div>
+
+            <div class="content">
+                
+                <!-- ============ DASHBOARD SECTION ============ -->
+                <section id="dashboard-section">
+                    <div class="page-header">
+                        <h1 class="page-title">Bem-vindo de volta, <span id="welcome-name">Usuário</span></h1>
+                        <p class="page-subtitle">Acompanhe o desempenho da sua barbearia em tempo real</p>
+                        <div class="header-actions">
+                            <button class="btn btn-secondary">Exportar dados</button>
+                            <button class="btn btn-primary" onclick="openModal('addVendaModal')">+ Nova Venda</button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Faturamento</span>
+                                <span class="stat-trend up">↗ +12.6%</span>
+                            </div>
+                            <div class="stat-value" id="stat-faturamento">R$ 0,00</div>
+                            <div class="stat-change">vs mês passado</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Total Clientes</span>
+                                <span class="stat-trend up">↗ +8.2%</span>
+                            </div>
+                            <div class="stat-value" id="stat-total-clientes">0</div>
+                            <div class="stat-change">clientes ativos</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Novos Cadastros</span>
+                                <span class="stat-trend up">↗ +3.1%</span>
+                            </div>
+                            <div class="stat-value" id="stat-novos">0</div>
+                            <div class="stat-change">este mês</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <span class="stat-label">Vendas Hoje</span>
+                                <span class="stat-trend up">↗ +4.6%</span>
+                            </div>
+                            <div class="stat-value" id="stat-vendas-hoje">0</div>
+                            <div class="stat-change">atendimentos</div>
+                        </div>
+                    </div>
+
+                    <!-- Content Grid -->
+                    <div class="grid-3">
+                        <div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Receita Total</h3>
+                                    <span class="card-action">Ver relatório</span>
+                                </div>
+                                <div style="font-size: 32px; font-weight: 700; margin-bottom: 8px;" id="total-revenue">R$ 0,00</div>
+                                <div style="color: var(--success); font-size: 13px; font-weight: 600;">↗ +12.5% vs mês anterior</div>
+                                <div style="margin-top: 24px;">
+                                    <canvas id="revenueChart" height="200"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Top Serviços</h3>
+                                    <span class="card-action">Ver relatório</span>
+                                </div>
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Serviço</th>
+                                                <th>Atendimentos</th>
+                                                <th>Variação</th>
+                                                <th>Receita</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="top-services">
+                                            <tr>
+                                                <td>Corte + Barba</td>
+                                                <td>142</td>
+                                                <td style="color: var(--success);">+14.2%</td>
+                                                <td>R$ 7.100</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Corte Simples</td>
+                                                <td>98</td>
+                                                <td style="color: var(--success);">+8.7%</td>
+                                                <td>R$ 3.920</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Barba</td>
+                                                <td>67</td>
+                                                <td style="color: var(--success);">+3.1%</td>
+                                                <td>R$ 2.010</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Lucro Total</h3>
+                                </div>
+                                <div style="font-size: 32px; font-weight: 700; margin-bottom: 8px;" id="total-profit">R$ 0,00</div>
+                                <div style="color: var(--success); font-size: 13px; font-weight: 600; margin-bottom: 20px;">↗ +8.3%</div>
+                                <div style="padding: 16px; background: var(--bg-tertiary); border-radius: 8px; margin-bottom: 12px;">
+                                    <div style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 4px;">Últimos 12 meses</div>
+                                    <div style="font-size: 18px; font-weight: 600;">Ver relatório →</div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Total de Sessões</h3>
+                                </div>
+                                <div style="font-size: 32px; font-weight: 700; margin-bottom: 8px;" id="total-sessions">0</div>
+                                <div style="color: var(--success); font-size: 13px; font-weight: 600;">↗ +5.2%</div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Atividade Recente</h3>
+                                    <span class="card-action">Ver todas</span>
+                                </div>
+                                <div class="activity-list" id="recent-activity">
+                                    <div class="activity-item">
+                                        <div class="activity-avatar">💰</div>
+                                        <div class="activity-content">
+                                            <div class="activity-text"><strong>Nova venda</strong> registrada</div>
+                                            <div class="activity-time">há 2 minutos</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============ VENDAS SECTION ============ -->
+                <section id="vendas-section" class="hidden">
+                    <div class="page-header">
+                        <h1 class="page-title">Vendas</h1>
+                        <p class="page-subtitle">Gerencie todas as suas vendas e transações</p>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" onclick="openModal('addVendaModal')">+ Nova Venda</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Histórico de Vendas</h3>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Cliente</th>
+                                        <th>Serviço</th>
+                                        <th>Data</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="vendas-table">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
+                                            Nenhuma venda registrada
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============ CLIENTES SECTION ============ -->
+                <section id="clientes-section" class="hidden">
+                    <div class="page-header">
+                        <h1 class="page-title">Clientes</h1>
+                        <p class="page-subtitle">Gerencie sua base de clientes</p>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" onclick="openModal('addClienteModal')">+ Novo Cliente</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Lista de Clientes</h3>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Telefone</th>
+                                        <th>Última Visita</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clientes-table">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
+                                            Nenhum cliente cadastrado
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============ FILA SECTION ============ -->
+                <section id="fila-section" class="hidden">
+                    <div class="page-header">
+                        <h1 class="page-title">Fila de Atendimento</h1>
+                        <p class="page-subtitle">Gerencie a fila de espera</p>
+                        <div class="header-actions">
+                            <button class="btn btn-primary" onclick="openModal('addFilaModal')">+ Adicionar à Fila</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Fila Atual</h3>
+                        </div>
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Posição</th>
+                                        <th>Cliente</th>
+                                        <th>Serviço</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="fila-table">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">
+                                            Nenhum cliente na fila
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============ IA SECTION ============ -->
+                <section id="ia-section" class="hidden">
+                    <div class="page-header">
+                        <h1 class="page-title">IA Assistente</h1>
+                        <p class="page-subtitle">Seu assistente inteligente de negócios</p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">🤖 FlowPro IA</h3>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;">
+                            <button class="btn btn-secondary" onclick="quickAIPrompt('Analise meu desempenho')">
+                                📊 Análise
+                            </button>
+                            <button class="btn btn-secondary" onclick="quickAIPrompt('Como aumentar lucro?')">
+                                💰 Aumentar Lucro
+                            </button>
+                            <button class="btn btn-secondary" onclick="quickAIPrompt('Marketing')">
+                                📱 Marketing
+                            </button>
+                            <button class="btn btn-secondary" onclick="quickAIPrompt('Dicas')">
+                                💡 Dicas
+                            </button>
+                        </div>
+
+                        <div id="ai-chat" style="background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; padding: 20px; min-height: 400px; max-height: 500px; overflow-y: auto; margin-bottom: 16px;">
+                            <div class="activity-item">
+                                <div class="activity-avatar" style="background: var(--accent);">🤖</div>
+                                <div class="activity-content">
+                                    <div style="font-weight: 600; margin-bottom: 8px;">FlowPro IA</div>
+                                    <div style="color: var(--text-secondary);">
+                                        Olá! Sou seu assistente inteligente. Posso ajudar com análises, estratégias e otimização do seu negócio.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 12px;">
+                            <input type="text" id="ai-input" placeholder="Digite sua pergunta..." style="margin: 0; flex: 1;" onkeypress="if(event.key==='Enter') sendAI()">
+                            <button class="btn btn-primary" onclick="sendAI()">Enviar</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============ PERFIL SECTION ============ -->
+                <section id="perfil-section" class="hidden">
+                    <div class="page-header">
+                        <h1 class="page-title">Configurações</h1>
+                        <p class="page-subtitle">Gerencie suas informações e preferências</p>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Informações da Conta</h3>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px;">Nome da Barbearia</label>
+                                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 8px; font-weight: 600;" id="perfil-nome">-</div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px;">E-mail</label>
+                                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 8px;" id="perfil-email">-</div>
+                            </div>
+                            <div style="margin-bottom: 20px;">
+                                <label style="display: block; font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px;">Membro desde</label>
+                                <div style="padding: 12px; background: var(--bg-tertiary); border-radius: 8px;" id="perfil-data">-</div>
+                            </div>
+                            <button class="btn btn-secondary" style="width: 100%; background: var(--danger); color: white; border: none;" onclick="limparDados()">
+                                🗑️ Limpar Dados
+                            </button>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">Estatísticas</h3>
+                            </div>
+                            <div style="display: grid; gap: 16px;">
+                                <div style="padding: 20px; background: var(--bg-tertiary); border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 32px; font-weight: 700; color: var(--accent);" id="perfil-vendas">0</div>
+                                    <div style="color: var(--text-tertiary); font-size: 13px;">Total de Vendas</div>
+                                </div>
+                                <div style="padding: 20px; background: var(--bg-tertiary); border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 32px; font-weight: 700; color: var(--accent);" id="perfil-clientes">0</div>
+                                    <div style="color: var(--text-tertiary); font-size: 13px;">Clientes</div>
+                                </div>
+                                <div style="padding: 20px; background: var(--bg-tertiary); border-radius: 8px; text-align: center;">
+                                    <div style="font-size: 32px; font-weight: 700; color: var(--accent);" id="perfil-lucro">R$ 0</div>
+                                    <div style="color: var(--text-tertiary); font-size: 13px;">Receita Total</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </div>
         </div>
+    </div>
 
-        <!-- ============ BOTTOM MENU ============ -->
-        <div class="bottom-menu">
-            <div class="menu-icon active">
-                <div>🏠</div>
-                Início
-            </div>
-            <div class="menu-icon">
-                <div>📊</div>
-                Vendas
-            </div>
-            <div class="menu-icon">
-                <div>👥</div>
-                Clientes
-            </div>
-            <div class="menu-icon">
-                <div>⚙️</div>
-                Perfil
-            </div>
+    <!-- ============ MODALS ============ -->
+    
+    <!-- Add Venda Modal -->
+    <div id="addVendaModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('addVendaModal')">×</div>
+            <h2 class="modal-title">Nova Venda</h2>
+            <select id="venda-cliente">
+                <option value="">Selecionar Cliente</option>
+            </select>
+            <input type="text" id="venda-servico" placeholder="Serviço">
+            <input type="number" id="venda-valor" placeholder="Valor (R$)" step="0.01">
+            <button class="btn btn-primary" style="width: 100%;" onclick="addVenda()">Registrar Venda</button>
+        </div>
+    </div>
+
+    <!-- Add Cliente Modal -->
+    <div id="addClienteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('addClienteModal')">×</div>
+            <h2 class="modal-title">Novo Cliente</h2>
+            <input type="text" id="cliente-nome" placeholder="Nome">
+            <input type="tel" id="cliente-telefone" placeholder="Telefone">
+            <button class="btn btn-primary" style="width: 100%;" onclick="addCliente()">Cadastrar</button>
+        </div>
+    </div>
+
+    <!-- Add Fila Modal -->
+    <div id="addFilaModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('addFilaModal')">×</div>
+            <h2 class="modal-title">Adicionar à Fila</h2>
+            <select id="fila-cliente">
+                <option value="">Selecionar Cliente</option>
+            </select>
+            <input type="text" id="fila-servico" placeholder="Serviço">
+            <button class="btn btn-primary" style="width: 100%;" onclick="addToFila()">Adicionar</button>
         </div>
     </div>
 
     <script>
-        // ============ SECURE DATA MANAGEMENT ============
-        const DB_KEY = 'flowpro_db_v2';
-        const DB_BACKUP_KEY = 'flowpro_db_backup';
-        
-        class SecureStorage {
-            static save(data) {
-                try {
-                    const jsonData = JSON.stringify(data);
-                    // Save main data
-                    localStorage.setItem(DB_KEY, jsonData);
-                    // Save backup
-                    localStorage.setItem(DB_BACKUP_KEY, jsonData);
-                    // Save timestamp
-                    localStorage.setItem(DB_KEY + '_timestamp', Date.now().toString());
-                    return true;
-                } catch (error) {
-                    console.error('Erro ao salvar dados:', error);
-                    showNotification('Erro ao salvar dados', 'error');
-                    return false;
-                }
-            }
+        // ============ DATABASE ============
+        const DB_KEY = 'flowpro_dashdark_db';
+        let db = {
+            users: [],
+            lucro: 0,
+            fila: [],
+            clientes: [],
+            historico: [],
+            currentUser: null
+        };
 
-            static load() {
-                try {
-                    let data = localStorage.getItem(DB_KEY);
-                    
-                    // If main data is corrupted, try backup
-                    if (!data || !this.isValidJSON(data)) {
-                        console.warn('Dados principais corrompidos, carregando backup...');
-                        data = localStorage.getItem(DB_BACKUP_KEY);
-                    }
-
-                    if (data && this.isValidJSON(data)) {
-                        return JSON.parse(data);
-                    }
-
-                    // Return default structure if no valid data
-                    return this.getDefaultStructure();
-                } catch (error) {
-                    console.error('Erro ao carregar dados:', error);
-                    return this.getDefaultStructure();
-                }
-            }
-
-            static isValidJSON(str) {
-                try {
-                    JSON.parse(str);
-                    return true;
-                } catch {
-                    return false;
-                }
-            }
-
-            static getDefaultStructure() {
-                return {
-                    users: [],
-                    lucro: 0,
-                    fila: [],
-                    rem: [],
-                    historico: []
-                };
-            }
-
-            static clear() {
-                localStorage.removeItem(DB_KEY);
-                localStorage.removeItem(DB_BACKUP_KEY);
-                localStorage.removeItem(DB_KEY + '_timestamp');
-            }
+        function saveDB() {
+            localStorage.setItem(DB_KEY, JSON.stringify(db));
         }
 
-        // ============ GLOBAL STATE ============
-        let db = SecureStorage.load();
-        let chart = null;
-        let currentUser = null;
-
-        // ============ UTILITY FUNCTIONS ============
-        function sanitizeInput(input) {
-            if (typeof input !== 'string') return '';
-            return input.trim().replace(/[<>]/g, '');
+        function loadDB() {
+            const saved = localStorage.getItem(DB_KEY);
+            if (saved) db = JSON.parse(saved);
         }
 
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
+        // ============ AUTH ============
+        function showLogin() {
+            document.getElementById('signup-screen').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
         }
 
-        function validatePhone(phone) {
-            const cleaned = phone.replace(/\D/g, '');
-            return cleaned.length >= 10 && cleaned.length <= 15;
+        function showSignup() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('signup-screen').classList.remove('hidden');
         }
 
-        function formatCurrency(value) {
-            const num = parseFloat(value) || 0;
-            return num.toLocaleString('pt-BR', {
-                style: 'currency',
-                currency: 'BRL',
-                minimumFractionDigits: 2
-            });
-        }
+        function signup() {
+            const nome = document.getElementById('signup-nome').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
 
-        function showNotification(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.textContent = message;
-            document.body.appendChild(notification);
-
-            setTimeout(() => {
-                notification.style.animation = 'slideInFromRight 0.3s ease-out reverse';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-
-        // ============ PAGE NAVIGATION ============
-        function switchPage(pageId) {
-            document.querySelectorAll('.auth-container, #dashboard-page').forEach(p => {
-                p.style.display = 'none';
-            });
-
-            const page = document.getElementById(pageId);
-            if (page) {
-                page.style.display = (pageId === 'dashboard-page') ? 'block' : 'flex';
-            }
-        }
-
-        // ============ AUTHENTICATION ============
-        function handleSignup() {
-            const name = sanitizeInput(document.getElementById('s-name').value);
-            const email = sanitizeInput(document.getElementById('s-email').value);
-            const pass = document.getElementById('s-pass').value;
-
-            // Validation
-            if (!name || name.length < 2) {
-                showNotification('Nome da barbearia inválido', 'error');
+            if (!nome || !email || !password) {
+                showNotification('Preencha todos os campos', 'error');
                 return;
             }
 
-            if (!validateEmail(email)) {
-                showNotification('E-mail inválido', 'error');
-                return;
-            }
-
-            if (!pass || pass.length < 6) {
-                showNotification('Senha deve ter no mínimo 6 caracteres', 'error');
-                return;
-            }
-
-            // Check if email already exists
-            if (db.users.some(u => u.email === email)) {
+            if (db.users.find(u => u.email === email)) {
                 showNotification('E-mail já cadastrado', 'error');
                 return;
             }
 
-            // Create user
             db.users.push({
-                id: Date.now(),
+                nome,
                 email,
-                name,
-                pass,
-                createdAt: new Date().toISOString()
+                password,
+                dataCadastro: new Date().toISOString()
             });
 
-            if (SecureStorage.save(db)) {
-                showNotification('Conta criada com sucesso!', 'success');
-                // Clear fields
-                document.getElementById('s-name').value = '';
-                document.getElementById('s-email').value = '';
-                document.getElementById('s-pass').value = '';
-                setTimeout(() => switchPage('login-page'), 1500);
-            }
+            saveDB();
+            showNotification('Conta criada!', 'success');
+            setTimeout(showLogin, 1500);
         }
 
-        function handleLogin() {
-            const email = sanitizeInput(document.getElementById('l-email').value);
-            const pass = document.getElementById('l-pass').value;
+        function login() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
 
-            if (!validateEmail(email)) {
-                showNotification('E-mail inválido', 'error');
+            if (!email || !password) {
+                showNotification('Preencha todos os campos', 'error');
                 return;
             }
 
-            const user = db.users.find(u => u.email === email && u.pass === pass);
+            const user = db.users.find(u => u.email === email && u.password === password);
 
-            if (user) {
-                currentUser = user;
-                document.getElementById('user-name-display').textContent = user.name;
-                switchPage('dashboard-page');
-                setTimeout(() => {
-                    initChart();
-                    renderAll();
-                }, 100);
-                showNotification(`Bem-vindo de volta, ${user.name}!`, 'success');
-            } else {
+            if (!user) {
                 showNotification('Credenciais inválidas', 'error');
-            }
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            switchPage('login-page');
-            showNotification('Logout realizado com sucesso', 'success');
-        }
-
-        // ============ FILA DE ESPERA ============
-        function addFila() {
-            const nome = sanitizeInput(document.getElementById('q-name').value);
-            const valorInput = document.getElementById('q-val').value;
-            const valor = parseFloat(valorInput);
-
-            // Validation
-            if (!nome || nome.length < 2) {
-                showNotification('Nome do cliente inválido', 'error');
                 return;
             }
 
-            if (isNaN(valor) || valor <= 0) {
-                showNotification('Valor deve ser maior que zero', 'error');
-                return;
-            }
+            db.currentUser = user;
+            saveDB();
 
-            // Add to queue
-            const item = {
-                id: Date.now(),
-                nome,
-                valor: parseFloat(valor.toFixed(2)),
-                createdAt: new Date().toISOString()
-            };
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('dashboard-screen').classList.remove('hidden');
+            
+            loadDashboard();
+            showNotification('Bem-vindo!', 'success');
+        }
 
-            db.fila.push(item);
-
-            if (SecureStorage.save(db)) {
-                // Clear fields
-                document.getElementById('q-name').value = '';
-                document.getElementById('q-val').value = '';
-                renderAll();
-                showNotification('Cliente adicionado à fila!', 'success');
-                
-                // Focus back on name input for quick entry
-                document.getElementById('q-name').focus();
+        function logout() {
+            if (confirm('Deseja sair?')) {
+                db.currentUser = null;
+                saveDB();
+                location.reload();
             }
         }
 
-        function concluirVenda(id) {
-            try {
-                const item = db.fila.find(f => f.id === id);
-                
-                if (!item) {
-                    showNotification('Item não encontrado', 'error');
-                    return;
-                }
+        // ============ NAVIGATION ============
+        function switchSection(section) {
+            document.querySelectorAll('.content > section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(section + '-section').classList.remove('hidden');
 
-                // Add to profit
-                db.lucro = parseFloat((db.lucro + item.valor).toFixed(2));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
 
-                // Add to history
-                if (!db.historico) db.historico = [];
-                db.historico.push({
-                    ...item,
-                    completedAt: new Date().toISOString()
+            document.getElementById('sidebar').classList.remove('active');
+
+            if (section === 'dashboard') loadDashboard();
+            else if (section === 'vendas') loadVendas();
+            else if (section === 'clientes') loadClientes();
+            else if (section === 'fila') loadFila();
+            else if (section === 'perfil') loadPerfil();
+        }
+
+        function toggleMobileSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        // ============ MODALS ============
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            
+            if (id === 'addVendaModal' || id === 'addFilaModal') {
+                const select = document.getElementById(id === 'addVendaModal' ? 'venda-cliente' : 'fila-cliente');
+                select.innerHTML = '<option value="">Selecionar Cliente</option>';
+                db.clientes.forEach(c => {
+                    select.innerHTML += `<option value="${c.nome}">${c.nome}</option>`;
                 });
-
-                // Remove from queue
-                db.fila = db.fila.filter(f => f.id !== id);
-
-                if (SecureStorage.save(db)) {
-                    renderAll();
-                    updateChart();
-                    showNotification(`Venda de ${formatCurrency(item.valor)} concluída!`, 'success');
-
-                    // Add success animation to balance card
-                    const balanceCard = document.querySelector('.balance-card');
-                    balanceCard.classList.add('success-flash');
-                    setTimeout(() => balanceCard.classList.remove('success-flash'), 400);
-                }
-            } catch (error) {
-                console.error('Erro ao concluir venda:', error);
-                showNotification('Erro ao concluir venda', 'error');
             }
         }
 
-        function removerDaFila(id) {
-            db.fila = db.fila.filter(f => f.id !== id);
-            if (SecureStorage.save(db)) {
-                renderAll();
-                showNotification('Cliente removido da fila', 'success');
-            }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
         }
 
-        // ============ REMARKETING ============
-        function addRemarketing() {
-            const nome = sanitizeInput(document.getElementById('rem-name').value);
-            const tel = sanitizeInput(document.getElementById('rem-tel').value);
+        // ============ DASHBOARD ============
+        function loadDashboard() {
+            if (!db.currentUser) return;
 
-            // Validation
-            if (!nome || nome.length < 2) {
-                showNotification('Nome do cliente inválido', 'error');
-                return;
-            }
+            const initials = db.currentUser.nome.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            document.getElementById('sidebar-avatar').textContent = initials;
+            document.getElementById('sidebar-name').textContent = db.currentUser.nome;
+            document.getElementById('welcome-name').textContent = db.currentUser.nome;
 
-            if (!validatePhone(tel)) {
-                showNotification('Telefone inválido (use formato: 5511999999999)', 'error');
-                return;
-            }
+            document.getElementById('stat-faturamento').textContent = formatCurrency(db.lucro);
+            document.getElementById('stat-total-clientes').textContent = db.clientes.length;
+            document.getElementById('stat-novos').textContent = db.clientes.length;
+            document.getElementById('stat-vendas-hoje').textContent = db.historico.length;
+            document.getElementById('total-revenue').textContent = formatCurrency(db.lucro);
+            document.getElementById('total-profit').textContent = formatCurrency(db.lucro * 0.6);
+            document.getElementById('total-sessions').textContent = db.historico.length;
 
-            // Clean phone number
-            const cleanPhone = tel.replace(/\D/g, '');
+            createChart();
+            loadRecentActivity();
+        }
 
-            // Check for duplicates
-            if (db.rem.some(r => r.tel === cleanPhone)) {
-                showNotification('Cliente já está na lista de reativação', 'error');
-                return;
-            }
+        function createChart() {
+            const ctx = document.getElementById('revenueChart');
+            if (!ctx) return;
 
-            // Add to remarketing list
-            db.rem.push({
-                id: Date.now(),
-                nome,
-                tel: cleanPhone,
-                createdAt: new Date().toISOString()
+            const monthlyData = {};
+            db.historico.forEach(v => {
+                const month = new Date(v.data).toLocaleDateString('pt-BR', { month: 'short' });
+                monthlyData[month] = (monthlyData[month] || 0) + v.valor;
             });
 
-            if (SecureStorage.save(db)) {
-                // Clear fields
-                document.getElementById('rem-name').value = '';
-                document.getElementById('rem-tel').value = '';
-                renderAll();
-                showNotification('Cliente adicionado à lista de reativação!', 'success');
-            }
+            const labels = Object.keys(monthlyData);
+            const data = Object.values(monthlyData);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels.length > 0 ? labels : ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                    datasets: [{
+                        label: 'Receita',
+                        data: data.length > 0 ? data : [0, 0, 0, 0, 0, 0],
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#27272a' },
+                            ticks: { color: '#a1a1aa' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#a1a1aa' }
+                        }
+                    }
+                }
+            });
         }
 
-        function removerRemarketing(id) {
-            db.rem = db.rem.filter(r => r.id !== id);
-            if (SecureStorage.save(db)) {
-                renderAll();
-                showNotification('Cliente removido da lista', 'success');
-            }
-        }
-
-        // ============ RENDER FUNCTIONS ============
-        function renderAll() {
-            renderFila();
-            renderRemarketing();
-            updateStats();
-        }
-
-        function renderFila() {
-            const lista = document.getElementById('fila-lista');
-            
-            if (db.fila.length === 0) {
-                lista.innerHTML = `
-                    <div class="empty-state">
-                        <div>⏳</div>
-                        <p>Nenhum cliente na fila</p>
-                    </div>
-                `;
+        function loadRecentActivity() {
+            const container = document.getElementById('recent-activity');
+            if (db.historico.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-tertiary);">Nenhuma atividade</div>';
                 return;
             }
 
-            lista.innerHTML = db.fila.map((item, index) => `
-                <div class="list-item" style="animation-delay: ${index * 0.05}s">
-                    <div class="item-info">
-                        <b>${item.nome}</b>
-                        <span>${formatCurrency(item.valor)}</span>
-                    </div>
-                    <div class="action-btns">
-                        <button class="btn-sm btn-ok" onclick="concluirVenda(${item.id})">✓ PAGOU</button>
-                        <button class="btn-sm btn-del" onclick="removerDaFila(${item.id})">✕</button>
+            const recent = db.historico.slice(-3).reverse();
+            container.innerHTML = recent.map(v => `
+                <div class="activity-item">
+                    <div class="activity-avatar">💰</div>
+                    <div class="activity-content">
+                        <div class="activity-text"><strong>${v.cliente}</strong> - ${v.servico}</div>
+                        <div class="activity-time">${formatCurrency(v.valor)}</div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function renderRemarketing() {
-            const lista = document.getElementById('rem-lista');
+        // ============ VENDAS ============
+        function loadVendas() {
+            const tbody = document.getElementById('vendas-table');
             
-            if (db.rem.length === 0) {
-                lista.innerHTML = `
-                    <div class="empty-state">
-                        <div>🎯</div>
-                        <p>Nenhum cliente para reativar</p>
-                    </div>
-                `;
+            if (db.historico.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">Nenhuma venda registrada</td></tr>';
                 return;
             }
 
-            lista.innerHTML = db.rem.map((item, index) => {
-                const msg = encodeURIComponent(`Olá ${item.nome}! Sentimos sua falta aqui na barbearia. Que tal agendar um horário? 💈`);
-                return `
-                    <div class="list-item" style="animation-delay: ${index * 0.05}s">
-                        <div class="item-info">
-                            <b>${item.nome}</b>
-                            <small>+${item.tel}</small>
-                        </div>
-                        <div class="action-btns">
-                            <a href="https://wa.me/${item.tel}?text=${msg}" target="_blank" class="btn-sm btn-wa">💬 WhatsApp</a>
-                            <button class="btn-sm btn-del" onclick="removerRemarketing(${item.id})">✕</button>
+            tbody.innerHTML = db.historico.map(v => `
+                <tr>
+                    <td>${v.cliente}</td>
+                    <td>${v.servico}</td>
+                    <td>${new Date(v.data).toLocaleDateString()}</td>
+                    <td style="font-weight: 600;">${formatCurrency(v.valor)}</td>
+                </tr>
+            `).join('');
+        }
+
+        function addVenda() {
+            const cliente = document.getElementById('venda-cliente').value;
+            const servico = document.getElementById('venda-servico').value.trim();
+            const valor = parseFloat(document.getElementById('venda-valor').value);
+
+            if (!cliente || !servico || !valor) {
+                showNotification('Preencha todos os campos', 'error');
+                return;
+            }
+
+            db.historico.push({
+                cliente,
+                servico,
+                valor,
+                data: new Date().toISOString()
+            });
+
+            db.lucro += valor;
+            saveDB();
+
+            closeModal('addVendaModal');
+            showNotification('Venda registrada!', 'success');
+            
+            loadDashboard();
+            loadVendas();
+
+            document.getElementById('venda-cliente').value = '';
+            document.getElementById('venda-servico').value = '';
+            document.getElementById('venda-valor').value = '';
+        }
+
+        // ============ CLIENTES ============
+        function loadClientes() {
+            const tbody = document.getElementById('clientes-table');
+            
+            if (db.clientes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">Nenhum cliente cadastrado</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = db.clientes.map(c => `
+                <tr>
+                    <td style="font-weight: 600;">${c.nome}</td>
+                    <td>${c.telefone}</td>
+                    <td>-</td>
+                    <td>
+                        <a href="https://wa.me/55${c.telefone.replace(/\D/g, '')}" target="_blank" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px;">
+                            WhatsApp
+                        </a>
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; background: var(--danger); color: white; border: none;" onclick="removeCliente('${c.nome}')">
+                            Remover
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addCliente() {
+            const nome = document.getElementById('cliente-nome').value.trim();
+            const telefone = document.getElementById('cliente-telefone').value.trim();
+
+            if (!nome || !telefone) {
+                showNotification('Preencha todos os campos', 'error');
+                return;
+            }
+
+            db.clientes.push({ nome, telefone });
+            saveDB();
+
+            closeModal('addClienteModal');
+            showNotification('Cliente cadastrado!', 'success');
+            
+            loadClientes();
+            loadDashboard();
+
+            document.getElementById('cliente-nome').value = '';
+            document.getElementById('cliente-telefone').value = '';
+        }
+
+        function removeCliente(nome) {
+            if (confirm(`Remover ${nome}?`)) {
+                db.clientes = db.clientes.filter(c => c.nome !== nome);
+                saveDB();
+                showNotification('Cliente removido', 'success');
+                loadClientes();
+            }
+        }
+
+        // ============ FILA ============
+        function loadFila() {
+            const tbody = document.getElementById('fila-table');
+            
+            if (db.fila.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 40px; color: var(--text-tertiary);">Nenhum cliente na fila</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = db.fila.map((item, i) => `
+                <tr>
+                    <td style="font-weight: 700; color: var(--accent);">#${i + 1}</td>
+                    <td>${item.cliente}</td>
+                    <td>${item.servico}</td>
+                    <td>
+                        <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="atenderFila(${i})">
+                            Atender
+                        </button>
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; background: var(--danger); color: white; border: none;" onclick="removeFromFila(${i})">
+                            Remover
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addToFila() {
+            const cliente = document.getElementById('fila-cliente').value;
+            const servico = document.getElementById('fila-servico').value.trim();
+
+            if (!cliente || !servico) {
+                showNotification('Preencha todos os campos', 'error');
+                return;
+            }
+
+            db.fila.push({ cliente, servico });
+            saveDB();
+
+            closeModal('addFilaModal');
+            showNotification('Adicionado à fila', 'success');
+            
+            loadFila();
+            loadDashboard();
+
+            document.getElementById('fila-cliente').value = '';
+            document.getElementById('fila-servico').value = '';
+        }
+
+        function atenderFila(index) {
+            db.fila.splice(index, 1);
+            saveDB();
+            showNotification('Cliente atendido!', 'success');
+            loadFila();
+            loadDashboard();
+        }
+
+        function removeFromFila(index) {
+            db.fila.splice(index, 1);
+            saveDB();
+            showNotification('Removido da fila', 'success');
+            loadFila();
+        }
+
+        // ============ PERFIL ============
+        function loadPerfil() {
+            if (!db.currentUser) return;
+
+            document.getElementById('perfil-nome').textContent = db.currentUser.nome;
+            document.getElementById('perfil-email').textContent = db.currentUser.email;
+            document.getElementById('perfil-data').textContent = new Date(db.currentUser.dataCadastro).toLocaleDateString();
+            
+            document.getElementById('perfil-vendas').textContent = db.historico.length;
+            document.getElementById('perfil-clientes').textContent = db.clientes.length;
+            document.getElementById('perfil-lucro').textContent = formatCurrency(db.lucro);
+        }
+
+        function limparDados() {
+            if (confirm('Apagar todos os dados?')) {
+                db.lucro = 0;
+                db.fila = [];
+                db.clientes = [];
+                db.historico = [];
+                saveDB();
+                showNotification('Dados limpos', 'info');
+                loadDashboard();
+                loadPerfil();
+            }
+        }
+
+        // ============ IA ============
+        function quickAIPrompt(prompt) {
+            document.getElementById('ai-input').value = prompt;
+            sendAI();
+        }
+
+        function sendAI() {
+            const input = document.getElementById('ai-input');
+            const message = input.value.trim();
+            
+            if (!message) return;
+
+            const chat = document.getElementById('ai-chat');
+            
+            chat.innerHTML += `
+                <div class="activity-item" style="justify-content: flex-end; margin-top: 16px;">
+                    <div style="background: var(--accent); color: white; padding: 12px 16px; border-radius: 8px; max-width: 70%;">
+                        ${message}
+                    </div>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const response = generateAIResponse(message);
+                chat.innerHTML += `
+                    <div class="activity-item" style="margin-top: 16px;">
+                        <div class="activity-avatar" style="background: var(--accent);">🤖</div>
+                        <div style="background: var(--bg-tertiary); padding: 12px 16px; border-radius: 8px; max-width: 70%;">
+                            ${response}
                         </div>
                     </div>
                 `;
-            }).join('');
+                chat.scrollTop = chat.scrollHeight;
+            }, 1000);
+
+            input.value = '';
+            chat.scrollTop = chat.scrollHeight;
         }
 
-        function updateStats() {
-            try {
-                const lucroTotal = parseFloat(db.lucro) || 0;
-                const projecaoAnual = lucroTotal * 12;
-
-                document.getElementById('val-mensal').textContent = formatCurrency(lucroTotal);
-                document.getElementById('val-anual').textContent = formatCurrency(projecaoAnual);
-            } catch (error) {
-                console.error('Erro ao atualizar stats:', error);
-            }
-        }
-
-        // ============ CHART ============
-        function initChart() {
-            const ctx = document.getElementById('mainChart');
-            if (!ctx) return;
-
-            const lucro = parseFloat(db.lucro) || 0;
+        function generateAIResponse(msg) {
+            const lower = msg.toLowerCase();
             
-            chart = new Chart(ctx.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
-                    datasets: [{
-                        label: 'Lucro Acumulado',
-                        data: [
-                            lucro * 0.15,
-                            lucro * 0.35,
-                            lucro * 0.65,
-                            lucro
-                        ],
-                        borderColor: '#30d158',
-                        backgroundColor: 'rgba(48, 209, 88, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        pointBackgroundColor: '#30d158',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: '#1c1c1e',
-                            titleColor: '#fff',
-                            bodyColor: '#30d158',
-                            borderColor: '#38383a',
-                            borderWidth: 1,
-                            padding: 12,
-                            displayColors: false,
-                            callbacks: {
-                                label: (context) => formatCurrency(context.parsed.y)
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            display: false,
-                            beginAtZero: true
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#98989d', font: { size: 11 } }
-                        }
-                    }
-                }
-            });
+            if (lower.includes('desempenho') || lower.includes('análise')) {
+                return `Análise atual:<br>💰 Lucro: ${formatCurrency(db.lucro)}<br>👥 Clientes: ${db.clientes.length}<br>📊 Vendas: ${db.historico.length}`;
+            }
+            
+            if (lower.includes('lucro') || lower.includes('aumentar')) {
+                return `Dicas para aumentar lucro:<br>• Programa de fidelidade<br>• Combos de serviços<br>• Marketing digital<br>• Horários promocionais`;
+            }
+            
+            if (lower.includes('marketing')) {
+                return `Sugestão de campanha: "🔥 Traga um amigo e ganhe 20% OFF! Seu amigo também ganha desconto na primeira visita. Agende já!"`;
+            }
+            
+            return `Entendi! Como posso ajudar especificamente?`;
         }
 
-        function updateChart() {
-            if (!chart) return;
-
-            const lucro = parseFloat(db.lucro) || 0;
-            chart.data.datasets[0].data = [
-                lucro * 0.15,
-                lucro * 0.35,
-                lucro * 0.65,
-                lucro
-            ];
-            chart.update('active');
+        // ============ UTILS ============
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
         }
 
-        // ============ INITIALIZATION ============
-        document.addEventListener('DOMContentLoaded', () => {
-            // Add enter key support for forms
-            ['l-email', 'l-pass'].forEach(id => {
-                document.getElementById(id)?.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') handleLogin();
-                });
-            });
+        function showNotification(message, type = 'info') {
+            const notif = document.createElement('div');
+            notif.className = `notification ${type}`;
+            notif.textContent = message;
+            
+            document.body.appendChild(notif);
+            
+            setTimeout(() => notif.remove(), 3000);
+        }
 
-            ['s-name', 's-email', 's-pass'].forEach(id => {
-                document.getElementById(id)?.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') handleSignup();
-                });
-            });
-
-            ['q-name', 'q-val'].forEach(id => {
-                document.getElementById(id)?.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') addFila();
-                });
-            });
-
-            ['rem-name', 'rem-tel'].forEach(id => {
-                document.getElementById(id)?.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') addRemarketing();
-                });
-            });
+        // ============ INIT ============
+        window.addEventListener('DOMContentLoaded', () => {
+            loadDB();
+            
+            if (db.currentUser) {
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('dashboard-screen').classList.remove('hidden');
+                loadDashboard();
+            }
         });
 
-        // ============ AUTO-SAVE ============
-        setInterval(() => {
-            if (currentUser) {
-                SecureStorage.save(db);
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
             }
-        }, 30000); // Auto-save every 30 seconds
+        });
     </script>
 </body>
 </html>
